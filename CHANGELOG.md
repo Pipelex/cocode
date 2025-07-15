@@ -4,6 +4,7 @@
 
 - Added the `pipelex_libraries` folder to the project
 - Added `/pipelex_libraries` to `.gitignore`
+- Moved `data/github/example_labels.json` to `tests/data/github/example_labels.json`
 
 ## [v0.0.4] - 2025-07-15
 
