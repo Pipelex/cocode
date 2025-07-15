@@ -1,0 +1,123 @@
+domain = "swe_diff"
+definition = "Pipelines for analyzing differences between two software engineering documents."
+
+[concept]
+CodeDiff = "A technical report produced by Git and enumerating the differences between two versions of a codebase."
+ChangelogSection = "A specific type of change in a changelog (added, changed, fixed, removed, deprecated, security)."
+ReleaseChangelog = "A text report in markdown format that summarizes the changes made to the codebase between two versions."
+
+[pipe]
+
+[pipe.separate_diff_sections]
+PipeLLM = "Separate a large code diff into logical sections"
+inputs = { code_diff = "CodeDiff" }
+output = "TextChunk"
+multiple_output = true
+llm = "llm_for_large_text"
+system_prompt = """
+You are an expert software architect. Your task is to analyze a large code diff and separate it into logical sections based on functionality, modules, or areas of change.
+"""
+prompt_template = """
+Analyze the following code diff and separate it into logical sections. Each section should represent a coherent area of change (e.g., authentication module, UI components, database schema, etc.).
+
+For each section, provide:
+1. A descriptive title
+2. The relevant diff content for that section
+3. A brief summary of what changed in that section
+
+@code_diff
+
+Format your response as separate sections with clear boundaries.
+"""
+
+[pipe.analyze_diff_section]
+PipeLLM = "Analyze a single diff section and categorize changes"
+inputs = { diff_section = "TextChunk" }
+output = "ChangelogSection"
+llm = "llm_for_swe"
+system_prompt = """
+You are an expert technical writer. Your task is to analyze a diff section and categorize the changes into changelog categories: added, changed, fixed, removed, deprecated, or security.
+"""
+prompt_template = """
+Analyze the following diff section and categorize the changes. For each change, determine if it should be classified as:
+- Added: New features or functionality
+- Changed: Updates to existing behavior
+- Fixed: Bug fixes
+- Removed: Features that were removed
+- Deprecated: Features marked for future removal
+- Security: Security-related changes
+
+Provide a clear, user-friendly description for each change.
+
+@diff_section
+
+Format your response with the category and description for each change.
+"""
+
+[pipe.format_final_changelog]
+PipeLLM = "Format the final changelog in markdown with proper structure"
+inputs = { changelog_sections = "ChangelogSection", release_date = "Text" }
+output = "Text"
+llm = "llm_for_swe"
+system_prompt = """
+You are an expert technical writer. Your task is to format a final changelog in markdown following the Keep a Changelog format.
+"""
+prompt_template = """
+Create a properly formatted changelog in markdown format using the following structure:
+
+## [v.X.Y.Z] - $release_date
+
+Then organize the changes into these sections (only include sections that have content):
+
+### Added
+- [List new features]
+
+### Changed
+- [List changes to existing functionality]
+
+### Fixed
+- [List bug fixes]
+
+### Removed
+- [List removed features]
+
+### Deprecated
+- [List deprecated features]
+
+### Security
+- [List security-related changes]
+
+Use the following analyzed changes:
+
+@changelog_sections
+
+Ensure each bullet point is clear, concise, and user-friendly.
+Please add back ticks to the variables.
+DO NOT ADD ANYTHING ELSE THAN THE MARKDOWN FORMAT.
+Do not add ```markdown``` at the beginning or at the end.
+"""
+
+[pipe.write_changelog]
+PipeSequence = "Write a comprehensive changelog for a software project"
+inputs = { text = "Text", release_date = "Text" }
+output = "Text"
+steps = [
+    { pipe = "split_large_text", result = "text_chunks" },
+    { pipe = "analyze_diff_section", batch_over = "text_chunks", batch_as = "diff_section", result = "changelog_sections" },
+    { pipe = "format_final_changelog", result = "changelog" },
+]
+
+[pipe.direct_changelog]
+PipeLLM = "Write a changelog for a software project, directly from the full diff."
+inputs = { text = "Text" }
+output = "ReleaseChangelog"
+llm = "llm_for_swe"
+system_prompt = """
+You are an expert technical writer and software architect. Your task is to carefully review the code diff and write a changelog in markdown format.
+"""
+prompt_template = """
+Analyze the following code diff. Write a changelog in markdown format that summarizes the changes made to the codebase between two versions.
+
+@text
+"""
+
