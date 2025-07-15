@@ -1,0 +1,44 @@
+name: Tests check
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+      - "release/v[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  tests-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      VIRTUAL_ENV: ${{ github.workspace }}/.venv
+      ENV: dev
+      COLUMNS: 120
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          workload_identity_provider: "projects/634168471546/locations/global/workloadIdentityPools/github-wif/providers/githuboidc"
+          service_account: "github-actions@evotis-foundation.iam.gserviceaccount.com"
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.11"
+
+      - name: Check UV installation
+        run: make check-uv
+
+      - name: Verify UV version
+        run: uv --version
+
+      - name: Install virtual env and dependencies
+        run: make install
+
+      - name: Run tests
+        run: make gha-tests

@@ -1,0 +1,204 @@
+[project]
+name = "my-project"
+version = "0.0.1"
+description = "Replace this with your project description"
+# authors = [{ name = "Your Name", email = "your.email@example.com" }]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+
+dependencies = ["pipelex[mistralai,anthropic,google,bedrock,fal]==0.5.1"]
+
+[tool.uv.sources]
+pipelex = { path = "../pipelex", editable = true }
+
+[project.optional-dependencies]
+dev = [
+    "boto3-stubs>=1.35.24",
+    "mypy>=1.11.2",
+    "pyright==1.1.398",
+    "pytest>=8.3.3",
+    "pytest-sugar>=1.0.0",
+    "pytest_asyncio>=0.24.0",
+    "ruff>=0.6.8",
+    "types-aioboto3[bedrock,bedrock-runtime]>=13.4.0",
+    "types-aiofiles>=24.1.0.20240626",
+    "types-beautifulsoup4>=4.12.0.20240907",
+    "types-markdown>=3.6.0.20240316",
+    "types-networkx>=3.3.0.20241020",
+    "types-openpyxl>=3.1.5.20250306",
+    "types-requests>=2.32.0.2024091",
+    "types-PyYAML>=6.0.12.20250326",
+    "types-toml>=0.10.8.20240310",
+]
+
+[project.urls]
+Homepage = "https://pipelex.com"
+Repository = "https://github.com/yourusername/my-project"  # Replace with your repository URL
+Documentation = "https://docs.pipelex.com/"
+
+[tool.uv]
+required-version = ">=0.7.2"
+
+[tool.mypy]
+packages = ["my_project"]
+check_untyped_defs = true
+exclude = "^.*\\.venv/.*$"
+mypy_path = "."
+plugins = ["pydantic.mypy"]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = ["json2html"]
+
+[tool.pyright]
+include = ["my_project"]
+analyzeUnannotatedFunctions = true
+deprecateTypingAliases = false
+disableBytesTypePromotions = true
+enableExperimentalFeatures = false
+enableTypeIgnoreComments = true
+exclude = ["**/node_modules", "**/__pycache__"]
+extraPaths = ["./tests"]
+pythonVersion = "3.11"
+reportAbstractUsage = "error"
+reportArgumentType = "error"
+reportAssertAlwaysTrue = "error"
+reportAssertTypeFailure = "error"
+reportAssignmentType = "error"
+reportAttributeAccessIssue = "error"
+reportCallInDefaultInitializer = true
+reportCallIssue = "error"
+reportConstantRedefinition = "error"
+reportDeprecated = "error"
+reportDuplicateImport = "error"
+reportFunctionMemberAccess = "error"
+reportGeneralTypeIssues = "error"
+reportImplicitOverride = true
+reportImplicitStringConcatenation = false
+reportImportCycles = true
+reportIncompatibleMethodOverride = "error"
+reportIncompatibleVariableOverride = "error"
+reportIncompleteStub = "error"
+reportInconsistentConstructor = "error"
+reportInconsistentOverload = "error"
+reportIndexIssue = "error"
+reportInvalidStringEscapeSequence = "error"
+reportInvalidStubStatement = "error"
+reportInvalidTypeArguments = "error"
+reportInvalidTypeForm = "error"
+reportInvalidTypeVarUse = "error"
+reportMatchNotExhaustive = "error"
+reportMissingImports = "error"
+reportMissingModuleSource = "warning"
+reportMissingParameterType = "error"
+reportMissingSuperCall = "none"
+reportMissingTypeArgument = "error"
+reportMissingTypeStubs = false
+reportNoOverloadImplementation = "error"
+reportOperatorIssue = "error"
+reportOptionalCall = "error"
+reportOptionalContextManager = "error"
+reportOptionalIterable = "error"
+reportOptionalMemberAccess = "error"
+reportOptionalOperand = "error"
+reportOptionalSubscript = "error"
+reportOverlappingOverload = "error"
+reportPossiblyUnboundVariable = "error"
+reportPrivateImportUsage = "error"
+reportPrivateUsage = "error"
+reportPropertyTypeMismatch = true
+reportRedeclaration = "error"
+reportReturnType = "error"
+reportSelfClsParameterName = "error"
+reportShadowedImports = true
+reportTypeCommentUsage = "error"
+reportTypedDictNotRequiredAccess = "error"
+reportUnboundVariable = "error"
+reportUndefinedVariable = "error"
+reportUninitializedInstanceVariable = "none"
+reportUnknownArgumentType = "error"
+reportUnknownLambdaType = "error"
+reportUnknownMemberType = "error"
+reportUnknownParameterType = "error"
+reportUnknownVariableType = "error"
+reportUnnecessaryCast = "error"
+reportUnnecessaryComparison = "error"
+reportUnnecessaryContains = "error"
+reportUnnecessaryIsInstance = "error"
+reportUnnecessaryTypeIgnoreComment = "none"
+reportUnsupportedDunderAll = "error"
+reportUntypedBaseClass = "error"
+reportUntypedClassDecorator = "error"
+reportUntypedFunctionDecorator = "error"
+reportUntypedNamedTuple = "error"
+reportUnusedCallResult = "none"
+reportUnusedClass = "error"
+reportUnusedCoroutine = "error"
+reportUnusedExcept = "error"
+reportUnusedExpression = "error"
+reportUnusedFunction = "error"
+reportUnusedImport = "none"
+reportUnusedVariable = "error"
+reportWildcardImportFromLibrary = "error"
+strictDictionaryInference = true
+strictListInference = true
+strictParameterNoneValue = true
+strictSetInference = true
+typeCheckingMode = "strict"
+
+[tool.pytest.ini_options]
+addopts = "--import-mode=importlib -ra -m 'not inference'"
+asyncio_default_fixture_loop_scope = "session"
+markers = [
+    "inference: slow and costly due to inference calls",
+    "gha_disabled: tests that should not run in GitHub Actions",
+    "codex_disabled: tests that should not run in Codex",
+    "dry_runnable: tests that can be run in dry-run mode",
+]
+minversion = "8.0"
+xfail_strict = true
+
+[tool.ruff]
+exclude = [
+    ".cursor",
+    ".git",
+    ".github",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".venv",
+    ".vscode",
+    "trigger_pipeline",
+]
+line-length = 150
+target-version = "py311"
+
+[tool.ruff.format]
+
+[tool.ruff.lint]
+ignore = ["F401"]
+external = ["F401"]
+select = [
+    "E4",
+    "E7",
+    "E9",
+    "F",
+    "A001",
+    "A002",
+    "A003",
+    "RUF008",
+    "RUF009",
+    "RUF012",
+    "RUF013",
+    "RUF100",
+    "E501",
+    "I",
+]
