@@ -47,4 +47,4 @@ pipelex_super.toml
 settings.local.json
 
 # To be removed
-pipelex_libraries
+/pipelex_libraries

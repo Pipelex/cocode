@@ -1,0 +1,11 @@
+[llm_presets]
+
+llm_for_large_text = { llm_handle = "claude-4-sonnet", temperature = 0.1 }
+# llm_for_swe = { llm_handle = "gemini-2.5-pro", temperature = 0.1 }
+# llm_for_swe = { llm_handle = "claude-4-opus", temperature = 0.1 }
+llm_for_swe = { llm_handle = "gpt-4o-mini", temperature = 0.1 }
+# llm_for_swe = { llm_handle = "gpt-4o-mini", temperature = 0.1 }
+# llm_for_swe = { llm_handle = "grok-3-mini", temperature = 0.1 }
+# llm_for_swe = { llm_handle = "gemini-2.5-flash", temperature = 0.1 }
+# llm_for_swe = { llm_handle = "gemini-2.5-pro", temperature = 0.1 }
+
