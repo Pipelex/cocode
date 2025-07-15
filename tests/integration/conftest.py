@@ -13,10 +13,11 @@ def reset_pipelex_config_fixture():
     # Code to run before each test
     print("\n[magenta]pipelex setup[/magenta]")
     try:
-        pipelex_instance = pipelex.pipelex.Pipelex.make()
+        pipelex_instance = pipelex.pipelex.Pipelex.make(relative_config_folder_path="pipelex_libraries", from_file=False)
         config = get_config()
         pretty_print(config, title="Test config")
         assert isinstance(config, pipelex.config.PipelexConfig)
+        assert config.project_name == "cocode"
     except Exception as exc:
         Console().print(Traceback())
         pytest.exit(f"Critical Pipelex setup error: {exc}")

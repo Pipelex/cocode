@@ -1,0 +1,78 @@
+site_name: Cocode Documentation
+site_url: https://pipelex.github.io/cocode/
+site_description: "Cocode - Repository analysis and AI-powered code understanding"
+docs_dir: docs
+repo_url: "https://github.com/pipelex/cocode"
+repo_name: "Cocode on GitHub"
+watch: [README.md, CONTRIBUTING.md, CHANGELOG.md, LICENSE]
+
+theme:
+  name: material
+  features:
+    - navigation.footer
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - content.code.annotate
+  palette:
+  - scheme: default          # light
+    primary: teal
+    accent: deep purple
+    toggle:
+      icon: material/weather-night
+      name: Switch to dark mode
+  - scheme: slate            # dark
+    primary: teal
+    accent: purple
+    toggle:
+      icon: material/weather-sunny
+      name: Switch to light mode
+
+copyright: "© 2025 Evotis S.A.S. <br/>MIT License"
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/pipelex/cocode
+      name: Cocode on GitHub
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/cocode/
+      name: cocode on PyPI
+    - icon: fontawesome/brands/discord
+      link: https://go.pipelex.com/discord
+      name: Pipelex on Discord
+  generator: false
+
+plugins:
+  - search
+  - meta-manager
+
+markdown_extensions:
+  - meta
+  - attr_list
+  - md_in_html
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: .
+      check_paths: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Home: index.md
+  - Getting Started: pages/getting-started.md
+  - Commands: pages/commands.md
+  - Examples: pages/examples.md
+  - Contributing: contributing.md
+
+extra_css:
+  - stylesheets/extra.css
+  

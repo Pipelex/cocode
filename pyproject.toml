@@ -1,8 +1,9 @@
 [project]
-name = "my-project"
-version = "0.0.1"
-description = "Replace this with your project description"
-# authors = [{ name = "Your Name", email = "your.email@example.com" }]
+name = "cocode"
+version = "0.0.3"
+description = "Cocode is the friend of your code"
+authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
+maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
 license = "MIT"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -12,19 +13,24 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-dependencies = ["pipelex[mistralai,anthropic,google,bedrock,fal]==0.5.1"]
-
-[tool.uv.sources]
-pipelex = { path = "../pipelex", editable = true }
+dependencies = ["pipelex[anthropic,google,bedrock]>=0.6.0", "PyGithub==2.4.0"]
 
 [project.optional-dependencies]
+docs = [
+    "mkdocs==1.6.1",
+    "mkdocs-glightbox==0.4.0",
+    "mkdocs-material==9.6.14",
+    "mkdocs-meta-manager==1.1.0",
+]
 dev = [
     "boto3-stubs>=1.35.24",
     "mypy>=1.11.2",
     "pyright==1.1.398",
     "pytest>=8.3.3",
-    "pytest-sugar>=1.0.0",
     "pytest_asyncio>=0.24.0",
+    "pytest-cov>=6.1.1",
+    "pytest-mock>=3.14.0",
+    "pytest-sugar>=1.0.0",
     "ruff>=0.6.8",
     "types-aioboto3[bedrock,bedrock-runtime]>=13.4.0",
     "types-aiofiles>=24.1.0.20240626",
@@ -37,16 +43,35 @@ dev = [
     "types-toml>=0.10.8.20240310",
 ]
 
+[project.scripts]
+cocode = "cocode.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["cocode"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"pipelex.toml" = "pipelex.toml"
+
+[tool.hatch.build.targets.sdist]
+packages = ["cocode"]
+
+[tool.hatch.build.targets.sdist.force-include]
+"pipelex.toml" = "pipelex.toml"
+
 [project.urls]
 Homepage = "https://pipelex.com"
-Repository = "https://github.com/yourusername/my-project"  # Replace with your repository URL
+Repository = "https://github.com/pipelex/cocode"
 Documentation = "https://docs.pipelex.com/"
 
 [tool.uv]
 required-version = ">=0.7.2"
 
 [tool.mypy]
-packages = ["my_project"]
+packages = ["cocode", "tests"]
 check_untyped_defs = true
 exclude = "^.*\\.venv/.*$"
 mypy_path = "."
@@ -60,14 +85,14 @@ ignore_missing_imports = true
 module = ["json2html"]
 
 [tool.pyright]
-include = ["my_project"]
+include = ["cocode", "tests"]
+exclude = ["**/node_modules", "**/__pycache__"]
+extraPaths = ["./tests"]
 analyzeUnannotatedFunctions = true
 deprecateTypingAliases = false
 disableBytesTypePromotions = true
 enableExperimentalFeatures = false
 enableTypeIgnoreComments = true
-exclude = ["**/node_modules", "**/__pycache__"]
-extraPaths = ["./tests"]
 pythonVersion = "3.11"
 reportAbstractUsage = "error"
 reportArgumentType = "error"
@@ -159,6 +184,9 @@ typeCheckingMode = "strict"
 addopts = "--import-mode=importlib -ra -m 'not inference'"
 asyncio_default_fixture_loop_scope = "session"
 markers = [
+    "unit: fast isolated tests with no external dependencies",
+    "integration: tests that require external services or dependencies",
+    "end2end: full workflow tests that test complete user scenarios",
     "inference: slow and costly due to inference calls",
     "gha_disabled: tests that should not run in GitHub Actions",
     "codex_disabled: tests that should not run in Codex",
@@ -202,3 +230,6 @@ select = [
     "E501",
     "I",
 ]
+
+[tool.pipelex]
+config_inheritance = ["pipelex"]

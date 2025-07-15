@@ -13,6 +13,8 @@ VENV_RUFF := $(VIRTUAL_ENV)/bin/ruff
 VENV_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
 VENV_MYPY := $(VIRTUAL_ENV)/bin/mypy
 VENV_PIPELEX := $(VIRTUAL_ENV)/bin/pipelex
+VENV_COCODE := $(VIRTUAL_ENV)/bin/cocode
+VENV_MKDOCS := $(VIRTUAL_ENV)/bin/mkdocs
 
 UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
 
@@ -52,6 +54,8 @@ make mypy                     - Check types with mypy
 make cleanenv                 - Remove virtual env and lock files
 make cleanderived             - Remove extraneous compiled files, caches, logs, etc.
 make cleanlibraries           - Remove pipelex_libraries
+make cleanresults             - Remove results directory
+make cr                       - Shorthand -> cleanresults
 make cleanall                 - Remove all -> cleanenv + cleanderived + cleanlibraries
 make reinitbaselibrary        - Remove pipelex_libraries and init libraries again
 make reinstall                - Reinstall dependencies
@@ -76,12 +80,19 @@ make ti                       - Shorthand -> test-inference
 make test-imgg                - Run unit tests only for imgg (with prints)
 make test-g					  - Shorthand -> test-imgg
 
+make check-unused-imports     - Check for unused imports without fixing
+make fix-unused-imports       - Fix unused imports with ruff
+make fui                      - Shorthand -> fix-unused-imports
+make check-TODOs              - Check for TODOs
+
+make docs                     - Serve documentation with mkdocs
+make docs-check               - Check documentation build with mkdocs
+make docs-deploy              - Deploy documentation with mkdocs
+
 make check                    - Shorthand -> format lint mypy
 make c                        - Shorthand -> check
 make cc                       - Shorthand -> cleanderived check
 make li                       - Shorthand -> lock install
-make check-unused-imports     - Check for unused imports without fixing
-make fix-unused-imports       - Fix unused imports with ruff
 
 endef
 export HELP
@@ -89,13 +100,14 @@ export HELP
 .PHONY: \
 	all help env lock install update build \
 	format lint pyright mypy \
-	cleanderived cleanenv cleanlibraries cleanall \
+	cleanderived cleanenv cleanlibraries cleanresults cr cleanall \
 	test t test-quiet tq test-with-prints tp test-inference ti \
 	codex-tests gha-tests \
 	run-all-tests run-manual-trigger-gha-tests run-gha_disabled-tests \
 	validate v check c cc \
 	merge-check-ruff-lint merge-check-ruff-format merge-check-mypy merge-check-pyright \
-	li check-unused-imports fix-unused-imports check-uv check-TODOs
+	li check-unused-imports fix-unused-imports fui check-uv check-TODOs \
+	docs docs-check docs-deploy
 
 all help:
 	@echo "$$HELP"
@@ -148,7 +160,7 @@ update: env
 
 validate: env
 	$(call PRINT_TITLE,"Running setup sequence")
-	$(VENV_PIPELEX) validate
+	$(VENV_COCODE) validate
 
 ##############################################################################################
 ############################      Cleaning                        ############################
@@ -184,6 +196,14 @@ cleanbaselibrary:
 	@find . -type d -wholename './pipelex_libraries/pipelines/base_library' -exec rm -rf {} + && \
 	echo "Cleaned up pipelex base library";
 
+cleanresults:
+	$(call PRINT_TITLE,"Erasing results directory")
+	@find . -type d -wholename './results' -exec rm -rf {} + && \
+	echo "Cleaned up results directory";
+
+cr: cleanresults
+	@echo "> done: cr = cleanresults"
+
 reinitbaselibrary: cleanbaselibrary init
 	@echo "Reinitialized pipelex base library";
 
@@ -196,7 +216,7 @@ reinstall: cleanenv cleanlock install
 ri: reinstall
 	@echo "> done: ri = reinstall"
 
-cleanall: cleanderived cleanenv cleanlibraries
+cleanall: cleanderived cleanenv cleanlibraries cleanresults
 	@echo "Cleaned up all derived files and directories";
 
 ##########################################################################################
@@ -275,6 +295,27 @@ test-inference: env
 ti: test-inference
 	@echo "> done: ti = test-inference"
 
+cov: env
+	$(call PRINT_TITLE,"Unit testing with coverage")
+	@echo "• Running unit tests with coverage"
+	@if [ -n "$(TEST)" ]; then \
+		$(VENV_PYTEST) --cov=$(if $(PKG),$(PKG),cocode) -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+	else \
+		$(VENV_PYTEST) --cov=$(if $(PKG),$(PKG),cocode) $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+	fi
+
+cov-missing: env
+	$(call PRINT_TITLE,"Unit testing with coverage and missing lines")
+	@echo "• Running unit tests with coverage and missing lines"
+	@if [ -n "$(TEST)" ]; then \
+		$(VENV_PYTEST) --cov=$(if $(PKG),$(PKG),pipelex) --cov-report=term-missing -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+	else \
+		$(VENV_PYTEST) --cov=$(if $(PKG),$(PKG),pipelex) --cov-report=term-missing $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+	fi
+
+cm: cov-missing
+	@echo "> done: cm = cov-missing"
+
 ############################################################################################
 ############################               Linting              ############################
 ############################################################################################
@@ -303,11 +344,11 @@ mypy: env
 
 merge-check-ruff-format: env
 	$(call PRINT_TITLE,"Formatting with ruff")
-	$(VENV_RUFF) format --check -v .
+	$(VENV_RUFF) format --check .
 
 merge-check-ruff-lint: env check-unused-imports
 	$(call PRINT_TITLE,"Linting with ruff without fixing files")
-	$(VENV_RUFF) check -v .
+	$(VENV_RUFF) check .
 
 merge-check-pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
@@ -319,12 +360,43 @@ merge-check-mypy: env
 	$(VENV_MYPY) --config-file pyproject.toml
 
 ##########################################################################################
-### SHORTHANDS
+### MISCELLANEOUS
 ##########################################################################################
 
 check-unused-imports: env
 	$(call PRINT_TITLE,"Checking for unused imports without fixing")
 	$(VENV_RUFF) check --select=F401 --no-fix .
+
+fix-unused-imports: env
+	$(call PRINT_TITLE,"Fixing unused imports")
+	$(VENV_RUFF) check --select=F401 --fix .
+
+fui: fix-unused-imports
+	@echo "> done: fui = fix-unused-imports"
+
+check-TODOs: env
+	$(call PRINT_TITLE,"Checking for TODOs")
+	@$(VENV_RUFF) check --select=TD -v .
+
+##########################################################################################
+### DOCUMENTATION
+##########################################################################################
+
+docs: env
+	$(call PRINT_TITLE,"Serving documentation with mkdocs")
+	$(VENV_MKDOCS) serve
+
+docs-check: env
+	$(call PRINT_TITLE,"Checking documentation build with mkdocs")
+	$(VENV_MKDOCS) build --strict
+
+docs-deploy: env
+	$(call PRINT_TITLE,"Deploying documentation with mkdocs")
+	$(VENV_MKDOCS) gh-deploy --force --clean
+	
+##########################################################################################
+### SHORTHANDS
+##########################################################################################
 
 c: init format lint pyright mypy
 	@echo "> done: c = check"
@@ -340,7 +412,3 @@ v: init validate
 
 li: lock install
 	@echo "> done: lock install"
-
-fix-unused-imports: env
-	$(call PRINT_TITLE,"Fixing unused imports")
-	$(VENV_RUFF) check --select=F401 --fix -v .
