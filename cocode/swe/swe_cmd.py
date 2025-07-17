@@ -8,7 +8,7 @@ from pipelex.core.stuff import Stuff
 from pipelex.core.stuff_content import ListContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
-from pipelex.hub import get_concept_provider, get_report_delegate
+from pipelex.hub import get_concept_provider, get_report_delegate, get_pipeline_tracker
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
 from pipelex.tools.misc.json_utils import save_as_json_to_path
@@ -225,33 +225,16 @@ async def swe_doc_update_from_diff(
     # Generate git diff
     diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
     
-    # Get comprehensive repository structure for analysis
-    log.info("Analyzing complete repository structure...")
-    
-    # Include patterns for all relevant files (not just documentation)
-    include_patterns = ["*.md", "*.rst", "*.txt", "*.toml", "*.yaml", "*.yml", "*.py", "*.js", "*.ts", "*.json"]
-    
-    processor = RepoxProcessor(
-        repo_path=repo_path,
-        ignore_patterns=ignore_patterns,
-        include_patterns=include_patterns,
-        path_pattern=None,  # Analyze entire repository structure
-        text_processing_funcs=None,
-        output_style=OutputStyle.REPO_MAP,
-    )
-    repo_structure = process_repox(repox_processor=processor)
-    
-    # Create working memory with both git diff and repo structure
+    # Create working memory with git diff only (no repo structure needed)
     release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
     git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
-    repo_text_stuff = StuffFactory.make_from_str(str_value=repo_structure, name="repo_text")
     
     working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(
-        stuff_list=[release_stuff, git_diff_stuff, repo_text_stuff]
+        stuff_list=[release_stuff, git_diff_stuff]
     )
     
     # Use the comprehensive pipeline that analyzes docs first
-    pipe_code = "comprehensive_doc_update_pipeline"
+    pipe_code = "comprehensive_batch_doc_update"
     
     # Run the pipe
     pipe_output = await execute_pipeline(

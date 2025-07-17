@@ -15,6 +15,7 @@ from pipelex.pipe_works.pipe_dry import dry_run_all_pipes
 from pipelex.pipelex import Pipelex
 from pipelex.tools.misc.file_utils import path_exists
 from typer import Context as TyperContext
+from pipelex.hub import get_pipeline_tracker
 from typer.core import TyperGroup
 from typing_extensions import override
 
@@ -327,6 +328,7 @@ def swe_from_repo_diff_cmd(
             ignore_patterns=ignore_patterns,
         )
     )
+    get_pipeline_tracker().output_flowchart()
 
 
 @app.command("swe-doc-update")
@@ -364,6 +366,8 @@ def swe_doc_update_cmd(
             doc_dir=doc_dir,
         )
     )
+
+    get_pipeline_tracker().output_flowchart()
 
 
 @app.command()

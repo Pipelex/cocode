@@ -1,308 +1,396 @@
 domain = "doc_update"
-definition = "Pipelines for analyzing git diffs and generating documentation update suggestions"
+definition = "Pipelines for analyzing git diffs and generating documentation update suggestions for different documentation types"
 
 [concept]
 GitDiff = "A git diff output showing changes between two versions of a codebase"
-DocumentationFile = "A documentation file that may need updates based on code changes"
-DocumentationContent = "The actual content of a documentation file"
-DocumentationAnalysis = "Analysis of documentation content and its relevance to changes"
-DocumentationUpdateDecision = "Decision on whether a documentation file needs updates"
-DocumentationUpdateSuggestion = "A comprehensive suggestion for updating documentation based on git diff analysis"
-FileChangeAnalysis = "Analysis of changes in a specific file and their documentation impact"
-RepositoryStructure = "The structure and organization of the repository"
+DocsDirectoryItem = "A specific item that needs docs/ directory analysis"
+AgentsInstructionItem = "A specific item that needs AGENTS.md analysis"
+ClaudeInstructionItem = "A specific item that needs CLAUDE.md analysis"
+CursorRulesItem = "A specific item that needs cursor rules analysis"
+DocumentationUpdateAnalysis = "Detailed analysis of what needs to be added, deleted, or changed in documentation"
+DocumentationUpdateSuggestions = "Final suggestions for updating documentation"
 
 [pipe]
 
-[pipe.analyze_repository_structure]
-PipeLLM = "Analyze repository structure to understand project organization and documentation layout"
-inputs = { repo_text = "Text" }
-output = "RepositoryStructure"
-llm = "llm_for_swe"
+# Identification pipes - analyze git diff to identify what needs documentation updates
+[pipe.identify_docs_directory_items]
+PipeLLM = "Identify changes that affect docs/ directory documentation"
+inputs = { git_diff = "GitDiff" }
+output = "DocsDirectoryItem"
+multiple_output = true
+llm = "llm_for_large_text"
 system_prompt = """
-You are an expert at analyzing repository structure. Your task is to understand the project organization and identify all documentation files.
+You are a conservative documentation analyst. Only identify changes that CLEARLY require user documentation updates.
+Focus ONLY on user-facing features, API changes, installation procedures, and usage instructions.
+Be very selective - most internal changes don't need documentation updates.
 """
 prompt_template = """
-Analyze the following repository structure and provide a comprehensive analysis:
+Analyze this git diff to identify changes that need docs/ directory updates:
 
-@repo_text
-
-Provide:
-1. Project type and main purpose
-2. Complete list of all documentation files with their likely purposes:
-   - README.md files
-   - Documentation directories (docs/, etc.)
-   - Configuration files that might need documentation
-   - API documentation
-   - Changelog files
-   - License and contribution files
-3. Project structure and main components
-4. Documentation organization and hierarchy
-5. Any missing or incomplete documentation areas
-
-This analysis will help understand what documentation exists and how it's organized.
-"""
-
-[pipe.analyze_diff_for_doc_impact]
-PipeLLM = "Analyze git diff to identify changes that might require documentation updates"
-inputs = { git_diff = "GitDiff", repo_structure = "RepositoryStructure" }
-output = "FileChangeAnalysis"
-llm = "llm_for_swe"
-system_prompt = """
-You are an expert software architect and technical writer. Your task is to analyze git diffs in the context of the repository structure and identify changes that might require documentation updates.
-"""
-prompt_template = """
-Analyze the following git diff in the context of the repository structure:
-
-Repository Structure:
-@repo_structure
-
-Git Diff:
 @git_diff
 
-Identify changes that might require documentation updates:
+ONLY identify changes that clearly affect users, such as:
+- New CLI commands or removed commands
+- Changed command behavior or parameters
+- New features users will interact with
+- Installation/setup changes
+- API changes that affect user code
 
-1. **Change Summary**: What changed in this diff?
-2. **Impact Assessment**:
-   - New features or functionality
-   - API changes or new endpoints
-   - Configuration changes
-   - CLI command changes
-   - Breaking changes or deprecations
-   - New dependencies or requirements
-   - Installation/setup changes
-3. **Documentation Candidates**: Which documentation files might need updates and why?
-4. **Priority Level**: Critical, Important, or Minor
-5. **Change Context**: How do these changes fit into the overall project?
+EXCLUDE:
+- Internal refactoring
+- Test changes
+- Implementation details
+- Minor version bumps without feature changes
+- Code reorganization that doesn't affect user interface
 
-Focus on changes that would affect:
-- User-facing features and APIs
-- Configuration and setup instructions
-- Installation and deployment procedures
-- CLI commands and usage
-- Breaking changes or deprecations
-- New dependencies or requirements
+For each change that needs documentation, provide:
+- File path where the change occurred
+- Type of change (new feature, removed feature, changed behavior, etc.)
+- Brief description of what changed
+- Why users need to know about this
+
+Be conservative - when in doubt, don't include it.
 """
 
-[pipe.read_documentation_file]
-PipeLLM = "Read and analyze a specific documentation file"
-inputs = { file_path = "Text", file_content = "Text" }
-output = "DocumentationContent"
-llm = "llm_for_swe"
+[pipe.identify_agents_instruction_items]
+PipeLLM = "Identify changes that affect AGENTS.md AI instructions"
+inputs = { git_diff = "GitDiff" }
+output = "AgentsInstructionItem"
+multiple_output = true
+llm = "llm_for_large_text"
 system_prompt = """
-You are an expert technical writer. Your task is to read and analyze documentation files to understand their current content and structure.
+You are a very conservative AI instruction analyst. Only identify changes that FUNDAMENTALLY affect how AI agents work with the codebase.
+Focus ONLY on major architectural changes, new AI-specific tools, or significant workflow changes.
+Most CLI changes or feature updates do NOT need AGENTS.md updates.
 """
 prompt_template = """
-Analyze the following documentation file:
+Analyze this git diff to identify changes that need AGENTS.md instruction updates:
 
-File Path: @file_path
+@git_diff
 
-File Content:
-@file_content
+ONLY identify changes that fundamentally affect AI agent workflows, such as:
+- New AI-specific commands or tools
+- Major architectural changes affecting how agents navigate code
+- New agent capabilities or integrations
+- Significant changes to development workflows
 
-Provide:
-1. **File Purpose**: What is this documentation file for?
-2. **Current Structure**: How is the content organized?
-3. **Main Sections**: What are the key sections and topics covered?
-4. **Content Quality**: Is the content up-to-date and comprehensive?
-5. **Coverage Areas**: What aspects of the project does this file document?
-6. **Last Update Context**: When was this likely last updated and what for?
+EXCLUDE:
+- Simple CLI command changes
+- Feature additions that don't affect agent workflows
+- Version updates
+- Removed functionality that agents weren't using
+- Internal refactoring
 
-This analysis will help determine if and how this file should be updated.
+For each change that truly affects AI agents, provide:
+- File path where the change occurred
+- Type of change (new AI tool, workflow change, etc.)
+- Brief description of what changed
+- How this fundamentally changes AI agent workflows
+
+Be very conservative - most changes don't need AGENTS.md updates.
 """
 
-[pipe.evaluate_documentation_relevance]
-PipeLLM = "Evaluate if a documentation file is relevant to the changes and needs updates"
-inputs = { change_analysis = "FileChangeAnalysis", doc_content = "DocumentationContent" }
-output = "DocumentationUpdateDecision"
-llm = "llm_for_swe"
+[pipe.identify_claude_instruction_items]
+PipeLLM = "Identify changes that affect CLAUDE.md AI instructions"
+inputs = { git_diff = "GitDiff" }
+output = "ClaudeInstructionItem"
+multiple_output = true
+llm = "llm_for_large_text"
 system_prompt = """
-You are an expert technical writer and software architect. Your task is to evaluate whether a documentation file needs updates based on code changes.
+You are a very conservative Claude instruction analyst. Only identify changes that FUNDAMENTALLY affect how Claude understands or works with the codebase.
+Focus ONLY on major architectural changes or new Claude-specific patterns.
+Most CLI changes or feature updates do NOT need CLAUDE.md updates.
 """
 prompt_template = """
-Evaluate whether this documentation file needs updates based on the code changes:
+Analyze this git diff to identify changes that need CLAUDE.md instruction updates:
 
-Change Analysis:
-@change_analysis
+@git_diff
 
-Documentation Content Analysis:
-@doc_content
+ONLY identify changes that fundamentally affect Claude's understanding, such as:
+- Major architectural or pattern changes
+- New Claude-specific integrations or capabilities
+- Significant changes to codebase structure or conventions
+- New development paradigms Claude needs to understand
 
-Provide a clear decision:
+EXCLUDE:
+- Simple CLI command changes
+- Feature additions that don't change code patterns
+- Version updates
+- Removed functionality that doesn't affect Claude's understanding
+- Internal refactoring
 
-1. **Update Needed**: YES or NO
-2. **Relevance Score**: 1-10 (how relevant are the changes to this documentation)
-3. **Reasoning**: Why does this file need updates or why not?
-4. **Specific Areas**: If updates are needed, which specific sections/areas?
-5. **Update Type**: Add new content, modify existing, remove outdated, or restructure
-6. **Priority**: High, Medium, or Low
-7. **Dependencies**: Are there other files that should be updated first?
+For each change that truly affects Claude's understanding, provide:
+- File path where the change occurred
+- Type of change (new pattern, architectural change, etc.)
+- Brief description of what changed
+- How this fundamentally changes Claude's understanding
 
-Be conservative - only recommend updates if there's a clear, direct relationship between the changes and the documentation content.
+Be very conservative - most changes don't need CLAUDE.md updates.
 """
 
-[pipe.generate_specific_documentation_updates]
-PipeLLM = "Generate specific documentation update instructions for files that need updates"
-inputs = { update_decision = "DocumentationUpdateDecision", change_analysis = "FileChangeAnalysis", doc_content = "DocumentationContent" }
-output = "Text"
-llm = "llm_for_swe"
+[pipe.identify_cursor_rules_items]
+PipeLLM = "Identify changes that affect cursor rules"
+inputs = { git_diff = "GitDiff" }
+output = "CursorRulesItem"
+multiple_output = true
+llm = "llm_for_large_text"
 system_prompt = """
-You are an expert technical writer. Your task is to generate very specific, actionable documentation updates for Cursor AI.
+You are a very conservative Cursor rules analyst. Only identify changes that FUNDAMENTALLY affect coding patterns or project structure.
+Focus ONLY on major changes to coding standards, project structure, or development workflows.
+Most CLI changes or feature updates do NOT need cursor rules updates.
 """
 prompt_template = """
-Generate specific documentation update instructions based on:
+Analyze this git diff to identify changes that need cursor rules updates:
 
-Update Decision:
-@update_decision
+@git_diff
 
-Change Analysis:
-@change_analysis
+ONLY identify changes that fundamentally affect Cursor's behavior, such as:
+- New coding patterns or conventions
+- Major project structure changes
+- New development tools or workflows that affect coding
+- Significant changes to code style or formatting requirements
 
-Documentation Content:
-@doc_content
+EXCLUDE:
+- Simple CLI command changes
+- Feature additions that don't change coding patterns
+- Version updates
+- Internal changes that don't affect how code should be written
+- Removed functionality that doesn't change coding standards
 
-Generate instructions in this exact format:
+For each change that truly affects Cursor's coding behavior, provide:
+- File path where the change occurred
+- Type of change (new pattern, structure change, etc.)
+- Brief description of what changed
+- How this fundamentally changes how Cursor should code
 
-### File: [exact file path]
-**Update Required**: [YES/NO - only proceed if YES]
-**What to do**: [Add/Modify/Replace specific section]
-**Where**: [Exact location - line numbers, section headers, or specific text to find]
-**Content to add/change**:
-```
-[Exact text to add or replace - be very specific with formatting]
-```
-**Why**: [Brief reason for this change]
-**Related Changes**: [Any other files that might need updates as a result]
-
-Only generate instructions if updates are actually needed. Be very specific about:
-- Exact file paths
-- Exact locations (line numbers, section headers, or text to search for)
-- Exact content with proper formatting
-- Clear reasoning
+Be very conservative - most changes don't need cursor rules updates.
 """
 
-[pipe.comprehensive_doc_update_pipeline]
-PipeSequence = "Complete pipeline to analyze repository, read docs, evaluate changes, and generate updates"
-inputs = { git_diff = "GitDiff", repo_text = "Text" }
-output = "Text"
+# Analysis pipes for each documentation type
+[pipe.analyze_single_docs_change]
+PipeLLM = "Analyze a single docs directory change for user documentation impact"
+inputs = { change_item = "DocsDirectoryItem" }
+output = "DocumentationUpdateAnalysis"
+llm = "llm_for_large_text"
+system_prompt = """
+You are a technical documentation expert. Analyze code changes to determine what user documentation updates are needed.
+Focus on user-facing features, API changes, installation procedures, and usage instructions.
+For single-line changes, evaluate if they represent major functionality changes or minor updates.
+"""
+prompt_template = """
+Analyze this code change for documentation impact:
+
+Code Change:
+@change_item
+
+Determine what documentation updates are needed. For each update, specify:
+- Type: "Addition", "Deletion", "Modification", or "Minor Change"
+- File: exact documentation file path
+- Location: where in the file to make the change
+- Content: exact content to add/modify/remove
+- Reason: why this change is needed
+
+**Evaluation criteria for single-line changes:**
+- If it's a new feature, API endpoint, command, or significant behavior change → "Addition"/"Deletion"/"Modification"
+- If it's a minor fix, refactoring, or internal change with minimal user impact → "Minor Change"
+
+Focus only on docs/ directory files for user documentation.
+"""
+
+[pipe.analyze_single_agents_instruction]
+PipeLLM = "Analyze a single change for AGENTS.md AI instruction impact"
+inputs = { change_item = "AgentsInstructionItem" }
+output = "DocumentationUpdateAnalysis"
+llm = "llm_for_large_text"
+system_prompt = """
+You are an AI agent instruction expert. Analyze code changes to determine what AI agent instructions need updating.
+Focus on how AI agents can use new features, commands, functions, or workflows.
+For single-line changes, evaluate if they represent major functionality changes or minor updates.
+"""
+prompt_template = """
+Analyze this code change for AI agent instruction impact:
+
+Code Change:
+@change_item
+
+Determine what AGENTS.md instruction updates are needed. For each update, specify:
+- Type: "Addition", "Deletion", "Modification", or "Minor Change"
+- File: AGENTS.md
+- Location: which section to update
+- Content: exact instructions for AI agents
+- Reason: how this helps AI agents use the new functionality
+
+**Evaluation criteria for single-line changes:**
+- If it adds/removes/changes AI-usable functionality, commands, or workflows → "Addition"/"Deletion"/"Modification"
+- If it's internal refactoring with no AI workflow impact → "Minor Change"
+
+Focus on actionable instructions for AI agents.
+"""
+
+[pipe.analyze_single_claude_instruction]
+PipeLLM = "Analyze a single change for CLAUDE.md AI instruction impact"
+inputs = { change_item = "ClaudeInstructionItem" }
+output = "DocumentationUpdateAnalysis"
+llm = "llm_for_large_text"
+system_prompt = """
+You are a Claude AI instruction expert. Analyze code changes to determine what Claude-specific instructions need updating.
+Focus on how Claude can use new features, understand new patterns, or follow new workflows.
+For single-line changes, evaluate if they represent major functionality changes or minor updates.
+"""
+prompt_template = """
+Analyze this code change for Claude AI instruction impact:
+
+Code Change:
+@change_item
+
+Determine what CLAUDE.md instruction updates are needed. For each update, specify:
+- Type: "Addition", "Deletion", "Modification", or "Minor Change"
+- File: CLAUDE.md
+- Location: which section to update
+- Content: exact instructions for Claude AI
+- Reason: how this helps Claude understand/use the new functionality
+
+**Evaluation criteria for single-line changes:**
+- If it affects Claude's understanding of codebase patterns, usage, or capabilities → "Addition"/"Deletion"/"Modification"
+- If it's minor internal change with no Claude workflow impact → "Minor Change"
+
+Focus on Claude-specific guidance and understanding.
+"""
+
+[pipe.analyze_single_cursor_rules]
+PipeLLM = "Analyze a single change for cursor rules impact"
+inputs = { change_item = "CursorRulesItem" }
+output = "DocumentationUpdateAnalysis"
+llm = "llm_for_large_text"
+system_prompt = """
+You are a Cursor AI configuration expert. Analyze code changes to determine what cursor rules need updating.
+Focus on how Cursor should behave, what patterns to follow, and configuration changes.
+For single-line changes, evaluate if they represent major functionality changes or minor updates.
+"""
+prompt_template = """
+Analyze this code change for Cursor rules impact:
+
+Code Change:
+@change_item
+
+Determine what cursor rules updates are needed. For each update, specify:
+- Type: "Addition", "Deletion", "Modification", or "Minor Change"
+- File: cursor rules file path
+- Location: which rule section to update
+- Content: exact rule updates for Cursor
+- Reason: how this helps Cursor behave correctly
+
+**Evaluation criteria for single-line changes:**
+- If it affects Cursor's behavior patterns, coding standards, or configuration → "Addition"/"Deletion"/"Modification"
+- If it's minor change with no Cursor behavior impact → "Minor Change"
+
+Focus on Cursor-specific configuration and behavior rules.
+"""
+
+# Final consolidation pipe
+[pipe.generate_final_documentation_suggestions]
+PipeLLM = "Generate final documentation update suggestions with proper categorization"
+inputs = { docs_analyses = "DocumentationUpdateAnalysis", agents_analyses = "DocumentationUpdateAnalysis", claude_analyses = "DocumentationUpdateAnalysis", cursor_analyses = "DocumentationUpdateAnalysis" }
+output = "DocumentationUpdateSuggestions"
+llm = "llm_for_swe"
+system_prompt = """
+You are a conservative documentation coordinator. Consolidate all documentation analyses into a clear, actionable format.
+Be very selective - only include sections that have actual, meaningful updates.
+Group changes by type and evaluate if single-line changes should be in main categories or "Other minor changes".
+Skip entire sections if they have no meaningful updates.
+"""
+prompt_template = """
+Consolidate these documentation analyses into final suggestions:
+
+Docs Directory Analyses:
+@docs_analyses
+
+Agents Instruction Analyses:
+@agents_analyses
+
+Claude Instruction Analyses:
+@claude_analyses
+
+Cursor Rules Analyses:
+@cursor_analyses
+
+Generate output in this exact format:
+
+I have made changes to my codebase and need you to update the documentation accordingly. Here's what changed and what needs to be updated:
+
+## DOCS/ DIRECTORY UPDATES (User Documentation)
+
+**Additions:**
+[List significant additions here]
+
+**Deletions:**
+[List significant deletions here]
+
+**Modifications:**
+[List significant modifications here]
+
+**Other minor changes:**
+[List minor single-line changes that don't warrant separate categories]
+
+## AGENTS.MD UPDATES (AI Agent Instructions)
+
+**Additions:**
+[List significant additions here]
+
+**Deletions:**
+[List significant deletions here]
+
+**Modifications:**
+[List significant modifications here]
+
+**Other minor changes:**
+[List minor single-line changes that don't warrant separate categories]
+
+## CLAUDE.MD UPDATES (Claude AI Instructions)
+
+**Additions:**
+[List significant additions here]
+
+**Deletions:**
+[List significant deletions here]
+
+**Modifications:**
+[List significant modifications here]
+
+**Other minor changes:**
+[List minor single-line changes that don't warrant separate categories]
+
+## CURSOR RULES UPDATES (Cursor AI Configuration)
+
+**Additions:**
+[List significant additions here]
+
+**Deletions:**
+[List significant deletions here]
+
+**Modifications:**
+[List significant modifications here]
+
+**Other minor changes:**
+[List minor single-line changes that don't warrant separate categories]
+
+Only include sections that have actual updates. Skip empty sections entirely.
+"""
+
+# Main pipeline sequence
+[pipe.comprehensive_batch_doc_update]
+PipeSequence = "Comprehensive batch documentation update analysis using parallel processing"
+inputs = { git_diff = "GitDiff" }
+output = "DocumentationUpdateSuggestions"
 steps = [
-    { pipe = "analyze_repository_structure", result = "repo_structure" },
-    { pipe = "analyze_diff_for_doc_impact", result = "change_analysis" },
-    { pipe = "generate_final_cursor_instructions", result = "final_instructions" }
+    { pipe = "identify_docs_directory_items", result = "docs_items" },
+    { pipe = "identify_agents_instruction_items", result = "agents_items" },
+    { pipe = "identify_claude_instruction_items", result = "claude_items" },
+    { pipe = "identify_cursor_rules_items", result = "cursor_items" },
+    { pipe = "analyze_single_docs_change", batch_over = "docs_items", batch_as = "change_item", result = "docs_analyses" },
+    { pipe = "analyze_single_agents_instruction", batch_over = "agents_items", batch_as = "change_item", result = "agents_analyses" },
+    { pipe = "analyze_single_claude_instruction", batch_over = "claude_items", batch_as = "change_item", result = "claude_analyses" },
+    { pipe = "analyze_single_cursor_rules", batch_over = "cursor_items", batch_as = "change_item", result = "cursor_analyses" },
+    { pipe = "generate_final_documentation_suggestions", result = "final_suggestions" }
 ]
-
-[pipe.generate_final_cursor_instructions]
-PipeLLM = "Generate final comprehensive instructions for Cursor AI"
-inputs = { repo_structure = "RepositoryStructure", change_analysis = "FileChangeAnalysis" }
-output = "Text"
-llm = "llm_for_swe"
-system_prompt = """
-You are an expert technical writer and software architect. Your task is to generate comprehensive, actionable documentation update instructions for Cursor AI based on repository analysis and change analysis.
-"""
-prompt_template = """
-Generate comprehensive documentation update instructions for Cursor AI:
-
-Repository Structure:
-@repo_structure
-
-Change Analysis:
-@change_analysis
-
-Generate instructions in this exact format:
-
-# Documentation Updates Required
-
-## Overview
-Brief summary of what changed and why documentation needs updating.
-
-## Analysis Results
-- **Project Type**: [Type of project]
-- **Changes Detected**: [Summary of key changes]
-- **Documentation Files Identified**: [List of relevant doc files]
-- **Update Priority**: [Overall priority level]
-
-## File Updates
-
-### File: [exact file path]
-**Relevance Check**: [Is this file relevant to the changes? YES/NO]
-**Current Content**: [Brief summary of what's currently in this file]
-**Update Required**: [YES/NO - only proceed if YES]
-**What to do**: [Add/Modify/Replace specific section]
-**Where**: [Exact location - line numbers, section headers, or specific text to find]
-**Content to add/change**:
-```
-[Exact text to add or replace - be very specific with formatting]
-```
-**Why**: [Brief reason for this change]
-
-[Repeat for each relevant documentation file]
-
-## Files That Don't Need Updates
-- [List files that were considered but don't need updates and why]
-
-## Verification Checklist
-- [ ] Check that [specific thing to verify]
-- [ ] Ensure [another specific verification]
-- [ ] Validate [third verification item]
-
-## Notes
-- Only update files that have a clear, direct relationship to the changes
-- Be conservative - when in doubt, don't update
-- Ensure all updates maintain consistency across documentation
-
-Output this as plain text that Cursor can follow step-by-step - no JSON, no complex structures, just clear, actionable instructions.
-"""
-
-# Legacy pipes for backward compatibility
-[pipe.generate_doc_update_suggestions]
-PipeLLM = "Generate comprehensive documentation update suggestions based on git diff and repository analysis"
-inputs = { git_diff = "GitDiff", repo_analysis = "Text" }
-output = "Text"
-llm = "llm_for_swe"
-system_prompt = """
-You are an expert technical writer and software architect. Your task is to analyze git diffs in the context of existing documentation and generate very specific, actionable update instructions for Cursor AI.
-"""
-prompt_template = """
-Based on the following git diff and repository documentation analysis, generate very specific documentation update instructions for Cursor AI:
-
-Git Diff:
-@git_diff
-
-Repository Documentation Analysis:
-@repo_analysis
-
-Generate specific instructions for Cursor AI with this exact format:
-
-# Documentation Updates Required
-
-## Overview
-Brief summary of what changed and why documentation needs updating.
-
-## File Updates
-
-### File: [exact file path]
-**What to do**: [Add/Modify/Replace specific section]
-**Where**: [Exact location - line numbers, section headers, or specific text to find]
-**Content to add/change**:
-```
-[Exact text to add or replace - be very specific]
-```
-**Why**: [Brief reason for this change]
-
-### File: [next file path]
-[Repeat the same format]
-
-## Verification
-- [ ] Check that [specific thing to verify]
-- [ ] Ensure [another specific verification]
-
-Make sure to:
-- Use EXACT file paths from the repository
-- Be VERY specific about WHERE to make changes (line numbers, section headers, or exact text to find)
-- Provide EXACT content to add or replace
-- Give clear step-by-step instructions
-- Use the actual command syntax from the git diff
-- Be specific about section headers, bullet points, code blocks, etc.
-
-Output this as plain text that Cursor can follow step-by-step - no JSON, no complex structures, just clear instructions.
-"""
 
