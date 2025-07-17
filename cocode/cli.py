@@ -23,7 +23,7 @@ from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule
 from cocode.repox.repox_cmd import repox_command
 from cocode.repox.repox_processor import RESULTS_DIR
-from cocode.swe.swe_cmd import swe_from_file, swe_from_repo, swe_from_repo_diff
+from cocode.swe.swe_cmd import swe_from_file, swe_from_repo, swe_from_repo_diff, swe_doc_update_from_diff
 
 
 class PipeCode(StrEnum):
@@ -33,6 +33,8 @@ class PipeCode(StrEnum):
     EXTRACT_CODING_STANDARDS = "extract_coding_standards"
     EXTRACT_TEST_STRATEGY = "extract_test_strategy"
     EXTRACT_COLLABORATION = "extract_collaboration"
+    GENERATE_DOC_UPDATE_SUGGESTIONS = "generate_doc_update_suggestions"
+    BATCH_ANALYZE_DOCUMENTATION_UPDATES = "batch_analyze_documentation_updates"
 
 
 def _get_pipe_descriptions() -> str:
@@ -44,6 +46,8 @@ def _get_pipe_descriptions() -> str:
         "extract_coding_standards": "Extract code quality and style information from documentation",
         "extract_test_strategy": "Extract testing strategy and procedures from documentation",
         "extract_collaboration": "Extract collaboration and workflow information from documentation",
+        "generate_doc_update_suggestions": "Generate comprehensive documentation update suggestions based on git diff",
+        "batch_analyze_documentation_updates": "Analyze git diff and generate batched documentation update suggestions",
     }
 
     help_text = "\n\n"
@@ -321,6 +325,43 @@ def swe_from_repo_diff_cmd(
             to_stdout=to_stdout,
             dry_run=dry_run,
             ignore_patterns=ignore_patterns,
+        )
+    )
+
+
+@app.command("swe-doc-update")
+def swe_doc_update_cmd(
+    version: Annotated[
+        str,
+        typer.Argument(help="Git version/tag/commit to compare current version against"),
+    ],
+    repo_path: Annotated[
+        str,
+        typer.Argument(help="Input directory path", exists=True, file_okay=False, dir_okay=True, resolve_path=True),
+    ] = ".",
+    output_dir: Annotated[
+        str,
+        typer.Option("--output-dir", "-o", help="Output directory path"),
+    ] = "results",
+    output_filename: Annotated[
+        str,
+        typer.Option("--output-filename", "-n", help="Output filename"),
+    ] = "doc-update-suggestions.txt",
+    doc_dir: Annotated[
+        Optional[str],
+        typer.Option("--doc-dir", "-d", help="Directory containing documentation files (e.g., 'docs', 'documentation')"),
+    ] = None,
+) -> None:
+    """Generate documentation update suggestions based on git diff analysis."""
+    repo_path = _validate_repo_path(repo_path)
+
+    asyncio.run(
+        swe_doc_update_from_diff(
+            repo_path=repo_path,
+            version=version,
+            output_filename=output_filename,
+            output_dir=output_dir,
+            doc_dir=doc_dir,
         )
     )
 

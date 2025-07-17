@@ -193,3 +193,85 @@ async def swe_from_repo_diff(
         to_stdout=to_stdout,
         variable_name="text",
     )
+
+
+async def swe_doc_update_from_diff(
+    repo_path: str,
+    version: str,
+    output_filename: str,
+    output_dir: str,
+    doc_dir: Optional[str] = None,
+) -> None:
+    """Generate documentation update suggestions based on git diff analysis."""
+    log.info(f"Generating documentation update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
+
+    # Hardcoded ignore patterns for common files that don't need doc updates
+    ignore_patterns = [
+        "*.lock",
+        "*.pyc",
+        "__pycache__",
+        ".git",
+        ".venv",
+        "node_modules",
+        "build/",
+        "dist/",
+        "*.log",
+        "temp/",
+        ".pytest_cache",
+        ".mypy_cache",
+        ".ruff_cache",
+    ]
+
+    # Generate git diff
+    diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+    
+    # Get comprehensive repository structure for analysis
+    log.info("Analyzing complete repository structure...")
+    
+    # Include patterns for all relevant files (not just documentation)
+    include_patterns = ["*.md", "*.rst", "*.txt", "*.toml", "*.yaml", "*.yml", "*.py", "*.js", "*.ts", "*.json"]
+    
+    processor = RepoxProcessor(
+        repo_path=repo_path,
+        ignore_patterns=ignore_patterns,
+        include_patterns=include_patterns,
+        path_pattern=None,  # Analyze entire repository structure
+        text_processing_funcs=None,
+        output_style=OutputStyle.REPO_MAP,
+    )
+    repo_structure = process_repox(repox_processor=processor)
+    
+    # Create working memory with both git diff and repo structure
+    release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
+    git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
+    repo_text_stuff = StuffFactory.make_from_str(str_value=repo_structure, name="repo_text")
+    
+    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(
+        stuff_list=[release_stuff, git_diff_stuff, repo_text_stuff]
+    )
+    
+    # Use the comprehensive pipeline that analyzes docs first
+    pipe_code = "comprehensive_doc_update_pipeline"
+    
+    # Run the pipe
+    pipe_output = await execute_pipeline(
+        pipe_code=pipe_code,
+        working_memory=working_memory,
+        pipe_run_mode=PipeRunMode.LIVE,
+    )
+    pretty_print(pipe_output, title="Pipe output")
+    swe_stuff = pipe_output.main_stuff
+
+    get_report_delegate().generate_report()
+
+    # Always output to file
+    ensure_path(output_dir)
+    output_file_path = f"{output_dir}/{output_filename}"
+    if get_concept_provider().is_compatible_by_concept_code(
+        tested_concept_code=swe_stuff.concept_code,
+        wanted_concept_code=NativeConcept.TEXT.code,
+    ) and not isinstance(swe_stuff.content, ListContent):
+        save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
+    else:
+        save_as_json_to_path(object_to_save=swe_stuff, path=output_file_path)
+    log.info(f"Done, documentation update suggestions saved to file: '{output_file_path}'")

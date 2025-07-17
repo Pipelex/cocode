@@ -1,0 +1,308 @@
+domain = "doc_update"
+definition = "Pipelines for analyzing git diffs and generating documentation update suggestions"
+
+[concept]
+GitDiff = "A git diff output showing changes between two versions of a codebase"
+DocumentationFile = "A documentation file that may need updates based on code changes"
+DocumentationContent = "The actual content of a documentation file"
+DocumentationAnalysis = "Analysis of documentation content and its relevance to changes"
+DocumentationUpdateDecision = "Decision on whether a documentation file needs updates"
+DocumentationUpdateSuggestion = "A comprehensive suggestion for updating documentation based on git diff analysis"
+FileChangeAnalysis = "Analysis of changes in a specific file and their documentation impact"
+RepositoryStructure = "The structure and organization of the repository"
+
+[pipe]
+
+[pipe.analyze_repository_structure]
+PipeLLM = "Analyze repository structure to understand project organization and documentation layout"
+inputs = { repo_text = "Text" }
+output = "RepositoryStructure"
+llm = "llm_for_swe"
+system_prompt = """
+You are an expert at analyzing repository structure. Your task is to understand the project organization and identify all documentation files.
+"""
+prompt_template = """
+Analyze the following repository structure and provide a comprehensive analysis:
+
+@repo_text
+
+Provide:
+1. Project type and main purpose
+2. Complete list of all documentation files with their likely purposes:
+   - README.md files
+   - Documentation directories (docs/, etc.)
+   - Configuration files that might need documentation
+   - API documentation
+   - Changelog files
+   - License and contribution files
+3. Project structure and main components
+4. Documentation organization and hierarchy
+5. Any missing or incomplete documentation areas
+
+This analysis will help understand what documentation exists and how it's organized.
+"""
+
+[pipe.analyze_diff_for_doc_impact]
+PipeLLM = "Analyze git diff to identify changes that might require documentation updates"
+inputs = { git_diff = "GitDiff", repo_structure = "RepositoryStructure" }
+output = "FileChangeAnalysis"
+llm = "llm_for_swe"
+system_prompt = """
+You are an expert software architect and technical writer. Your task is to analyze git diffs in the context of the repository structure and identify changes that might require documentation updates.
+"""
+prompt_template = """
+Analyze the following git diff in the context of the repository structure:
+
+Repository Structure:
+@repo_structure
+
+Git Diff:
+@git_diff
+
+Identify changes that might require documentation updates:
+
+1. **Change Summary**: What changed in this diff?
+2. **Impact Assessment**:
+   - New features or functionality
+   - API changes or new endpoints
+   - Configuration changes
+   - CLI command changes
+   - Breaking changes or deprecations
+   - New dependencies or requirements
+   - Installation/setup changes
+3. **Documentation Candidates**: Which documentation files might need updates and why?
+4. **Priority Level**: Critical, Important, or Minor
+5. **Change Context**: How do these changes fit into the overall project?
+
+Focus on changes that would affect:
+- User-facing features and APIs
+- Configuration and setup instructions
+- Installation and deployment procedures
+- CLI commands and usage
+- Breaking changes or deprecations
+- New dependencies or requirements
+"""
+
+[pipe.read_documentation_file]
+PipeLLM = "Read and analyze a specific documentation file"
+inputs = { file_path = "Text", file_content = "Text" }
+output = "DocumentationContent"
+llm = "llm_for_swe"
+system_prompt = """
+You are an expert technical writer. Your task is to read and analyze documentation files to understand their current content and structure.
+"""
+prompt_template = """
+Analyze the following documentation file:
+
+File Path: @file_path
+
+File Content:
+@file_content
+
+Provide:
+1. **File Purpose**: What is this documentation file for?
+2. **Current Structure**: How is the content organized?
+3. **Main Sections**: What are the key sections and topics covered?
+4. **Content Quality**: Is the content up-to-date and comprehensive?
+5. **Coverage Areas**: What aspects of the project does this file document?
+6. **Last Update Context**: When was this likely last updated and what for?
+
+This analysis will help determine if and how this file should be updated.
+"""
+
+[pipe.evaluate_documentation_relevance]
+PipeLLM = "Evaluate if a documentation file is relevant to the changes and needs updates"
+inputs = { change_analysis = "FileChangeAnalysis", doc_content = "DocumentationContent" }
+output = "DocumentationUpdateDecision"
+llm = "llm_for_swe"
+system_prompt = """
+You are an expert technical writer and software architect. Your task is to evaluate whether a documentation file needs updates based on code changes.
+"""
+prompt_template = """
+Evaluate whether this documentation file needs updates based on the code changes:
+
+Change Analysis:
+@change_analysis
+
+Documentation Content Analysis:
+@doc_content
+
+Provide a clear decision:
+
+1. **Update Needed**: YES or NO
+2. **Relevance Score**: 1-10 (how relevant are the changes to this documentation)
+3. **Reasoning**: Why does this file need updates or why not?
+4. **Specific Areas**: If updates are needed, which specific sections/areas?
+5. **Update Type**: Add new content, modify existing, remove outdated, or restructure
+6. **Priority**: High, Medium, or Low
+7. **Dependencies**: Are there other files that should be updated first?
+
+Be conservative - only recommend updates if there's a clear, direct relationship between the changes and the documentation content.
+"""
+
+[pipe.generate_specific_documentation_updates]
+PipeLLM = "Generate specific documentation update instructions for files that need updates"
+inputs = { update_decision = "DocumentationUpdateDecision", change_analysis = "FileChangeAnalysis", doc_content = "DocumentationContent" }
+output = "Text"
+llm = "llm_for_swe"
+system_prompt = """
+You are an expert technical writer. Your task is to generate very specific, actionable documentation updates for Cursor AI.
+"""
+prompt_template = """
+Generate specific documentation update instructions based on:
+
+Update Decision:
+@update_decision
+
+Change Analysis:
+@change_analysis
+
+Documentation Content:
+@doc_content
+
+Generate instructions in this exact format:
+
+### File: [exact file path]
+**Update Required**: [YES/NO - only proceed if YES]
+**What to do**: [Add/Modify/Replace specific section]
+**Where**: [Exact location - line numbers, section headers, or specific text to find]
+**Content to add/change**:
+```
+[Exact text to add or replace - be very specific with formatting]
+```
+**Why**: [Brief reason for this change]
+**Related Changes**: [Any other files that might need updates as a result]
+
+Only generate instructions if updates are actually needed. Be very specific about:
+- Exact file paths
+- Exact locations (line numbers, section headers, or text to search for)
+- Exact content with proper formatting
+- Clear reasoning
+"""
+
+[pipe.comprehensive_doc_update_pipeline]
+PipeSequence = "Complete pipeline to analyze repository, read docs, evaluate changes, and generate updates"
+inputs = { git_diff = "GitDiff", repo_text = "Text" }
+output = "Text"
+steps = [
+    { pipe = "analyze_repository_structure", result = "repo_structure" },
+    { pipe = "analyze_diff_for_doc_impact", result = "change_analysis" },
+    { pipe = "generate_final_cursor_instructions", result = "final_instructions" }
+]
+
+[pipe.generate_final_cursor_instructions]
+PipeLLM = "Generate final comprehensive instructions for Cursor AI"
+inputs = { repo_structure = "RepositoryStructure", change_analysis = "FileChangeAnalysis" }
+output = "Text"
+llm = "llm_for_swe"
+system_prompt = """
+You are an expert technical writer and software architect. Your task is to generate comprehensive, actionable documentation update instructions for Cursor AI based on repository analysis and change analysis.
+"""
+prompt_template = """
+Generate comprehensive documentation update instructions for Cursor AI:
+
+Repository Structure:
+@repo_structure
+
+Change Analysis:
+@change_analysis
+
+Generate instructions in this exact format:
+
+# Documentation Updates Required
+
+## Overview
+Brief summary of what changed and why documentation needs updating.
+
+## Analysis Results
+- **Project Type**: [Type of project]
+- **Changes Detected**: [Summary of key changes]
+- **Documentation Files Identified**: [List of relevant doc files]
+- **Update Priority**: [Overall priority level]
+
+## File Updates
+
+### File: [exact file path]
+**Relevance Check**: [Is this file relevant to the changes? YES/NO]
+**Current Content**: [Brief summary of what's currently in this file]
+**Update Required**: [YES/NO - only proceed if YES]
+**What to do**: [Add/Modify/Replace specific section]
+**Where**: [Exact location - line numbers, section headers, or specific text to find]
+**Content to add/change**:
+```
+[Exact text to add or replace - be very specific with formatting]
+```
+**Why**: [Brief reason for this change]
+
+[Repeat for each relevant documentation file]
+
+## Files That Don't Need Updates
+- [List files that were considered but don't need updates and why]
+
+## Verification Checklist
+- [ ] Check that [specific thing to verify]
+- [ ] Ensure [another specific verification]
+- [ ] Validate [third verification item]
+
+## Notes
+- Only update files that have a clear, direct relationship to the changes
+- Be conservative - when in doubt, don't update
+- Ensure all updates maintain consistency across documentation
+
+Output this as plain text that Cursor can follow step-by-step - no JSON, no complex structures, just clear, actionable instructions.
+"""
+
+# Legacy pipes for backward compatibility
+[pipe.generate_doc_update_suggestions]
+PipeLLM = "Generate comprehensive documentation update suggestions based on git diff and repository analysis"
+inputs = { git_diff = "GitDiff", repo_analysis = "Text" }
+output = "Text"
+llm = "llm_for_swe"
+system_prompt = """
+You are an expert technical writer and software architect. Your task is to analyze git diffs in the context of existing documentation and generate very specific, actionable update instructions for Cursor AI.
+"""
+prompt_template = """
+Based on the following git diff and repository documentation analysis, generate very specific documentation update instructions for Cursor AI:
+
+Git Diff:
+@git_diff
+
+Repository Documentation Analysis:
+@repo_analysis
+
+Generate specific instructions for Cursor AI with this exact format:
+
+# Documentation Updates Required
+
+## Overview
+Brief summary of what changed and why documentation needs updating.
+
+## File Updates
+
+### File: [exact file path]
+**What to do**: [Add/Modify/Replace specific section]
+**Where**: [Exact location - line numbers, section headers, or specific text to find]
+**Content to add/change**:
+```
+[Exact text to add or replace - be very specific]
+```
+**Why**: [Brief reason for this change]
+
+### File: [next file path]
+[Repeat the same format]
+
+## Verification
+- [ ] Check that [specific thing to verify]
+- [ ] Ensure [another specific verification]
+
+Make sure to:
+- Use EXACT file paths from the repository
+- Be VERY specific about WHERE to make changes (line numbers, section headers, or exact text to find)
+- Provide EXACT content to add or replace
+- Give clear step-by-step instructions
+- Use the actual command syntax from the git diff
+- Be specific about section headers, bullet points, code blocks, etc.
+
+Output this as plain text that Cursor can follow step-by-step - no JSON, no complex structures, just clear instructions.
+"""
+
