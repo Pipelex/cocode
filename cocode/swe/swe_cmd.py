@@ -195,15 +195,15 @@ async def swe_from_repo_diff(
     )
 
 
-async def swe_doc_update_from_diff(
+async def swe_user_doc_update_from_diff(
     repo_path: str,
     version: str,
     output_filename: str,
     output_dir: str,
     doc_dir: Optional[str] = None,
 ) -> None:
-    """Generate documentation update suggestions based on git diff analysis."""
-    log.info(f"Generating documentation update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
+    """Generate user documentation update suggestions for docs/ directory based on git diff analysis."""
+    log.info(f"Generating user documentation update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
 
     # Hardcoded ignore patterns for common files that don't need doc updates
     ignore_patterns = [
@@ -233,8 +233,8 @@ async def swe_doc_update_from_diff(
         stuff_list=[release_stuff, git_diff_stuff]
     )
     
-    # Use the comprehensive pipeline that analyzes docs first
-    pipe_code = "comprehensive_batch_doc_update"
+    # Use the user documentation pipeline
+    pipe_code = "user_doc_update"
     
     # Run the pipe
     pipe_output = await execute_pipeline(
@@ -242,7 +242,7 @@ async def swe_doc_update_from_diff(
         working_memory=working_memory,
         pipe_run_mode=PipeRunMode.LIVE,
     )
-    pretty_print(pipe_output, title="Pipe output")
+    pretty_print(pipe_output, title="User Documentation Update Analysis")
     swe_stuff = pipe_output.main_stuff
 
     get_report_delegate().generate_report()
@@ -257,4 +257,81 @@ async def swe_doc_update_from_diff(
         save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
     else:
         save_as_json_to_path(object_to_save=swe_stuff, path=output_file_path)
-    log.info(f"Done, documentation update suggestions saved to file: '{output_file_path}'")
+    log.info(f"Done, user documentation update suggestions saved to file: '{output_file_path}'")
+
+
+async def swe_ai_instruction_update_from_diff(
+    repo_path: str,
+    version: str,
+    output_filename: str,
+    output_dir: str,
+    doc_dir: Optional[str] = None,
+) -> None:
+    """Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, and cursor rules based on git diff analysis."""
+    log.info(f"Generating AI instruction update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
+
+    # Hardcoded ignore patterns for common files that don't need doc updates
+    ignore_patterns = [
+        "*.lock",
+        "*.pyc",
+        "__pycache__",
+        ".git",
+        ".venv",
+        "node_modules",
+        "build/",
+        "dist/",
+        "*.log",
+        "temp/",
+        ".pytest_cache",
+        ".mypy_cache",
+        ".ruff_cache",
+    ]
+
+    # Generate git diff
+    diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+    
+    # Create working memory with git diff only (no repo structure needed)
+    release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
+    git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
+    
+    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(
+        stuff_list=[release_stuff, git_diff_stuff]
+    )
+    
+    # Use the AI instruction pipeline
+    pipe_code = "ai_instruction_update"
+    
+    # Run the pipe
+    pipe_output = await execute_pipeline(
+        pipe_code=pipe_code,
+        working_memory=working_memory,
+        pipe_run_mode=PipeRunMode.LIVE,
+    )
+    pretty_print(pipe_output, title="AI Instruction Update Analysis")
+    swe_stuff = pipe_output.main_stuff
+
+    get_report_delegate().generate_report()
+
+    # Always output to file
+    ensure_path(output_dir)
+    output_file_path = f"{output_dir}/{output_filename}"
+    if get_concept_provider().is_compatible_by_concept_code(
+        tested_concept_code=swe_stuff.concept_code,
+        wanted_concept_code=NativeConcept.TEXT.code,
+    ) and not isinstance(swe_stuff.content, ListContent):
+        save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
+    else:
+        save_as_json_to_path(object_to_save=swe_stuff, path=output_file_path)
+    log.info(f"Done, AI instruction update suggestions saved to file: '{output_file_path}'")
+
+
+async def swe_doc_update_from_diff(
+    repo_path: str,
+    version: str,
+    output_filename: str,
+    output_dir: str,
+    doc_dir: Optional[str] = None,
+) -> None:
+    """Generate documentation update suggestions based on git diff analysis (legacy - use swe_user_doc_update_from_diff instead)."""
+    log.info(f"[DEPRECATED] Using legacy doc update pipeline. Consider using swe_user_doc_update_from_diff or swe_ai_instruction_update_from_diff instead.")
+    await swe_user_doc_update_from_diff(repo_path, version, output_filename, output_dir, doc_dir)

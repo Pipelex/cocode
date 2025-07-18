@@ -1,0 +1,289 @@
+domain = "ai_instruction_update"
+definition = "Pipeline for analyzing git diffs and generating AI instruction update suggestions for AGENTS.md, CLAUDE.md, and cursor rules"
+
+[concept]
+GitDiff = "A git diff output showing changes between two versions of a codebase"
+AgentsInstructionItem = "A specific item that needs AGENTS.md analysis"
+ClaudeInstructionItem = "A specific item that needs CLAUDE.md analysis"
+CursorRulesItem = "A specific item that needs cursor rules analysis"
+DocumentationUpdateAnalysis = "Detailed analysis of what needs to be added, deleted, or changed in documentation"
+AIInstructionSuggestions = "Final suggestions for updating AI instruction files (AGENTS.md, CLAUDE.md, cursor rules)"
+
+[pipe]
+
+[pipe.identify_ai_instruction_items]
+PipeLLM = "Identify changes that affect AI instruction files"
+inputs = { git_diff = "GitDiff" }
+output = "AgentsInstructionItem"
+multiple_output = true
+llm = "llm_for_large_text"
+system_prompt = """
+You are a very conservative AI instruction analyst. Only identify changes that FUNDAMENTALLY affect how AI agents work with the codebase.
+Focus ONLY on major architectural changes, new AI-specific tools, or significant workflow changes.
+Most CLI changes or feature updates do NOT need AI instruction updates.
+"""
+prompt_template = """
+Analyze this git diff to identify changes that need AI instruction updates:
+
+@git_diff
+
+ONLY identify changes that fundamentally affect AI workflows, such as:
+- New AI-specific commands or tools designed for AI agents
+- Major architectural changes affecting how agents navigate code
+- New agent capabilities or integrations
+- Significant changes to development workflows that affect AI
+- Changes to coding patterns or project structure that affect AI behavior
+
+EXCLUDE:
+- Simple CLI command changes for users
+- Feature additions that don't affect AI workflows
+- Version updates
+- User-facing functionality that doesn't involve AI
+- Internal refactoring
+
+For each change that truly affects AI, provide:
+- File path where the change occurred
+- Type of change (new AI tool, workflow change, etc.)
+- Brief description of what changed
+- How this fundamentally changes AI workflows
+
+Be very conservative - most changes don't need AI instruction updates.
+"""
+
+[pipe.identify_claude_items]
+PipeLLM = "Identify changes that affect CLAUDE.md instructions"
+inputs = { git_diff = "GitDiff" }
+output = "ClaudeInstructionItem"
+multiple_output = true
+llm = "llm_for_large_text"
+system_prompt = """
+You are a very conservative Claude instruction analyst. Only identify changes that FUNDAMENTALLY affect how Claude understands or works with the codebase.
+Focus ONLY on major architectural changes or new Claude-specific patterns.
+Most changes do NOT need CLAUDE.md updates.
+"""
+prompt_template = """
+Analyze this git diff to identify changes that need CLAUDE.md instruction updates:
+
+@git_diff
+
+ONLY identify changes that fundamentally affect Claude's understanding, such as:
+- Major architectural or pattern changes
+- New Claude-specific integrations or capabilities
+- Significant changes to codebase structure or conventions
+- New development paradigms Claude needs to understand
+
+EXCLUDE:
+- Simple CLI command changes
+- Feature additions that don't change code patterns
+- Version updates
+- User-facing functionality
+- Internal refactoring
+
+For each change that truly affects Claude's understanding, provide:
+- File path where the change occurred
+- Type of change (new pattern, architectural change, etc.)
+- Brief description of what changed
+- How this fundamentally changes Claude's understanding
+
+Be very conservative - most changes don't need CLAUDE.md updates.
+"""
+
+[pipe.identify_cursor_items]
+PipeLLM = "Identify changes that affect cursor rules"
+inputs = { git_diff = "GitDiff" }
+output = "CursorRulesItem"
+multiple_output = true
+llm = "llm_for_large_text"
+system_prompt = """
+You are a very conservative Cursor rules analyst. Only identify changes that FUNDAMENTALLY affect coding patterns or project structure.
+Focus ONLY on major changes to coding standards, project structure, or development workflows.
+Most changes do NOT need cursor rules updates.
+"""
+prompt_template = """
+Analyze this git diff to identify changes that need cursor rules updates:
+
+@git_diff
+
+ONLY identify changes that fundamentally affect Cursor's behavior, such as:
+- New coding patterns or conventions
+- Major project structure changes
+- New development tools or workflows that affect coding
+- Significant changes to code style or formatting requirements
+
+EXCLUDE:
+- Simple CLI command changes
+- Feature additions that don't change coding patterns
+- Version updates
+- User-facing functionality
+- Internal changes that don't affect how code should be written
+
+For each change that truly affects Cursor's coding behavior, provide:
+- File path where the change occurred
+- Type of change (new pattern, structure change, etc.)
+- Brief description of what changed
+- How this fundamentally changes how Cursor should code
+
+Be very conservative - most changes don't need cursor rules updates.
+"""
+
+[pipe.analyze_ai_instruction_change]
+PipeLLM = "Analyze a single change for AI instruction impact"
+inputs = { change_item = "AgentsInstructionItem" }
+output = "DocumentationUpdateAnalysis"
+llm = "llm_for_large_text"
+system_prompt = """
+You are an AI instruction expert. Analyze code changes to determine what AI instruction updates are needed.
+Focus on how changes affect AI agent workflows, capabilities, and understanding.
+"""
+prompt_template = """
+Analyze this code change for AI instruction impact:
+
+Code Change:
+@change_item
+
+Determine what AI instruction updates are needed. For each update, specify:
+- Type: "Addition", "Deletion", "Modification", or "Minor Change"
+- File: AGENTS.md, CLAUDE.md, or cursor rules file path
+- Location: which section to update
+- Content: exact instructions for AI
+- Reason: how this helps AI understand/use the new functionality
+
+Focus on actionable instructions for AI agents, Claude, and Cursor.
+"""
+
+[pipe.analyze_claude_change]
+PipeLLM = "Analyze a single change for CLAUDE.md impact"
+inputs = { change_item = "ClaudeInstructionItem" }
+output = "DocumentationUpdateAnalysis"
+llm = "llm_for_large_text"
+system_prompt = """
+You are a Claude instruction expert. Analyze code changes to determine what Claude-specific instructions need updating.
+Focus on how changes affect Claude's understanding of patterns, usage, and capabilities.
+"""
+prompt_template = """
+Analyze this code change for Claude instruction impact:
+
+Code Change:
+@change_item
+
+Determine what CLAUDE.md instruction updates are needed. For each update, specify:
+- Type: "Addition", "Deletion", "Modification", or "Minor Change"
+- File: CLAUDE.md
+- Location: which section to update
+- Content: exact instructions for Claude
+- Reason: how this helps Claude understand the codebase
+
+Focus on Claude-specific guidance and understanding.
+"""
+
+[pipe.analyze_cursor_change]
+PipeLLM = "Analyze a single change for cursor rules impact"
+inputs = { change_item = "CursorRulesItem" }
+output = "DocumentationUpdateAnalysis"
+llm = "llm_for_large_text"
+system_prompt = """
+You are a Cursor configuration expert. Analyze code changes to determine what cursor rules need updating.
+Focus on how changes affect Cursor's behavior, patterns, and configuration.
+"""
+prompt_template = """
+Analyze this code change for Cursor rules impact:
+
+Code Change:
+@change_item
+
+Determine what cursor rules updates are needed. For each update, specify:
+- Type: "Addition", "Deletion", "Modification", or "Minor Change"
+- File: cursor rules file path
+- Location: which rule section to update
+- Content: exact rule updates for Cursor
+- Reason: how this helps Cursor behave correctly
+
+Focus on Cursor-specific configuration and behavior rules.
+"""
+
+[pipe.generate_ai_instruction_suggestions]
+PipeLLM = "Generate final AI instruction update suggestions"
+inputs = { agents_analyses = "DocumentationUpdateAnalysis", claude_analyses = "DocumentationUpdateAnalysis", cursor_analyses = "DocumentationUpdateAnalysis" }
+output = "AIInstructionSuggestions"
+llm = "llm_for_swe"
+system_prompt = """
+You are an AI instruction coordinator. Generate clear, actionable suggestions for updating AI instruction files.
+Focus only on AGENTS.md, CLAUDE.md, and cursor rules. Be very selective - only include meaningful updates.
+"""
+prompt_template = """
+Generate AI instruction update suggestions based on these analyses:
+
+Agents Instruction Analyses:
+@agents_analyses
+
+Claude Instruction Analyses:
+@claude_analyses
+
+Cursor Rules Analyses:
+@cursor_analyses
+
+Generate output in this exact format:
+
+I have made changes to my codebase and need you to update the AI instruction files accordingly. Here's what changed and what needs to be updated:
+
+## AGENTS.MD UPDATES (AI Agent Instructions)
+
+**Additions:**
+[List significant additions here]
+
+**Deletions:**
+[List significant deletions here]
+
+**Modifications:**
+[List significant modifications here]
+
+**Other minor changes:**
+[List minor single-line changes that don't warrant separate categories]
+
+## CLAUDE.MD UPDATES (Claude AI Instructions)
+
+**Additions:**
+[List significant additions here]
+
+**Deletions:**
+[List significant deletions here]
+
+**Modifications:**
+[List significant modifications here]
+
+**Other minor changes:**
+[List minor single-line changes that don't warrant separate categories]
+
+## CURSOR RULES UPDATES (Cursor AI Configuration)
+
+**Additions:**
+[List significant additions here]
+
+**Deletions:**
+[List significant deletions here]
+
+**Modifications:**
+[List significant modifications here]
+
+**Other minor changes:**
+[List minor single-line changes that don't warrant separate categories]
+
+Only include sections that have actual updates. Skip empty sections entirely.
+Be specific about file paths, locations, and exact content needed.
+"""
+
+# Main AI instruction pipeline
+[pipe.ai_instruction_update]
+PipeSequence = "AI instruction update analysis for AGENTS.md, CLAUDE.md, and cursor rules"
+inputs = { git_diff = "GitDiff" }
+output = "AIInstructionSuggestions"
+steps = [
+    { pipe = "identify_ai_instruction_items", result = "agents_items" },
+    { pipe = "identify_claude_items", result = "claude_items" },
+    { pipe = "identify_cursor_items", result = "cursor_items" },
+    { pipe = "analyze_ai_instruction_change", batch_over = "agents_items", batch_as = "change_item", result = "agents_analyses" },
+    { pipe = "analyze_claude_change", batch_over = "claude_items", batch_as = "change_item", result = "claude_analyses" },
+    { pipe = "analyze_cursor_change", batch_over = "cursor_items", batch_as = "change_item", result = "cursor_analyses" },
+    { pipe = "generate_ai_instruction_suggestions", result = "ai_suggestions" }
+]
+

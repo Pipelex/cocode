@@ -1,5 +1,5 @@
-domain = "doc_update"
-definition = "Legacy pipeline for backward compatibility - use user_doc_update.toml or ai_instruction_update.toml instead"
+domain = "user_doc_update"
+definition = "Pipeline for analyzing git diffs and generating user documentation update suggestions for docs/ directory"
 
 [concept]
 GitDiff = "A git diff output showing changes between two versions of a codebase"
@@ -9,19 +9,7 @@ UserDocumentationSuggestions = "Final suggestions for updating user documentatio
 
 [pipe]
 
-# Legacy pipeline - redirects to user documentation pipeline
-[pipe.comprehensive_batch_doc_update]
-PipeSequence = "Legacy comprehensive documentation update analysis (deprecated - use user_doc_update or ai_instruction_update instead)"
-inputs = { git_diff = "GitDiff" }
-output = "UserDocumentationSuggestions"
-steps = [
-    { pipe = "legacy_identify_user_docs_items", result = "docs_items" },
-    { pipe = "legacy_analyze_user_docs_change", batch_over = "docs_items", batch_as = "change_item", result = "docs_analyses" },
-    { pipe = "legacy_generate_user_documentation_suggestions", result = "user_suggestions" }
-]
-
-# Legacy pipes - kept for backward compatibility
-[pipe.legacy_identify_user_docs_items]
+[pipe.identify_user_docs_items]
 PipeLLM = "Identify changes that affect user documentation in docs/ directory"
 inputs = { git_diff = "GitDiff" }
 output = "DocsDirectoryItem"
@@ -61,7 +49,7 @@ For each change that needs user documentation, provide:
 Be conservative - when in doubt, don't include it.
 """
 
-[pipe.legacy_analyze_user_docs_change]
+[pipe.analyze_user_docs_change]
 PipeLLM = "Analyze a single change for user documentation impact"
 inputs = { change_item = "DocsDirectoryItem" }
 output = "DocumentationUpdateAnalysis"
@@ -91,7 +79,7 @@ Determine what user documentation updates are needed. For each update, specify:
 Focus only on docs/ directory files for user documentation.
 """
 
-[pipe.legacy_generate_user_documentation_suggestions]
+[pipe.generate_user_documentation_suggestions]
 PipeLLM = "Generate final user documentation update suggestions"
 inputs = { docs_analyses = "DocumentationUpdateAnalysis" }
 output = "UserDocumentationSuggestions"
@@ -127,4 +115,15 @@ I have made changes to my codebase and need you to update the user documentation
 Only include sections that have actual updates. Skip empty sections entirely.
 Be specific about file paths, locations, and exact content needed.
 """
+
+# Main user documentation pipeline
+[pipe.user_doc_update]
+PipeSequence = "User documentation update analysis for docs/ directory"
+inputs = { git_diff = "GitDiff" }
+output = "UserDocumentationSuggestions"
+steps = [
+    { pipe = "identify_user_docs_items", result = "docs_items" },
+    { pipe = "analyze_user_docs_change", batch_over = "docs_items", batch_as = "change_item", result = "docs_analyses" },
+    { pipe = "generate_user_documentation_suggestions", result = "user_suggestions" }
+]
 

@@ -13,7 +13,6 @@ VENV_RUFF := $(VIRTUAL_ENV)/bin/ruff
 VENV_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
 VENV_MYPY := $(VIRTUAL_ENV)/bin/mypy
 VENV_PIPELEX := $(VIRTUAL_ENV)/bin/pipelex
-VENV_COCODE := $(VIRTUAL_ENV)/bin/cocode
 VENV_MKDOCS := $(VIRTUAL_ENV)/bin/mkdocs
 
 UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
@@ -134,18 +133,11 @@ env: check-uv
 		echo "Python virtual env already exists in \`${VIRTUAL_ENV}\`"; \
 	fi
 
-init: env
-	$(call PRINT_TITLE,"Running pipelex init")
-	$(VENV_PIPELEX) init-libraries
-	$(VENV_PIPELEX) init-config
-
 install: env
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
 	uv sync --all-extras && \
-	$(VENV_PIPELEX) init-libraries && \
-	$(VENV_PIPELEX) init-config && \
-	echo "Installed dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
+	echo "Installed dependencies in ${VIRTUAL_ENV}";
 
 lock: env
 	$(call PRINT_TITLE,"Resolving dependencies without update")
@@ -160,7 +152,7 @@ update: env
 
 validate: env
 	$(call PRINT_TITLE,"Running setup sequence")
-	$(VENV_COCODE) validate
+	$(VENV_PIPELEX) validate -c cocode/pipelex_libraries
 
 ##############################################################################################
 ############################      Cleaning                        ############################
@@ -407,7 +399,7 @@ cc: init cleanderived c
 check: init cleanderived check-unused-imports c
 	@echo "> done: check"
 
-v: init validate
+v: validate
 	@echo "> done: v = validate"
 
 li: lock install

@@ -24,7 +24,7 @@ from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule
 from cocode.repox.repox_cmd import repox_command
 from cocode.repox.repox_processor import RESULTS_DIR
-from cocode.swe.swe_cmd import swe_from_file, swe_from_repo, swe_from_repo_diff, swe_doc_update_from_diff
+from cocode.swe.swe_cmd import swe_from_file, swe_from_repo, swe_from_repo_diff, swe_doc_update_from_diff, swe_user_doc_update_from_diff, swe_ai_instruction_update_from_diff
 
 
 class PipeCode(StrEnum):
@@ -354,7 +354,7 @@ def swe_doc_update_cmd(
         typer.Option("--doc-dir", "-d", help="Directory containing documentation files (e.g., 'docs', 'documentation')"),
     ] = None,
 ) -> None:
-    """Generate documentation update suggestions based on git diff analysis."""
+    """Generate documentation update suggestions based on git diff analysis (DEPRECATED - use swe-user-doc-update or swe-ai-instruction-update)."""
     repo_path = _validate_repo_path(repo_path)
 
     asyncio.run(
@@ -370,24 +370,82 @@ def swe_doc_update_cmd(
     get_pipeline_tracker().output_flowchart()
 
 
-@app.command()
-def validate() -> None:
-    """Run the setup sequence."""
-    asyncio.run(dry_run_all_pipes())
-    log.info("Setup sequence passed OK, config and pipelines are validated.")
-
-
-@app.command("show-pipe")
-def show_pipe(
-    pipe_code: Annotated[
+@app.command("swe-user-doc-update")
+def swe_user_doc_update_cmd(
+    version: Annotated[
         str,
-        typer.Argument(help="Pipeline code to show definition for"),
+        typer.Argument(help="Git version/tag/commit to compare current version against"),
     ],
+    repo_path: Annotated[
+        str,
+        typer.Argument(help="Input directory path", exists=True, file_okay=False, dir_okay=True, resolve_path=True),
+    ] = ".",
+    output_dir: Annotated[
+        str,
+        typer.Option("--output-dir", "-o", help="Output directory path"),
+    ] = "results",
+    output_filename: Annotated[
+        str,
+        typer.Option("--output-filename", "-n", help="Output filename"),
+    ] = "user-doc-update-suggestions.txt",
+    doc_dir: Annotated[
+        Optional[str],
+        typer.Option("--doc-dir", "-d", help="Directory containing documentation files (e.g., 'docs', 'documentation')"),
+    ] = None,
 ) -> None:
-    """Show pipe from the pipe library."""
-    pipe = get_required_pipe(pipe_code=pipe_code)
-    pretty_print(pipe, title=f"Pipe '{pipe_code}'")
+    """Generate user documentation update suggestions for docs/ directory based on git diff analysis."""
+    repo_path = _validate_repo_path(repo_path)
 
+    asyncio.run(
+        swe_user_doc_update_from_diff(
+            repo_path=repo_path,
+            version=version,
+            output_filename=output_filename,
+            output_dir=output_dir,
+            doc_dir=doc_dir,
+        )
+    )
+
+    get_pipeline_tracker().output_flowchart()
+
+
+@app.command("swe-ai-instruction-update")
+def swe_ai_instruction_update_cmd(
+    version: Annotated[
+        str,
+        typer.Argument(help="Git version/tag/commit to compare current version against"),
+    ],
+    repo_path: Annotated[
+        str,
+        typer.Argument(help="Input directory path", exists=True, file_okay=False, dir_okay=True, resolve_path=True),
+    ] = ".",
+    output_dir: Annotated[
+        str,
+        typer.Option("--output-dir", "-o", help="Output directory path"),
+    ] = "results",
+    output_filename: Annotated[
+        str,
+        typer.Option("--output-filename", "-n", help="Output filename"),
+    ] = "ai-instruction-update-suggestions.txt",
+    doc_dir: Annotated[
+        Optional[str],
+        typer.Option("--doc-dir", "-d", help="Directory containing documentation files (e.g., 'docs', 'documentation')"),
+    ] = None,
+) -> None:
+    """Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, and cursor rules based on git diff analysis."""
+    repo_path = _validate_repo_path(repo_path)
+
+    asyncio.run(
+        swe_ai_instruction_update_from_diff(
+            repo_path=repo_path,
+            version=version,
+            output_filename=output_filename,
+            output_dir=output_dir,
+            doc_dir=doc_dir,
+        )
+    )
+
+    get_pipeline_tracker().output_flowchart()
 
 if __name__ == "__main__":
     app()
