@@ -3,116 +3,309 @@ definition = "Pipeline for updating AI instruction files (AGENTS.md, CLAUDE.md, 
 
 [concept]
 GitDiff = "A git diff output showing changes between two versions of a codebase"
-DocumentationItem = "A specific change that needs AI instruction analysis"
-DocumentationAnalysis = "Analysis of what AI instruction updates are needed"
-DocumentationSuggestions = "Final suggestions for updating AI instruction files"
+AgentsContent = "Content of the AGENTS.md file"
+ClaudeContent = "Content of the CLAUDE.md file"
+CursorRulesContent = "Content of cursor rules files"
+AIInstructionFileAnalysis = "Analysis of changes needed for a specific AI instruction file"
+AIInstructionParallelResults = "Results from parallel analysis of AI instruction files"
+AIInstructionUpdateSuggestions = "Comprehensive suggestions for updating all AI instruction files"
 
 [pipe]
 
-[pipe.identify_ai_instruction_changes]
-PipeLLM = "Identify changes that affect AI instruction files"
-inputs = { git_diff = "GitDiff" }
-output = "DocumentationItem"
-multiple_output = true
-llm = "llm_for_large_text"
+[pipe.analyze_agents_md_changes]
+PipeLLM = "Analyze changes needed for AGENTS.md file"
+inputs = { git_diff = "GitDiff", agents_content = "AgentsContent" }
+output = "AIInstructionFileAnalysis"
 system_prompt = """
-You are an AI instruction analyst. Only identify changes that affect AI agents and developers coding in this repository.
-Focus on architectural changes, coding patterns, and AI-specific workflows.
+You are an AI instruction expert specializing in AGENTS.md files.
+Focus EXCLUSIVELY on changes that teach developers better coding practices and tool development patterns.
+Filter out maintenance updates, version changes, and configuration tweaks that don't improve coding skills.
 """
 prompt_template = """
-Analyze this git diff to identify changes that need AI instruction updates:
+Analyze changes needed for AGENTS.md based on git diff and current file content.
 
+CRITICAL FOCUS: Only include changes that help developers write better code or understand tool development patterns.
+
+GIT DIFF:
 @git_diff
 
-IDENTIFY CHANGES FOR AI INSTRUCTION FILES (AGENTS.md, CLAUDE.md, cursor rules):
-- New AI-specific tools or workflows
-- Major architectural changes affecting AI navigation
-- New coding patterns or conventions
-- Project structure changes affecting development
-- New development tools or integrations
+CURRENT AGENTS.MD CONTENT:
+@agents_content
 
-EXCLUDE:
-- Simple CLI command changes for users
-- Feature additions that don't affect AI workflows
-- Version updates
-- User-facing functionality that doesn't involve AI
-- Internal refactoring without pattern changes
+Determine what changes are needed for AGENTS.md by focusing ONLY on:
 
-For each change, provide:
-- File path where change occurred
-- Change type (addition, deletion, modification, minor_change)
-- Brief description of what changed
-- Why AI instructions need updating
+**CODING BEST PRACTICES:**
+- New architectural patterns or design principles
+- Better error handling or validation approaches
+- Improved code organization or structure guidelines
+- New development methodologies or workflows
+- Better testing patterns or debugging techniques
+
+**TOOL DEVELOPMENT PATTERNS:**
+- New APIs or interfaces that change how developers write code
+- Changed development workflows or build processes
+- New tools or dependencies that affect coding practices
+- Updated project structure that impacts how code is organized
+- New coding conventions or style requirements
+
+**COMPLETELY IGNORE:**
+- Version number updates (v0.6.1 → v0.6.2, etc.)
+- Configuration file changes that don't affect coding
+- Documentation formatting or typo fixes
+- Gitignore pattern updates
+- Dependency version bumps without API changes
+- File path changes without structural impact
+- Marketing copy or description updates
+
+For each relevant change, categorize as:
+- **Additions**: New coding practices or development patterns to document
+- **Deletions**: Removed practices or deprecated development approaches
+- **Modifications**: Changed coding practices or updated development patterns
+- **Minor Changes**: Small refinements to existing coding guidelines
+
+Only include changes that make developers better at coding in this repository.
 """
 
-[pipe.analyze_ai_instruction_change]
-PipeLLM = "Analyze a single change for AI instruction impact"
-inputs = { change_item = "DocumentationItem" }
-output = "DocumentationAnalysis"
-llm = "llm_for_large_text"
+[pipe.analyze_claude_md_changes]
+PipeLLM = "Analyze changes needed for CLAUDE.md file"
+inputs = { git_diff = "GitDiff", claude_content = "ClaudeContent" }
+output = "AIInstructionFileAnalysis"
 system_prompt = """
-You are an AI instruction expert. Analyze code changes to determine what AI instruction updates are needed.
-Focus on AGENTS.md, CLAUDE.md, and cursor rules files only.
+You are an AI instruction expert specializing in CLAUDE.md files.
+Focus EXCLUSIVELY on changes that teach Claude better coding practices and code generation patterns.
+Filter out maintenance updates, version changes, and configuration tweaks that don't improve code quality.
 """
 prompt_template = """
-Analyze this change for AI instruction impact:
+Analyze changes needed for CLAUDE.md based on git diff and current file content.
 
-@change_item
+CRITICAL FOCUS: Only include changes that help Claude write better code or understand code generation patterns.
 
-Determine what AI instruction updates are needed:
-- Change Category: Addition/Deletion/Modification/Minor_Change
-- Affected Files: AGENTS.md, CLAUDE.md, or cursor rules files
-- Content Location: Where in files to make changes
-- Specific Content: Exact text to add/modify/remove
-- Reasoning: Why this change affects AI instructions
+GIT DIFF:
+@git_diff
+
+CURRENT CLAUDE.MD CONTENT:
+@claude_content
+
+Determine what changes are needed for CLAUDE.md by focusing ONLY on:
+
+**CODE GENERATION BEST PRACTICES:**
+- New architectural patterns Claude should follow
+- Better error handling or validation patterns for generated code
+- Improved code structure or organization guidelines
+- New testing patterns or debugging approaches
+- Better documentation or commenting standards
+
+**CLAUDE CODING GUIDELINES:**
+- New APIs or interfaces Claude should use correctly
+- Changed code generation patterns or templates
+- Updated project-specific coding conventions
+- New libraries or frameworks Claude should leverage
+- Better integration patterns with existing code
+
+**COMPLETELY IGNORE:**
+- Version number updates (v0.6.1 → v0.6.2, etc.)
+- Configuration file changes that don't affect code generation
+- Documentation formatting or typo fixes
+- Gitignore pattern updates
+- Dependency version bumps without API changes
+- File path changes without structural impact
+- Marketing copy or description updates
+
+For each relevant change, categorize as:
+- **Additions**: New code generation practices or patterns for Claude
+- **Deletions**: Removed practices or deprecated code generation approaches
+- **Modifications**: Changed code generation patterns or updated guidelines
+- **Minor Changes**: Small refinements to existing code generation rules
+
+Only include changes that help Claude generate better, more maintainable code.
 """
 
-[pipe.generate_ai_instruction_suggestions]
-PipeLLM = "Generate final AI instruction suggestions"
-inputs = { ai_analyses = "DocumentationAnalysis" }
-output = "DocumentationSuggestions"
-llm = "llm_for_swe"
+[pipe.analyze_cursor_rules_changes]
+PipeLLM = "Analyze changes needed for cursor rules files"
+inputs = { git_diff = "GitDiff", cursor_rules_content = "CursorRulesContent" }
+output = "AIInstructionFileAnalysis"
 system_prompt = """
-You are an AI instruction coordinator. Generate clear, actionable suggestions for updating AI instruction files.
-Focus only on AGENTS.md, CLAUDE.md, and cursor rules.
+You are an AI instruction expert specializing in cursor rules files.
+Focus EXCLUSIVELY on changes that teach developers better coding patterns and development practices.
+Filter out maintenance updates, version changes, and configuration tweaks that don't improve code quality.
 """
 prompt_template = """
-Generate AI instruction update suggestions:
+Analyze changes needed for cursor rules based on git diff and current file content.
 
-@ai_analyses
+CRITICAL FOCUS: Only include changes that help developers write better, more maintainable code.
 
-Generate output in this format:
+GIT DIFF:
+@git_diff
 
-I have made changes to my codebase and need you to update the AI instruction files accordingly. Here's what changed and what needs to be updated:
+CURRENT CURSOR RULES CONTENT:
+@cursor_rules_content
 
-## AI INSTRUCTION UPDATES (AGENTS.md, CLAUDE.md, cursor rules)
+Determine what changes are needed for cursor rules by focusing ONLY on:
+
+**CODING PATTERN IMPROVEMENTS:**
+- New architectural patterns or design principles
+- Better error handling or validation approaches
+- Improved code organization or structure guidelines
+- New testing patterns or debugging techniques
+- Better performance or security practices
+
+**DEVELOPMENT WORKFLOW IMPROVEMENTS:**
+- New development methodologies or best practices
+- Better code review or collaboration patterns
+- Improved build or deployment processes that affect coding
+- New tools or integrations that enhance code quality
+- Updated coding standards or style requirements
+
+**COMPLETELY IGNORE:**
+- Version number updates (v0.6.1 → v0.6.2, etc.)
+- Configuration file changes that don't affect coding practices
+- Documentation formatting or typo fixes
+- Gitignore pattern updates
+- Dependency version bumps without API changes
+- File path changes without structural impact
+- Marketing copy or description updates
+
+For each relevant change, categorize as:
+- **Additions**: New coding patterns or development practices to document
+- **Deletions**: Removed practices or deprecated development approaches
+- **Modifications**: Changed coding patterns or updated development practices
+- **Minor Changes**: Small refinements to existing coding guidelines
+
+Only include changes that help developers write better code in this repository.
+"""
+
+[pipe.combine_ai_instruction_analyses]
+PipeLLM = "Combine all AI instruction file analyses into comprehensive suggestions"
+inputs = { agents_analysis = "AIInstructionFileAnalysis", claude_analysis = "AIInstructionFileAnalysis", cursor_analysis = "AIInstructionFileAnalysis" }
+output = "AIInstructionUpdateSuggestions"
+system_prompt = """
+You are an AI instruction coordinator. Combine individual file analyses into comprehensive, actionable suggestions.
+Generate clear, structured output that separates each file's requirements.
+"""
+prompt_template = """
+Combine these AI instruction file analyses into comprehensive suggestions:
+
+AGENTS.MD ANALYSIS:
+@agents_analysis
+CLAUDE.MD ANALYSIS:
+@claude_analysis
+CURSOR RULES ANALYSIS:
+@cursor_analysis
+
+Extract the individual analyses for each file type and create a comprehensive summary that:
+1. Assigns each analysis to the correct file type
+2. Provides an overall summary of all changes needed
+3. Maintains clear separation between file types
+4. Ensures all specific content is preserved
+
+The output should be structured to clearly show what needs to be done for each file type.
+"""
+
+[pipe.format_ai_instruction_output]
+PipeLLM = "Format AI instruction update suggestions into a clear, user-friendly text output"
+inputs = { combined_suggestions = "AIInstructionUpdateSuggestions" }
+output = "Text"
+system_prompt = """
+You are an expert technical writer specializing in AI instruction files.
+Focus on HIGH-LEVEL PRINCIPLES and GENERAL BEST PRACTICES, not specific code implementations.
+Keep guidance concise, principle-based, and broadly applicable rather than detailed code examples.
+"""
+prompt_template = """
+Format these AI instruction update suggestions into a clear, well-structured text output:
+
+@combined_suggestions
+
+Create a professional document with the following structure:
+
+# AI INSTRUCTION FILES UPDATE SUGGESTIONS
+
+I have made changes to my codebase and need you to update the AI instruction files accordingly.
+
+**IMPORTANT NOTE:** These instruction files focus on general coding principles and high-level best practices. Keep all suggestions concise and principle-based rather than detailed implementations.
+
+## OVERALL SUMMARY
+[Provide a brief overview of the main PRINCIPLES or PATTERNS that changed]
+
+## AGENTS.md UPDATES
+[Focus on general development principles and high-level patterns]
+
+**Reasoning:** [Why these changes affect general development approaches]
 
 **Additions:**
-[List significant additions with specific file paths and content]
+[List new PRINCIPLES or GENERAL PATTERNS, each as a concise bullet point - NO detailed code examples]
 
 **Deletions:**
-[List significant deletions with specific file paths and content]
+[List removed PRINCIPLES or deprecated general approaches]
 
 **Modifications:**
-[List significant modifications with specific file paths and content]
+[List changed PRINCIPLES or updated general patterns]
 
 **Minor Changes:**
-[List minor changes with specific file paths and content]
+[List small updates to existing general guidelines]
 
-Only include sections that have actual updates. Skip empty sections entirely.
-Be specific about exact file paths, locations, and content needed.
+## CLAUDE.md UPDATES
+[Focus on general code generation principles and high-level patterns]
 
-If no AI instruction updates are needed, respond with:
-"No AI instruction updates are needed based on the current code changes."
+**Reasoning:** [Why these changes affect general code generation approaches]
+
+**Additions:**
+[List new CODE GENERATION PRINCIPLES or GENERAL PATTERNS - NO detailed implementations]
+
+**Deletions:**
+[List removed principles or deprecated general approaches]
+
+**Modifications:**
+[List changed principles or updated general patterns]
+
+**Minor Changes:**
+[List small updates to existing general guidelines]
+
+## CURSOR RULES UPDATES
+[Focus on general coding principles and high-level development practices]
+
+**Reasoning:** [Why these changes affect general coding approaches]
+
+**Additions:**
+[List new CODING PRINCIPLES or GENERAL PRACTICES - NO specific code examples]
+
+**Deletions:**
+[List removed principles or deprecated general practices]
+
+**Modifications:**
+[List changed principles or updated general practices]
+
+**Minor Changes:**
+[List small updates to existing general guidelines]
+
+## NO UPDATES NEEDED
+[Only include this section if no principle-level changes affect coding practices]
+
+IMPORTANT FORMATTING RULES:
+- Keep all suggestions at the PRINCIPLE level, not implementation level
+- Use concise, general statements rather than detailed code examples
+- Focus on WHAT principle changed, not HOW to implement it
+- Maximum 1-2 sentences per bullet point
+- Avoid specific function names, class names, or detailed code snippets
+- If no principle-level updates are needed, respond with: \"No AI instruction updates are needed. The changes are implementation details that don't affect coding principles or general practices.\"
 """
 
+[pipe.ai_instruction_update_parallel]
+PipeParallel = "Analyze changes for all AI instruction files in parallel"
+inputs = { git_diff = "GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
+output = "AIInstructionParallelResults"
+parallels = [
+    { pipe = "analyze_agents_md_changes", result = "agents_analysis" },
+    { pipe = "analyze_claude_md_changes", result = "claude_analysis" },
+    { pipe = "analyze_cursor_rules_changes", result = "cursor_analysis" }
+]
+
 [pipe.ai_instruction_update]
-PipeSequence = "AI instruction update analysis"
-inputs = { git_diff = "GitDiff" }
-output = "DocumentationSuggestions"
+PipeSequence = "AI instruction update analysis with parallel file processing and formatting"
+inputs = { git_diff = "GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
+output = "Text"
 steps = [
-    { pipe = "identify_ai_instruction_changes", result = "ai_changes" },
-    { pipe = "analyze_ai_instruction_change", batch_over = "ai_changes", batch_as = "change_item", result = "ai_analyses" },
-    { pipe = "generate_ai_instruction_suggestions", result = "ai_suggestions" }
+    { pipe = "ai_instruction_update_parallel", result = "parallel_analyses" },
+    { pipe = "combine_ai_instruction_analyses", result = "combined_suggestions" },
+    { pipe = "format_ai_instruction_output", result = "ai_instruction_output" }
 ]
 

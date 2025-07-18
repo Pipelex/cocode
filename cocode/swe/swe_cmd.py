@@ -17,6 +17,9 @@ from cocode.repox.repox_processor import RepoxException, RepoxProcessor
 from cocode.utils import run_git_diff_command
 
 
+
+
+
 async def swe_from_repo(
     pipe_code: str,
     repo_path: str,
@@ -294,30 +297,36 @@ async def swe_ai_instruction_update_from_diff(
     claude_md_path = os.path.join(repo_path, "CLAUDE.md")
     claude_content = read_file_content(claude_md_path)
 
-    # Read cursor rules content (check multiple possible locations)
+    # Read cursor rules content (check two possible patterns)
     cursor_rules_content = ""
-    possible_cursor_files = [".cursorrules", ".cursor/rules", ".cursor/rules.md", ".cursor/rules/main.md", ".cursor/rules/pipelex.mdc"]
-
-    for cursor_file in possible_cursor_files:
-        cursor_path = os.path.join(repo_path, cursor_file)
-        if os.path.exists(cursor_path):
-            if os.path.isfile(cursor_path):
-                content = read_file_content(cursor_path)
+    # Pattern 1: Single .cursorrules file
+    cursorrules_path = os.path.join(repo_path, ".cursorrules")
+    if os.path.exists(cursorrules_path) and os.path.isfile(cursorrules_path):
+        content = read_file_content(cursorrules_path)
+        if content:
+            cursor_rules_content = content
+    
+    # Pattern 2: Multiple .md files in .cursor/rules/ directory
+    elif os.path.exists(os.path.join(repo_path, ".cursor/rules")) and os.path.isdir(os.path.join(repo_path, ".cursor/rules")):
+        cursor_rules_dir = os.path.join(repo_path, ".cursor/rules")
+        try:
+            # Get all .md files in the directory and sort them for consistent ordering
+            md_files: List[str] = []
+            for file in os.listdir(cursor_rules_dir):
+                if file.endswith(".mdc"):
+                    md_files.append(file)
+            
+            # Sort files for consistent ordering
+            md_files.sort()
+            
+            # Concatenate all .md files
+            for file in md_files:
+                file_path = os.path.join(cursor_rules_dir, file)
+                content = read_file_content(file_path)
                 if content:
-                    cursor_rules_content += f"=== {cursor_file} ===\n{content}\n\n"
-            elif os.path.isdir(cursor_path):
-                # If it's a directory, read all .md and .mdc files
-                try:
-                    for root, _, files in os.walk(cursor_path):
-                        for file in files:
-                            if file.endswith((".md", ".mdc", ".txt")):
-                                file_path = os.path.join(root, file)
-                                content = read_file_content(file_path)
-                                if content:
-                                    relative_path = os.path.relpath(file_path, repo_path)
-                                    cursor_rules_content += f"=== {relative_path} ===\n{content}\n\n"
-                except Exception as e:
-                    log.warning(f"Error reading cursor rules directory {cursor_path}: {e}")
+                    cursor_rules_content += f"=== {file} ===\n{content}\n\n"
+        except Exception as e:
+            log.warning(f"Error reading cursor rules directory {cursor_rules_dir}: {e}")
 
     # Create working memory with git diff and AI instruction file contents
     release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
@@ -340,7 +349,7 @@ async def swe_ai_instruction_update_from_diff(
     )
 
     pretty_print(pipe_output, title="AI Instruction Update Analysis")
-    doc_suggestions = pipe_output.main_stuff_as(content_type=DocumentationSuggestions)
+    formatted_output = pipe_output.main_stuff
 
     get_report_delegate().generate_report()
 
@@ -348,8 +357,8 @@ async def swe_ai_instruction_update_from_diff(
     ensure_path(output_dir)
     output_file_path = f"{output_dir}/{output_filename}"
 
-    # Extract the text content from the structured output
-    text_content = doc_suggestions.documentation_updates_prompt
+    # The output is already formatted by the LLM in the pipeline
+    text_content = formatted_output.as_str
 
     save_text_to_path(text=text_content, path=output_file_path)
     log.info(f"Done, AI instruction update suggestions saved to file: '{output_file_path}'")
