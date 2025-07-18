@@ -324,12 +324,8 @@ async def swe_ai_instruction_update_from_diff(
         stuff_list=[release_stuff, git_diff_stuff, agents_content_stuff, claude_content_stuff, cursor_rules_content_stuff]
     )
 
-    # Use the AI instruction pipeline
-    pipe_code = "ai_instruction_update"
-
-    # Run the pipe
     pipe_output = await execute_pipeline(
-        pipe_code=pipe_code,
+        pipe_code="ai_instruction_update",
         working_memory=working_memory,
     )
 
