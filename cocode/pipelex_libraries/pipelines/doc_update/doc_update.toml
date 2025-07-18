@@ -14,7 +14,6 @@ PipeLLM = "Identify changes that affect documentation"
 inputs = { git_diff = "GitDiff" }
 output = "DocumentationItem"
 multiple_output = true
-llm = "llm_for_large_text"
 system_prompt = """
 You are a documentation analyst. Only identify changes that affect documentation in the docs/ directory.
 Focus on CLI commands, features, installation, and usage instructions.
@@ -36,19 +35,12 @@ EXCLUDE:
 - Test changes
 - Implementation details
 - AI-specific tools or workflows
-
-For each change, provide:
-- File path where change occurred
-- Change type (addition, deletion, modification, minor_change)
-- Brief description of what changed
-- Why documentation needs updating
 """
 
 [pipe.analyze_doc_change]
 PipeLLM = "Analyze a single change for documentation impact"
 inputs = { change_item = "DocumentationItem" }
 output = "DocumentationAnalysis"
-llm = "llm_for_large_text"
 system_prompt = """
 You are a documentation expert. Analyze code changes to determine what documentation updates are needed.
 Focus on docs/ directory files only.
@@ -57,52 +49,22 @@ prompt_template = """
 Analyze this change for documentation impact:
 
 @change_item
-
-Determine what documentation updates are needed:
-- Change Category: Addition/Deletion/Modification/Minor_Change
-- Affected Files: Exact documentation file paths in docs/ directory
-- Content Location: Where in files to make changes
-- Specific Content: Exact text to add/modify/remove
-- Reasoning: Why this change affects documentation
 """
 
 [pipe.generate_doc_suggestions]
 PipeLLM = "Generate final documentation suggestions"
 inputs = { doc_analyses = "DocumentationAnalysis" }
 output = "DocumentationSuggestions"
-llm = "llm_for_swe"
 system_prompt = """
 You are a documentation coordinator. Generate clear, actionable suggestions for updating documentation.
 Focus only on docs/ directory updates.
 """
 prompt_template = """
-Generate documentation update suggestions:
+Generate documentation update suggestions based on this analysis:
 
 @doc_analyses
 
-Generate output in this format:
-
-I have made changes to my codebase and need you to update the user documentation accordingly. Here's what changed and what needs to be updated:
-
-## DOCUMENTATION UPDATES (docs/ directory)
-
-**Additions:**
-[List significant additions with specific file paths and content]
-
-**Deletions:**
-[List significant deletions with specific file paths and content]
-
-**Modifications:**
-[List significant modifications with specific file paths and content]
-
-**Minor Changes:**
-[List minor changes with specific file paths and content]
-
-Only include sections that have actual updates. Skip empty sections entirely.
-Be specific about exact file paths, locations, and content needed.
-
-If no documentation updates are needed, respond with:
-"No documentation updates are needed based on the current code changes."
+Create a comprehensive prompt for updating documentation that includes specific file paths, locations, and exact content needed.
 """
 
 [pipe.doc_update]

@@ -3,17 +3,14 @@ from datetime import datetime
 from typing import Callable, Dict, List, Optional
 
 from pipelex import log, pretty_print
-from pipelex.core.concept_native import NativeConcept
-from pipelex.core.pipe_run_params import PipeRunMode
 from pipelex.core.stuff import Stuff
-from pipelex.core.stuff_content import ListContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
-from pipelex.hub import get_concept_provider, get_report_delegate
+from pipelex.hub import get_report_delegate
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
-from pipelex.tools.misc.json_utils import save_as_json_to_path
 
+from cocode.pipelex_libraries.pipelines.doc_update.doc_update_models import DocumentationSuggestions
 from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule, python_imports_list, python_integral, python_interface
 from cocode.repox.repox_processor import RepoxException, RepoxProcessor
@@ -106,22 +103,14 @@ async def process_swe_pipeline(
     variable_name: str = "repo_text",
 ) -> None:
     """Common function to process text through SWE pipeline and handle output."""
-    # Interpret the dry_run flag to determine pipe_run_mode
-    pipe_run_mode = PipeRunMode.DRY if dry_run else PipeRunMode.LIVE
-    swe_stuff = await process_swe(text=text, pipe_code=pipe_code, pipe_run_mode=pipe_run_mode, variable_name=variable_name)
+    swe_stuff = await process_swe(text=text, pipe_code=pipe_code, variable_name=variable_name)
 
     if to_stdout:
         print(swe_stuff)
     else:
         ensure_path(output_dir)
         output_file_path = f"{output_dir}/{output_filename}"
-        if get_concept_provider().is_compatible_by_concept_code(
-            tested_concept_code=swe_stuff.concept_code,
-            wanted_concept_code=NativeConcept.TEXT.code,
-        ) and not isinstance(swe_stuff.content, ListContent):
-            save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
-        else:
-            save_as_json_to_path(object_to_save=swe_stuff, path=output_file_path)
+        save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
         log.info(f"Done, output saved as text to file: '{output_file_path}'")
 
 
@@ -149,7 +138,7 @@ def process_repox(
     return output_content
 
 
-async def process_swe(text: str, pipe_code: str, pipe_run_mode: PipeRunMode, variable_name: str = "text") -> Stuff:
+async def process_swe(text: str, pipe_code: str, variable_name: str = "text") -> Stuff:
     # Load the working memory with the text
     release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
     text_stuff = StuffFactory.make_from_str(str_value=text, name=variable_name)
@@ -158,7 +147,6 @@ async def process_swe(text: str, pipe_code: str, pipe_run_mode: PipeRunMode, var
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
         working_memory=working_memory,
-        pipe_run_mode=pipe_run_mode,
     )
     pretty_print(pipe_output, title="Pipe output")
     swe_stuff = pipe_output.main_stuff
@@ -239,23 +227,20 @@ async def swe_doc_update_from_diff(
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
         working_memory=working_memory,
-        pipe_run_mode=PipeRunMode.LIVE,
     )
     pretty_print(pipe_output, title="Documentation Update Analysis")
-    swe_stuff = pipe_output.main_stuff
+    doc_suggestions = pipe_output.main_stuff_as(content_type=DocumentationSuggestions)
 
     get_report_delegate().generate_report()
 
-    # Always output to file
+    # Always output to file as text
     ensure_path(output_dir)
     output_file_path = f"{output_dir}/{output_filename}"
-    if get_concept_provider().is_compatible_by_concept_code(
-        tested_concept_code=swe_stuff.concept_code,
-        wanted_concept_code=NativeConcept.TEXT.code,
-    ) and not isinstance(swe_stuff.content, ListContent):
-        save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
-    else:
-        save_as_json_to_path(object_to_save=swe_stuff, path=output_file_path)
+
+    # Extract the text content from the structured output
+    text_content = doc_suggestions.documentation_updates_prompt
+
+    save_text_to_path(text=text_content, path=output_file_path)
     log.info(f"Done, documentation update suggestions saved to file: '{output_file_path}'")
 
 
@@ -352,22 +337,19 @@ async def swe_ai_instruction_update_from_diff(
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
         working_memory=working_memory,
-        pipe_run_mode=PipeRunMode.LIVE,
     )
 
     pretty_print(pipe_output, title="AI Instruction Update Analysis")
-    swe_stuff = pipe_output.main_stuff
+    doc_suggestions = pipe_output.main_stuff_as(content_type=DocumentationSuggestions)
 
     get_report_delegate().generate_report()
 
-    # Always output to file
+    # Always output to file as text
     ensure_path(output_dir)
     output_file_path = f"{output_dir}/{output_filename}"
-    if get_concept_provider().is_compatible_by_concept_code(
-        tested_concept_code=swe_stuff.concept_code,
-        wanted_concept_code=NativeConcept.TEXT.code,
-    ) and not isinstance(swe_stuff.content, ListContent):
-        save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
-    else:
-        save_as_json_to_path(object_to_save=swe_stuff, path=output_file_path)
+
+    # Extract the text content from the structured output
+    text_content = doc_suggestions.documentation_updates_prompt
+
+    save_text_to_path(text=text_content, path=output_file_path)
     log.info(f"Done, AI instruction update suggestions saved to file: '{output_file_path}'")

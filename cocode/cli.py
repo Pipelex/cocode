@@ -17,7 +17,7 @@ from typer import Context as TyperContext
 from typer.core import TyperGroup
 from typing_extensions import override
 
-from cocode.github.github_cli import github_app
+# from cocode.github.github_cli import github_app
 from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule
 from cocode.repox.repox_cmd import repox_command
@@ -95,7 +95,7 @@ app = typer.Typer(
 )
 
 # Add GitHub command group
-app.add_typer(github_app, name="github", help="GitHub-related operations and utilities")
+# app.add_typer(github_app, name="github", help="GitHub-related operations and utilities")
 
 
 @app.callback(invoke_without_command=True)
