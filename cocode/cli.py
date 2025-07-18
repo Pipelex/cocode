@@ -9,13 +9,11 @@ from typing import Annotated, List, Optional
 
 import typer
 from click import Command, Context
-from pipelex import log, pretty_print
-from pipelex.hub import get_required_pipe
-from pipelex.pipe_works.pipe_dry import dry_run_all_pipes
+from pipelex import log
+from pipelex.hub import get_pipeline_tracker
 from pipelex.pipelex import Pipelex
 from pipelex.tools.misc.file_utils import path_exists
 from typer import Context as TyperContext
-from pipelex.hub import get_pipeline_tracker
 from typer.core import TyperGroup
 from typing_extensions import override
 
@@ -24,7 +22,14 @@ from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule
 from cocode.repox.repox_cmd import repox_command
 from cocode.repox.repox_processor import RESULTS_DIR
-from cocode.swe.swe_cmd import swe_from_file, swe_from_repo, swe_from_repo_diff, swe_doc_update_from_diff, swe_user_doc_update_from_diff, swe_ai_instruction_update_from_diff
+from cocode.swe.swe_cmd import (
+    swe_ai_instruction_update_from_diff,
+    swe_doc_update_from_diff,
+    swe_from_file,
+    swe_from_repo,
+    swe_from_repo_diff,
+    swe_user_doc_update_from_diff,
+)
 
 
 class PipeCode(StrEnum):
@@ -446,6 +451,7 @@ def swe_ai_instruction_update_cmd(
     )
 
     get_pipeline_tracker().output_flowchart()
+
 
 if __name__ == "__main__":
     app()

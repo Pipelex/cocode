@@ -8,8 +8,8 @@ from .doc_update_models import (
 )
 
 __all__ = [
-    "DocumentationFile", 
+    "DocumentationFile",
     "DocumentationUpdate",
     "DocumentationUpdateSuggestion",
     "FileChangeAnalysis",
-] 
+]

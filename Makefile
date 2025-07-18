@@ -44,6 +44,7 @@ make lock                     - Refresh uv.lock without updating anything
 make install                  - Create local virtualenv & install all dependencies
 make update                   - Upgrade dependencies via uv
 make validate                 - Run the setup sequence to validate the config and libraries
+make init                     - Run pipelex init-libraries and init-config
 
 make format                   - format with ruff format
 make lint                     - lint with ruff check
@@ -67,7 +68,6 @@ make merge-check-pyright	  - Run pyright merge check without updating files
 make rl                       - Shorthand -> reinitlibraries
 make ri                       - Shorthand -> reinstall
 make v                        - Shorthand -> validate
-make init                     - Run pipelex init
 make codex-tests              - Run tests for Codex (exit on first failure) (no inference, no codex_disabled)
 make gha-tests		          - Run tests for github actions (exit on first failure) (no inference, no gha_disabled)
 make test                     - Run unit tests (no inference)
@@ -153,6 +153,11 @@ update: env
 validate: env
 	$(call PRINT_TITLE,"Running setup sequence")
 	$(VENV_PIPELEX) validate -c cocode/pipelex_libraries
+
+init: env
+	$(call PRINT_TITLE,"Running pipelex init-libraries and init-config")
+	$(VENV_PIPELEX) init-libraries
+	$(VENV_PIPELEX) init-config
 
 ##############################################################################################
 ############################      Cleaning                        ############################
@@ -390,13 +395,13 @@ docs-deploy: env
 ### SHORTHANDS
 ##########################################################################################
 
-c: init format lint pyright mypy
+c: format lint pyright mypy
 	@echo "> done: c = check"
 
-cc: init cleanderived c
+cc: cleanderived c
 	@echo "> done: cc = cleanderived check"
 
-check: init cleanderived check-unused-imports c
+check: cleanderived check-unused-imports c
 	@echo "> done: check"
 
 v: validate

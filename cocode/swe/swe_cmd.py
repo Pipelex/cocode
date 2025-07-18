@@ -8,7 +8,7 @@ from pipelex.core.stuff import Stuff
 from pipelex.core.stuff_content import ListContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
-from pipelex.hub import get_concept_provider, get_report_delegate, get_pipeline_tracker
+from pipelex.hub import get_concept_provider, get_report_delegate
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
 from pipelex.tools.misc.json_utils import save_as_json_to_path
@@ -224,18 +224,16 @@ async def swe_user_doc_update_from_diff(
 
     # Generate git diff
     diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
-    
+
     # Create working memory with git diff only (no repo structure needed)
     release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
     git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
-    
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(
-        stuff_list=[release_stuff, git_diff_stuff]
-    )
-    
+
+    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[release_stuff, git_diff_stuff])
+
     # Use the user documentation pipeline
     pipe_code = "user_doc_update"
-    
+
     # Run the pipe
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
@@ -289,18 +287,16 @@ async def swe_ai_instruction_update_from_diff(
 
     # Generate git diff
     diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
-    
+
     # Create working memory with git diff only (no repo structure needed)
     release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
     git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
-    
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(
-        stuff_list=[release_stuff, git_diff_stuff]
-    )
-    
+
+    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[release_stuff, git_diff_stuff])
+
     # Use the AI instruction pipeline
     pipe_code = "ai_instruction_update"
-    
+
     # Run the pipe
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
@@ -333,5 +329,7 @@ async def swe_doc_update_from_diff(
     doc_dir: Optional[str] = None,
 ) -> None:
     """Generate documentation update suggestions based on git diff analysis (legacy - use swe_user_doc_update_from_diff instead)."""
-    log.info(f"[DEPRECATED] Using legacy doc update pipeline. Consider using swe_user_doc_update_from_diff or swe_ai_instruction_update_from_diff instead.")
+    log.info(
+        "[DEPRECATED] Using legacy doc update pipeline. Consider using swe_user_doc_update_from_diff or swe_ai_instruction_update_from_diff instead."
+    )
     await swe_user_doc_update_from_diff(repo_path, version, output_filename, output_dir, doc_dir)
