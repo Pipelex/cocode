@@ -196,15 +196,15 @@ async def swe_from_repo_diff(
     )
 
 
-async def swe_user_doc_update_from_diff(
+async def swe_doc_update_from_diff(
     repo_path: str,
     version: str,
     output_filename: str,
     output_dir: str,
     doc_dir: Optional[str] = None,
 ) -> None:
-    """Generate user documentation update suggestions for docs/ directory based on git diff analysis."""
-    log.info(f"Generating user documentation update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
+    """Generate documentation update suggestions for docs/ directory based on git diff analysis."""
+    log.info(f"Generating documentation update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
 
     # Hardcoded ignore patterns for common files that don't need doc updates
     ignore_patterns = [
@@ -232,8 +232,8 @@ async def swe_user_doc_update_from_diff(
 
     working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[release_stuff, git_diff_stuff])
 
-    # Use the user documentation pipeline
-    pipe_code = "user_doc_update"
+    # Use the documentation pipeline
+    pipe_code = "doc_update"
 
     # Run the pipe
     pipe_output = await execute_pipeline(
@@ -241,7 +241,7 @@ async def swe_user_doc_update_from_diff(
         working_memory=working_memory,
         pipe_run_mode=PipeRunMode.LIVE,
     )
-    pretty_print(pipe_output, title="User Documentation Update Analysis")
+    pretty_print(pipe_output, title="Documentation Update Analysis")
     swe_stuff = pipe_output.main_stuff
 
     get_report_delegate().generate_report()
@@ -256,7 +256,7 @@ async def swe_user_doc_update_from_diff(
         save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
     else:
         save_as_json_to_path(object_to_save=swe_stuff, path=output_file_path)
-    log.info(f"Done, user documentation update suggestions saved to file: '{output_file_path}'")
+    log.info(f"Done, documentation update suggestions saved to file: '{output_file_path}'")
 
 
 async def swe_ai_instruction_update_from_diff(

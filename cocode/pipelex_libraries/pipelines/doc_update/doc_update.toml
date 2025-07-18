@@ -1,22 +1,22 @@
-domain = "user_doc_update"
-definition = "Pipeline for updating user documentation in docs/ directory based on git diff"
+domain = "doc_update"
+definition = "Pipeline for updating documentation in docs/ directory based on git diff"
 
 [concept]
 GitDiff = "A git diff output showing changes between two versions of a codebase"
 DocumentationItem = "A specific change that needs documentation analysis"
 DocumentationAnalysis = "Analysis of what documentation updates are needed"
-DocumentationSuggestions = "Final suggestions for updating user documentation"
+DocumentationSuggestions = "Final suggestions for updating documentation"
 
 [pipe]
 
-[pipe.identify_user_doc_changes]
-PipeLLM = "Identify changes that affect user documentation"
+[pipe.identify_doc_changes]
+PipeLLM = "Identify changes that affect documentation"
 inputs = { git_diff = "GitDiff" }
 output = "DocumentationItem"
 multiple_output = true
 llm = "llm_for_large_text"
 system_prompt = """
-You are a user documentation analyst. Only identify changes that affect user-facing documentation in the docs/ directory.
+You are a documentation analyst. Only identify changes that affect documentation in the docs/ directory.
 Focus on CLI commands, features, installation, and usage instructions.
 """
 prompt_template = """
@@ -24,7 +24,7 @@ Analyze this git diff to identify changes that need docs/ directory updates:
 
 @git_diff
 
-IDENTIFY CHANGES FOR USER DOCUMENTATION:
+IDENTIFY CHANGES FOR DOCUMENTATION:
 - New/removed CLI commands or parameters
 - New/changed user-facing features
 - Installation/setup changes
@@ -41,42 +41,42 @@ For each change, provide:
 - File path where change occurred
 - Change type (addition, deletion, modification, minor_change)
 - Brief description of what changed
-- Why users need to know about this
+- Why documentation needs updating
 """
 
-[pipe.analyze_user_doc_change]
-PipeLLM = "Analyze a single change for user documentation impact"
+[pipe.analyze_doc_change]
+PipeLLM = "Analyze a single change for documentation impact"
 inputs = { change_item = "DocumentationItem" }
 output = "DocumentationAnalysis"
 llm = "llm_for_large_text"
 system_prompt = """
-You are a user documentation expert. Analyze code changes to determine what user documentation updates are needed.
+You are a documentation expert. Analyze code changes to determine what documentation updates are needed.
 Focus on docs/ directory files only.
 """
 prompt_template = """
-Analyze this change for user documentation impact:
+Analyze this change for documentation impact:
 
 @change_item
 
-Determine what user documentation updates are needed:
+Determine what documentation updates are needed:
 - Change Category: Addition/Deletion/Modification/Minor_Change
 - Affected Files: Exact documentation file paths in docs/ directory
 - Content Location: Where in files to make changes
 - Specific Content: Exact text to add/modify/remove
-- Reasoning: Why this change affects user documentation
+- Reasoning: Why this change affects documentation
 """
 
-[pipe.generate_user_doc_suggestions]
-PipeLLM = "Generate final user documentation suggestions"
+[pipe.generate_doc_suggestions]
+PipeLLM = "Generate final documentation suggestions"
 inputs = { doc_analyses = "DocumentationAnalysis" }
 output = "DocumentationSuggestions"
 llm = "llm_for_swe"
 system_prompt = """
-You are a user documentation coordinator. Generate clear, actionable suggestions for updating user documentation.
+You are a documentation coordinator. Generate clear, actionable suggestions for updating documentation.
 Focus only on docs/ directory updates.
 """
 prompt_template = """
-Generate user documentation update suggestions:
+Generate documentation update suggestions:
 
 @doc_analyses
 
@@ -84,7 +84,7 @@ Generate output in this format:
 
 I have made changes to my codebase and need you to update the user documentation accordingly. Here's what changed and what needs to be updated:
 
-## USER DOCUMENTATION UPDATES (docs/ directory)
+## DOCUMENTATION UPDATES (docs/ directory)
 
 **Additions:**
 [List significant additions with specific file paths and content]
@@ -102,16 +102,16 @@ Only include sections that have actual updates. Skip empty sections entirely.
 Be specific about exact file paths, locations, and content needed.
 
 If no documentation updates are needed, respond with:
-"No user documentation updates are needed based on the current code changes."
+"No documentation updates are needed based on the current code changes."
 """
 
-[pipe.user_doc_update]
-PipeSequence = "User documentation update analysis"
+[pipe.doc_update]
+PipeSequence = "Documentation update analysis"
 inputs = { git_diff = "GitDiff" }
 output = "DocumentationSuggestions"
 steps = [
-    { pipe = "identify_user_doc_changes", result = "doc_changes" },
-    { pipe = "analyze_user_doc_change", batch_over = "doc_changes", batch_as = "change_item", result = "doc_analyses" },
-    { pipe = "generate_user_doc_suggestions", result = "user_suggestions" }
+    { pipe = "identify_doc_changes", result = "doc_changes" },
+    { pipe = "analyze_doc_change", batch_over = "doc_changes", batch_as = "change_item", result = "doc_analyses" },
+    { pipe = "generate_doc_suggestions", result = "doc_suggestions" }
 ]
 
