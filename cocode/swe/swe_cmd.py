@@ -214,30 +214,21 @@ async def swe_doc_update_from_diff(
     # Generate git diff
     diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
 
-    # Create working memory with git diff only (no repo structure needed)
     release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
     git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
 
     working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[release_stuff, git_diff_stuff])
 
-    # Use the documentation pipeline
-    pipe_code = "doc_update"
-
-    # Run the pipe
     pipe_output = await execute_pipeline(
-        pipe_code=pipe_code,
+        pipe_code="doc_update",
         working_memory=working_memory,
     )
-    pretty_print(pipe_output, title="Documentation Update Analysis")
     doc_suggestions = pipe_output.main_stuff_as(content_type=DocumentationSuggestions)
 
     get_report_delegate().generate_report()
 
-    # Always output to file as text
     ensure_path(output_dir)
     output_file_path = f"{output_dir}/{output_filename}"
-
-    # Extract the text content from the structured output
     text_content = doc_suggestions.documentation_updates_prompt
 
     save_text_to_path(text=text_content, path=output_file_path)
@@ -254,7 +245,6 @@ async def swe_ai_instruction_update_from_diff(
     """Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, and cursor rules based on git diff analysis."""
     log.info(f"Generating AI instruction update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
 
-    # Hardcoded ignore patterns for common files that don't need doc updates
     ignore_patterns = [
         "*.lock",
         "*.pyc",
@@ -271,10 +261,8 @@ async def swe_ai_instruction_update_from_diff(
         ".ruff_cache",
     ]
 
-    # Generate git diff
     diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
 
-    # Read AI instruction files content
     def read_file_content(file_path: str) -> str:
         """Read file content, return empty string if file doesn't exist."""
         try:

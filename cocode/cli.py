@@ -17,7 +17,7 @@ from typer import Context as TyperContext
 from typer.core import TyperGroup
 from typing_extensions import override
 
-# from cocode.github.github_cli import github_app
+from cocode.github.github_cli import github_app
 from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule
 from cocode.repox.repox_cmd import repox_command
@@ -33,30 +33,14 @@ from cocode.swe.swe_cmd import (
 
 class PipeCode(StrEnum):
     EXTRACT_ONBOARDING_DOCUMENTATION = "extract_onboarding_documentation"
-    EXTRACT_FUNDAMENTALS = "extract_fundamentals"
-    EXTRACT_ENVIRONMENT_BUILD = "extract_environment_build"
-    EXTRACT_CODING_STANDARDS = "extract_coding_standards"
-    EXTRACT_TEST_STRATEGY = "extract_test_strategy"
-    EXTRACT_COLLABORATION = "extract_collaboration"
-    DOC_UPDATE = "doc_update"
-    AI_INSTRUCTION_UPDATE = "ai_instruction_update"
-    GENERATE_DOC_UPDATE_SUGGESTIONS = "generate_doc_update_suggestions"
-    BATCH_ANALYZE_DOCUMENTATION_UPDATES = "batch_analyze_documentation_updates"
 
 
 def _get_pipe_descriptions() -> str:
     """Generate help text with pipe descriptions from TOML."""
     descriptions = {
         "extract_onboarding_documentation": "Extract comprehensive onboarding documentation from software project docs",
-        "extract_fundamentals": "Extract fundamental project information from documentation",
-        "extract_environment_build": "Extract environment setup and build information from documentation",
-        "extract_coding_standards": "Extract code quality and style information from documentation",
-        "extract_test_strategy": "Extract testing strategy and procedures from documentation",
-        "extract_collaboration": "Extract collaboration and workflow information from documentation",
         "doc_update": "Generate documentation update suggestions for docs/ directory",
         "ai_instruction_update": "Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, cursor rules",
-        "generate_doc_update_suggestions": "Generate comprehensive documentation update suggestions based on git diff",
-        "batch_analyze_documentation_updates": "Analyze git diff and generate batched documentation update suggestions",
     }
 
     help_text = "\n\n"
@@ -95,7 +79,7 @@ app = typer.Typer(
 )
 
 # Add GitHub command group
-# app.add_typer(github_app, name="github", help="GitHub-related operations and utilities")
+app.add_typer(github_app, name="github", help="GitHub-related operations and utilities")
 
 
 @app.callback(invoke_without_command=True)
