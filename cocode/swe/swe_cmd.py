@@ -371,4 +371,3 @@ async def swe_ai_instruction_update_from_diff(
     else:
         save_as_json_to_path(object_to_save=swe_stuff, path=output_file_path)
     log.info(f"Done, AI instruction update suggestions saved to file: '{output_file_path}'")
-

@@ -339,9 +339,6 @@ def swe_from_repo_diff_cmd(
     get_pipeline_tracker().output_flowchart()
 
 
-
-
-
 @app.command("swe-doc-update")
 def swe_doc_update_cmd(
     version: Annotated[
