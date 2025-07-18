@@ -15,9 +15,6 @@ classifiers = [
 
 dependencies = ["pipelex[anthropic,google,bedrock]>=0.6.0", "PyGithub==2.4.0"]
 
-[tool.uv.sources]
-pipelex = { path = "../pipelex", editable = true }
-
 [project.optional-dependencies]
 docs = [
     "mkdocs==1.6.1",

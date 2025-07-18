@@ -42,6 +42,7 @@ Usage:
 make env                      - Create python virtual env
 make lock                     - Refresh uv.lock without updating anything
 make install                  - Create local virtualenv & install all dependencies
+make install-latest           - Install dependencies with latest versions (ignores lock file)
 make update                   - Upgrade dependencies via uv
 make validate                 - Run the setup sequence to validate the config and libraries
 make init                     - Run pipelex init-libraries and init-config
@@ -97,7 +98,7 @@ endef
 export HELP
 
 .PHONY: \
-	all help env lock install update build \
+	all help env lock install install-latest update build \
 	format lint pyright mypy \
 	cleanderived cleanenv cleanlibraries cleanresults cr cleanall \
 	test t test-quiet tq test-with-prints tp test-inference ti \
@@ -139,6 +140,12 @@ install: env
 	uv sync --all-extras && \
 	echo "Installed dependencies in ${VIRTUAL_ENV}";
 
+install-latest: env
+	$(call PRINT_TITLE,"Installing dependencies with latest versions")
+	@. $(VIRTUAL_ENV)/bin/activate && \
+	uv sync --all-extras --upgrade && \
+	echo "Installed latest dependencies in ${VIRTUAL_ENV}";
+
 lock: env
 	$(call PRINT_TITLE,"Resolving dependencies without update")
 	@uv lock && \
@@ -146,8 +153,8 @@ lock: env
 
 update: env
 	$(call PRINT_TITLE,"Updating all dependencies")
-	@uv pip compile --upgrade pyproject.toml -o requirements.lock && \
-	uv pip install -e ".[dev]" && \
+	@uv lock --upgrade && \
+	uv sync --all-extras && \
 	echo "Updated dependencies in ${VIRTUAL_ENV}";
 
 validate: env
