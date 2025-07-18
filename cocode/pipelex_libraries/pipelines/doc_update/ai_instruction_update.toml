@@ -18,14 +18,14 @@ inputs = { git_diff = "GitDiff", agents_content = "AgentsContent" }
 output = "AIInstructionFileAnalysis"
 system_prompt = """
 You are an AI instruction expert specializing in AGENTS.md files.
-Focus EXCLUSIVELY on extracting GENERAL CODING PRINCIPLES from changes, not specific implementations.
-Look for patterns like "use custom exceptions" or "format validation errors" rather than specific method names or classes.
+Focus on extracting CODING PRINCIPLES and identifying SPECIFIC UTILITY METHODS/PATTERNS used in the codebase.
+Recognize established utility functions and patterns that should be used consistently across the project.
 Filter out maintenance updates, version changes, and configuration tweaks that don't improve coding skills.
 """
 prompt_template = """
 Analyze changes needed for AGENTS.md based on git diff and current file content.
 
-CRITICAL FOCUS: Extract GENERAL CODING PRINCIPLES from the changes, not specific implementation details.
+CRITICAL FOCUS: Extract coding principles AND identify specific utility methods/patterns that are established in the codebase.
 
 GIT DIFF:
 @git_diff
@@ -33,36 +33,34 @@ GIT DIFF:
 CURRENT AGENTS.MD CONTENT:
 @agents_content
 
-Look for GENERAL PATTERNS in the changes and extract the underlying principles:
+Look for TWO TYPES of patterns in the changes:
 
-**CODING PRINCIPLES TO EXTRACT:**
-- Error handling patterns (e.g., "use custom exceptions", "format validation errors")
-- Validation approaches (e.g., "implement fallback validation", "use model validation")
-- Code organization patterns (e.g., "separate concerns", "use dependency injection")
-- Testing methodologies (e.g., "test edge cases", "use mocking patterns")
-- Performance practices (e.g., "optimize for common cases", "implement caching")
+**1. GENERAL CODING PRINCIPLES:**
+- Error handling patterns
+- Validation approaches
+- Code organization patterns
+- Performance practices
 
-**THINK IN TERMS OF GENERAL RULES:**
-- Instead of "use StuffContentValidationError", think "use custom exceptions"
-- Instead of "use format_pydantic_validation_error", think "format validation errors consistently"
-- Instead of "implement content_as method", think "implement type conversion with validation"
-- Instead of "use ValidationError", think "leverage framework validation mechanisms"
+**2. SPECIFIC UTILITY METHODS/PATTERNS:**
+- Established utility functions that should be used consistently
+- Specific patterns or methods that are part of the codebase standards
+- Helper functions that are meant to be reused across the project
+- Established error handling utilities or validation helpers
+
+**RECOGNIZE ESTABLISHED PATTERNS:**
+- If you see utility functions being used in the changes, identify them specifically
+- If you see specific exception classes being created/used, identify them specifically
+- If you see established helper functions, mention them by name
+- Don't overgeneralize utility methods into vague principles
 
 **COMPLETELY IGNORE:**
-- Specific class names, method names, or variable names
-- Version number updates (v0.6.1 → v0.6.2, etc.)
+- Version number updates
 - Configuration file changes that don't affect coding
 - Documentation formatting or typo fixes
 - Gitignore pattern updates
 - Dependency version bumps without API changes
 
-For each relevant PRINCIPLE, categorize as:
-- **Additions**: New general coding principles to adopt
-- **Deletions**: Removed general practices or deprecated approaches
-- **Modifications**: Changed general coding principles or updated approaches
-- **Minor Changes**: Small refinements to existing general guidelines
-
-Focus on WHAT general principle the code change represents, not HOW it's specifically implemented.
+Be specific about utility methods and helper functions that are part of the codebase standards.
 """
 
 [pipe.analyze_claude_md_changes]
@@ -71,14 +69,14 @@ inputs = { git_diff = "GitDiff", claude_content = "ClaudeContent" }
 output = "AIInstructionFileAnalysis"
 system_prompt = """
 You are an AI instruction expert specializing in CLAUDE.md files.
-Focus EXCLUSIVELY on extracting GENERAL CODE GENERATION PRINCIPLES from changes, not specific implementations.
-Look for patterns like "use custom exceptions" or "format validation errors" rather than specific method names or classes.
+Focus on extracting CODE GENERATION PRINCIPLES and identifying SPECIFIC UTILITY METHODS/PATTERNS used in the codebase.
+Recognize established utility functions and patterns that should be used consistently across the project.
 Filter out maintenance updates, version changes, and configuration tweaks that don't improve code quality.
 """
 prompt_template = """
 Analyze changes needed for CLAUDE.md based on git diff and current file content.
 
-CRITICAL FOCUS: Extract GENERAL CODE GENERATION PRINCIPLES from the changes, not specific implementation details.
+CRITICAL FOCUS: Extract code generation principles AND identify specific utility methods/patterns that are established in the codebase.
 
 GIT DIFF:
 @git_diff
@@ -86,36 +84,35 @@ GIT DIFF:
 CURRENT CLAUDE.MD CONTENT:
 @claude_content
 
-Look for GENERAL PATTERNS in the changes and extract the underlying principles:
+Look for TWO TYPES of patterns in the changes:
 
-**CODE GENERATION PRINCIPLES TO EXTRACT:**
-- Error handling patterns (e.g., "use custom exceptions", "format validation errors")
-- Validation approaches (e.g., "implement fallback validation", "use model validation")
-- Code structure patterns (e.g., "separate concerns", "use dependency injection")
-- Testing patterns (e.g., "test edge cases", "use mocking patterns")
-- Performance patterns (e.g., "optimize for common cases", "implement caching")
+**1. GENERAL CODE GENERATION PRINCIPLES:**
+- Error handling patterns
+- Validation approaches
+- Code structure patterns
+- Performance patterns
+and so on...
 
-**THINK IN TERMS OF GENERAL RULES:**
-- Instead of "use StuffContentValidationError", think "use custom exceptions"
-- Instead of "use format_pydantic_validation_error", think "format validation errors consistently"
-- Instead of "implement content_as method", think "implement type conversion with validation"
-- Instead of "use ValidationError", think "leverage framework validation mechanisms"
+**2. SPECIFIC UTILITY METHODS/PATTERNS:**
+- Established utility functions that should be used consistently
+- Specific patterns or methods that are part of the codebase standards
+- Helper functions that are meant to be reused across the project
+- Established error handling utilities or validation helpers
+
+**RECOGNIZE ESTABLISHED PATTERNS:**
+- If you see utility functions being used in the changes, identify them specifically
+- If you see specific exception classes being created/used, identify them specifically
+- If you see established helper functions, mention them by name
+- Don't overgeneralize utility methods into vague principles
 
 **COMPLETELY IGNORE:**
-- Specific class names, method names, or variable names
-- Version number updates (v0.6.1 → v0.6.2, etc.)
+- Version number updates
 - Configuration file changes that don't affect code generation
 - Documentation formatting or typo fixes
 - Gitignore pattern updates
 - Dependency version bumps without API changes
 
-For each relevant PRINCIPLE, categorize as:
-- **Additions**: New general code generation principles to adopt
-- **Deletions**: Removed general practices or deprecated approaches
-- **Modifications**: Changed general code generation principles or updated approaches
-- **Minor Changes**: Small refinements to existing general guidelines
-
-Focus on WHAT general principle the code change represents, not HOW it's specifically implemented.
+Be specific about utility methods and helper functions that are part of the codebase standards.
 """
 
 [pipe.analyze_cursor_rules_changes]
@@ -124,14 +121,14 @@ inputs = { git_diff = "GitDiff", cursor_rules_content = "CursorRulesContent" }
 output = "AIInstructionFileAnalysis"
 system_prompt = """
 You are an AI instruction expert specializing in cursor rules files.
-Focus EXCLUSIVELY on extracting GENERAL CODING PRINCIPLES from changes, not specific implementations.
-Look for patterns like "use custom exceptions" or "format validation errors" rather than specific method names or classes.
+Focus on extracting CODING PRINCIPLES and identifying SPECIFIC UTILITY METHODS/PATTERNS used in the codebase.
+Recognize established utility functions and patterns that should be used consistently across the project.
 Filter out maintenance updates, version changes, and configuration tweaks that don't improve code quality.
 """
 prompt_template = """
 Analyze changes needed for cursor rules based on git diff and current file content.
 
-CRITICAL FOCUS: Extract GENERAL CODING PRINCIPLES from the changes, not specific implementation details.
+CRITICAL FOCUS: Extract coding principles AND identify specific utility methods/patterns that are established in the codebase.
 
 GIT DIFF:
 @git_diff
@@ -139,36 +136,34 @@ GIT DIFF:
 CURRENT CURSOR RULES CONTENT:
 @cursor_rules_content
 
-Look for GENERAL PATTERNS in the changes and extract the underlying principles:
+Look for TWO TYPES of patterns in the changes:
 
-**CODING PRINCIPLES TO EXTRACT:**
-- Error handling patterns (e.g., "use custom exceptions", "format validation errors")
-- Validation approaches (e.g., "implement fallback validation", "use model validation")
-- Code organization patterns (e.g., "separate concerns", "use dependency injection")
-- Testing methodologies (e.g., "test edge cases", "use mocking patterns")
-- Performance practices (e.g., "optimize for common cases", "implement caching")
+**1. GENERAL CODING PRINCIPLES:**
+- Error handling patterns
+- Validation approaches
+- Code organization patterns
+- Performance practices
 
-**THINK IN TERMS OF GENERAL RULES:**
-- Instead of "use StuffContentValidationError", think "use custom exceptions"
-- Instead of "use format_pydantic_validation_error", think "format validation errors consistently"
-- Instead of "implement content_as method", think "implement type conversion with validation"
-- Instead of "use ValidationError", think "leverage framework validation mechanisms"
+**2. SPECIFIC UTILITY METHODS/PATTERNS:**
+- Established utility functions that should be used consistently
+- Specific patterns or methods that are part of the codebase standards
+- Helper functions that are meant to be reused across the project
+- Established error handling utilities or validation helpers
+
+**RECOGNIZE ESTABLISHED PATTERNS:**
+- If you see utility functions being used in the changes, identify them specifically
+- If you see specific exception classes being created/used, identify them specifically
+- If you see established helper functions, mention them by name
+- Don't overgeneralize utility methods into vague principles
 
 **COMPLETELY IGNORE:**
-- Specific class names, method names, or variable names
-- Version number updates (v0.6.1 → v0.6.2, etc.)
+- Version number updates
 - Configuration file changes that don't affect coding practices
 - Documentation formatting or typo fixes
 - Gitignore pattern updates
 - Dependency version bumps without API changes
 
-For each relevant PRINCIPLE, categorize as:
-- **Additions**: New general coding principles to adopt
-- **Deletions**: Removed general practices or deprecated approaches
-- **Modifications**: Changed general coding principles or updated approaches
-- **Minor Changes**: Small refinements to existing general guidelines
-
-Focus on WHAT general principle the code change represents, not HOW it's specifically implemented.
+Be specific about utility methods and helper functions that are part of the codebase standards.
 """
 
 [pipe.combine_ai_instruction_analyses]
@@ -205,8 +200,8 @@ output = "Text"
 system_prompt = """
 You are an expert technical writer specializing in AI instruction files.
 Be HIGHLY SELECTIVE - only document changes that represent significant coding principles or patterns.
-When a change IS important, be specific and detailed about the principle and its application.
-Ignore minor tweaks, small improvements, or incremental changes that don't fundamentally change how developers should code.
+When a change IS important, write PRECISE, ACTIONABLE RULES - no explanations, no fluff, just direct commands.
+Write rules as imperative statements that developers can immediately follow.
 """
 prompt_template = """
 Format these AI instruction update suggestions into a clear, well-structured text output:
@@ -219,71 +214,62 @@ Create a professional document with the following structure:
 
 I have made changes to my codebase and need you to update the AI instruction files accordingly.
 
-**IMPORTANT NOTE:** Only include changes that represent SIGNIFICANT coding principles or patterns. Be specific and detailed about important changes, but completely ignore minor improvements.
+**IMPORTANT NOTE:** Write PRECISE, ACTIONABLE RULES. No explanations, no context, just direct commands.
 
 ## OVERALL SUMMARY
-[Only mention changes that represent major shifts in coding approach or significant new patterns]
+[Only mention changes that represent major shifts in coding approach]
 
 ## AGENTS.md UPDATES
 [Only include if there are SIGNIFICANT changes to development principles]
 
-**Reasoning:** [Why this represents a major shift in how developers should approach coding]
+**Reasoning:** [One sentence explaining why this matters]
 
 **Additions:**
-[List only MAJOR new principles with specific details about when and why to use them]
+[List precise rules as imperative commands based on the analysis]
 
 **Deletions:**
-[List only MAJOR removed principles or deprecated approaches]
+[List precise rules about what to stop doing]
 
 **Modifications:**
-[List only MAJOR changes to existing principles with specific details]
-
-**Minor Changes:**
-[SKIP this section - don't document minor changes]
+[List precise rules about what to change]
 
 ## CLAUDE.md UPDATES
 [Only include if there are SIGNIFICANT changes to code generation principles]
 
-**Reasoning:** [Why this represents a major shift in code generation approach]
+**Reasoning:** [One sentence explaining why this matters]
 
 **Additions:**
-[List only MAJOR new code generation principles with specific guidance]
+[List precise code generation rules as imperative commands based on the analysis]
 
 **Deletions:**
-[List only MAJOR removed principles or deprecated approaches]
+[List precise rules about what to stop doing]
 
 **Modifications:**
-[List only MAJOR changes to existing principles with specific details]
-
-**Minor Changes:**
-[SKIP this section - don't document minor changes]
+[List precise rules about what to change]
 
 ## CURSOR RULES UPDATES
 [Only include if there are SIGNIFICANT changes to coding practices]
 
-**Reasoning:** [Why this represents a major shift in coding practices]
+**Reasoning:** [One sentence explaining why this matters]
 
 **Additions:**
-[List only MAJOR new coding principles with specific guidance on application]
+[List precise coding rules as imperative commands based on the analysis]
 
 **Deletions:**
-[List only MAJOR removed principles or deprecated practices]
+[List precise rules about what to stop doing]
 
 **Modifications:**
-[List only MAJOR changes to existing principles with specific details]
-
-**Minor Changes:**
-[SKIP this section - don't document minor changes]
+[List precise rules about what to change]
 
 ## NO UPDATES NEEDED
 [Include this section if no changes represent significant shifts in coding principles]
 
 IMPORTANT FORMATTING RULES:
-- Only document changes that represent SIGNIFICANT shifts in coding approach
-- Be specific and detailed about important changes (when/why/how to apply the principle)
-- Completely ignore minor improvements, small tweaks, or incremental changes
-- If a change doesn't fundamentally change how developers should code, don't mention it
-- Focus on GAME-CHANGING principles, not minor improvements
+- Write rules as IMPERATIVE COMMANDS (Use X, Implement Y, Format Z)
+- NO explanations, NO context, NO benefits - just the rule
+- Maximum 1 line per rule
+- Be specific about WHAT to do, not WHY to do it
+- Focus on ACTIONABLE INSTRUCTIONS developers can immediately follow
 - If no major changes exist, respond with: \"No AI instruction updates are needed. The changes are minor improvements that don't represent significant shifts in coding principles.\"
 """
 
