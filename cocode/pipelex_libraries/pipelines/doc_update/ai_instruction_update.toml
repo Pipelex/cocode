@@ -1,33 +1,39 @@
 domain = "ai_instruction_update"
-definition = "Pipeline for analyzing git diffs and generating AI instruction update suggestions for AGENTS.md, CLAUDE.md, and cursor rules"
+definition = "Pipeline for analyzing git diffs and AI instruction file content to determine if updates are needed"
 
 [concept]
 GitDiff = "A git diff output showing changes between two versions of a codebase"
-AgentsInstructionItem = "A specific item that needs AGENTS.md analysis"
-ClaudeInstructionItem = "A specific item that needs CLAUDE.md analysis"
-CursorRulesItem = "A specific item that needs cursor rules analysis"
-DocumentationUpdateAnalysis = "Detailed analysis of what needs to be added, deleted, or changed in documentation"
-AIInstructionSuggestions = "Final suggestions for updating AI instruction files (AGENTS.md, CLAUDE.md, cursor rules)"
+AgentsContent = "The current content of AGENTS.md file"
+ClaudeContent = "The current content of CLAUDE.md file"
+CursorRulesContent = "The current content of cursor rules file"
+UpdateDecision = "Decision on whether a specific AI instruction file needs updates"
+AIInstructionSuggestions = "Final suggestions for updating AI instruction files"
 
 [pipe]
 
-[pipe.identify_ai_instruction_items]
-PipeLLM = "Identify changes that affect AI instruction files"
-inputs = { git_diff = "GitDiff" }
-output = "AgentsInstructionItem"
-multiple_output = true
-llm = "llm_for_large_text"
+# Decision pipes - determine if each file needs updates
+[pipe.should_update_agents_file]
+PipeLLM = "Decide if AGENTS.md needs updates based on git diff and current content"
+inputs = { git_diff = "GitDiff", agents_content = "AgentsContent" }
+output = "UpdateDecision"
 system_prompt = """
-You are a very conservative AI instruction analyst. Only identify changes that FUNDAMENTALLY affect how AI agents work with the codebase.
-Focus ONLY on major architectural changes, new AI-specific tools, or significant workflow changes.
-Most CLI changes or feature updates do NOT need AI instruction updates.
+You are a very conservative AI instruction analyst. Only recommend updates to AGENTS.md when code changes FUNDAMENTALLY affect how AI agents should operate when CODING IN THIS REPOSITORY and USING THE COCODE TOOL.
+
+AGENTS.md is specifically for AI agents who are contributing to this codebase and using the cocode tool - not for external users.
+
+Focus ONLY on major architectural changes, new AI-specific tools, or significant workflow changes that affect AI agent capabilities for coding in this repository.
+CRITICAL: Only suggest changes that are DIRECTLY RELATED to the git diff. Do NOT correct existing mistakes or issues in AGENTS.md that are unrelated to the current changes.
 """
 prompt_template = """
-Analyze this git diff to identify changes that need AI instruction updates:
+Analyze whether AGENTS.md needs updates based on these changes:
 
+Git Diff (what changed):
 @git_diff
 
-ONLY identify changes that fundamentally affect AI workflows, such as:
+Current AGENTS.md content:
+@agents_content
+
+DECISION CRITERIA - Only recommend updates if changes include:
 - New AI-specific commands or tools designed for AI agents
 - Major architectural changes affecting how agents navigate code
 - New agent capabilities or integrations
@@ -40,33 +46,39 @@ EXCLUDE:
 - Version updates
 - User-facing functionality that doesn't involve AI
 - Internal refactoring
+- Existing mistakes or issues in AGENTS.md that are NOT related to the git diff
 
-For each change that truly affects AI, provide:
-- File path where the change occurred
-- Type of change (new AI tool, workflow change, etc.)
-- Brief description of what changed
-- How this fundamentally changes AI workflows
+IMPORTANT: Only suggest changes that are DIRECTLY caused by the git diff. Do not fix existing issues that are unrelated to the current changes.
 
-Be very conservative - most changes don't need AI instruction updates.
+Provide your decision in this format:
+- UPDATE_NEEDED: YES or NO
+- CONFIDENCE: High/Medium/Low
+- REASONING: Brief explanation of why updates are or aren't needed, focusing only on git diff changes
+- SPECIFIC_AREAS: If YES, which sections of AGENTS.md need updates due to the git diff changes
 """
 
-[pipe.identify_claude_items]
-PipeLLM = "Identify changes that affect CLAUDE.md instructions"
-inputs = { git_diff = "GitDiff" }
-output = "ClaudeInstructionItem"
-multiple_output = true
-llm = "llm_for_large_text"
+[pipe.should_update_claude_file]
+PipeLLM = "Decide if CLAUDE.md needs updates based on git diff and current content"
+inputs = { git_diff = "GitDiff", claude_content = "ClaudeContent" }
+output = "UpdateDecision"
 system_prompt = """
-You are a very conservative Claude instruction analyst. Only identify changes that FUNDAMENTALLY affect how Claude understands or works with the codebase.
-Focus ONLY on major architectural changes or new Claude-specific patterns.
-Most changes do NOT need CLAUDE.md updates.
+You are a very conservative Claude instruction analyst. Only recommend updates to CLAUDE.md when code changes FUNDAMENTALLY affect how Claude should understand or work when CODING IN THIS REPOSITORY and USING THE COCODE TOOL.
+
+CLAUDE.md is specifically for Claude when contributing to this codebase and using the cocode tool - not for external users.
+
+Focus ONLY on major architectural changes or new Claude-specific patterns for coding in this repository.
+CRITICAL: Only suggest changes that are DIRECTLY RELATED to the git diff. Do NOT correct existing mistakes or issues in CLAUDE.md that are unrelated to the current changes.
 """
 prompt_template = """
-Analyze this git diff to identify changes that need CLAUDE.md instruction updates:
+Analyze whether CLAUDE.md needs updates based on these changes:
 
+Git Diff (what changed):
 @git_diff
 
-ONLY identify changes that fundamentally affect Claude's understanding, such as:
+Current CLAUDE.md content:
+@claude_content
+
+DECISION CRITERIA - Only recommend updates if changes include:
 - Major architectural or pattern changes
 - New Claude-specific integrations or capabilities
 - Significant changes to codebase structure or conventions
@@ -78,33 +90,39 @@ EXCLUDE:
 - Version updates
 - User-facing functionality
 - Internal refactoring
+- Existing mistakes or issues in CLAUDE.md that are NOT related to the git diff
 
-For each change that truly affects Claude's understanding, provide:
-- File path where the change occurred
-- Type of change (new pattern, architectural change, etc.)
-- Brief description of what changed
-- How this fundamentally changes Claude's understanding
+IMPORTANT: Only suggest changes that are DIRECTLY caused by the git diff. Do not fix existing issues that are unrelated to the current changes.
 
-Be very conservative - most changes don't need CLAUDE.md updates.
+Provide your decision in this format:
+- UPDATE_NEEDED: YES or NO
+- CONFIDENCE: High/Medium/Low
+- REASONING: Brief explanation of why updates are or aren't needed, focusing only on git diff changes
+- SPECIFIC_AREAS: If YES, which sections of CLAUDE.md need updates due to the git diff changes
 """
 
-[pipe.identify_cursor_items]
-PipeLLM = "Identify changes that affect cursor rules"
-inputs = { git_diff = "GitDiff" }
-output = "CursorRulesItem"
-multiple_output = true
-llm = "llm_for_large_text"
+[pipe.should_update_cursor_rules]
+PipeLLM = "Decide if cursor rules need updates based on git diff and current content"
+inputs = { git_diff = "GitDiff", cursor_rules_content = "CursorRulesContent" }
+output = "UpdateDecision"
 system_prompt = """
-You are a very conservative Cursor rules analyst. Only identify changes that FUNDAMENTALLY affect coding patterns or project structure.
-Focus ONLY on major changes to coding standards, project structure, or development workflows.
-Most changes do NOT need cursor rules updates.
+You are a very conservative Cursor rules analyst. Only recommend updates to cursor rules when code changes FUNDAMENTALLY affect coding patterns or project structure when CODING IN THIS REPOSITORY and USING THE COCODE TOOL.
+
+Cursor rules are specifically for developers contributing to this codebase and using the cocode tool - not for external users.
+
+Focus ONLY on major changes to coding standards, project structure, or development workflows for coding in this repository.
+CRITICAL: Only suggest changes that are DIRECTLY RELATED to the git diff. Do NOT correct existing mistakes or issues in cursor rules that are unrelated to the current changes.
 """
 prompt_template = """
-Analyze this git diff to identify changes that need cursor rules updates:
+Analyze whether cursor rules need updates based on these changes:
 
+Git Diff (what changed):
 @git_diff
 
-ONLY identify changes that fundamentally affect Cursor's behavior, such as:
+Current cursor rules content:
+@cursor_rules_content
+
+DECISION CRITERIA - Only recommend updates if changes include:
 - New coding patterns or conventions
 - Major project structure changes
 - New development tools or workflows that affect coding
@@ -116,111 +134,186 @@ EXCLUDE:
 - Version updates
 - User-facing functionality
 - Internal changes that don't affect how code should be written
+- Existing mistakes or issues in cursor rules that are NOT related to the git diff
 
-For each change that truly affects Cursor's coding behavior, provide:
-- File path where the change occurred
-- Type of change (new pattern, structure change, etc.)
-- Brief description of what changed
-- How this fundamentally changes how Cursor should code
+IMPORTANT: Only suggest changes that are DIRECTLY caused by the git diff. Do not fix existing issues that are unrelated to the current changes.
 
-Be very conservative - most changes don't need cursor rules updates.
+Provide your decision in this format:
+- UPDATE_NEEDED: YES or NO
+- CONFIDENCE: High/Medium/Low
+- REASONING: Brief explanation of why updates are or aren't needed, focusing only on git diff changes
+- SPECIFIC_AREAS: If YES, which sections of cursor rules need updates due to the git diff changes
 """
 
-[pipe.analyze_ai_instruction_change]
-PipeLLM = "Analyze a single change for AI instruction impact"
-inputs = { change_item = "AgentsInstructionItem" }
-output = "DocumentationUpdateAnalysis"
-llm = "llm_for_large_text"
+[pipe.generate_agents_updates]
+PipeLLM = "Generate specific updates for AGENTS.md"
+inputs = { git_diff = "GitDiff", agents_content = "AgentsContent", agents_decision = "UpdateDecision" }
+output = "Text"
 system_prompt = """
-You are an AI instruction expert. Analyze code changes to determine what AI instruction updates are needed.
-Focus on how changes affect AI agent workflows, capabilities, and understanding.
+You are an AI instruction expert. Generate specific, actionable updates for AGENTS.md based on code changes.
+
+AGENTS.md is specifically for AI agents who are CODING IN THIS REPOSITORY and USING THE COCODE TOOL - not for external users.
+
+Only generate updates if the decision indicates they are needed.
+CRITICAL: Only suggest changes that are DIRECTLY RELATED to the git diff. Do NOT correct existing mistakes or issues in AGENTS.md that are unrelated to the current changes.
 """
 prompt_template = """
-Analyze this code change for AI instruction impact:
+Generate AGENTS.md updates based on:
 
-Code Change:
-@change_item
+Git Diff:
+@git_diff
 
-Determine what AI instruction updates are needed. For each update, specify:
-- Type: "Addition", "Deletion", "Modification", or "Minor Change"
-- File: AGENTS.md, CLAUDE.md, or cursor rules file path
-- Location: which section to update
-- Content: exact instructions for AI
-- Reason: how this helps AI understand/use the new functionality
+Current AGENTS.md content:
+@agents_content
 
-Focus on actionable instructions for AI agents, Claude, and Cursor.
+Update Decision:
+@agents_decision
+
+If UPDATE_NEEDED is NO, respond with "No updates needed for AGENTS.md based on current analysis."
+
+If UPDATE_NEEDED is YES, provide specific updates in this format:
+
+## AGENTS.MD UPDATES
+
+**Additions:**
+- [Specific new sections or content to add - ONLY related to git diff changes]
+
+**Modifications:**
+- [Specific existing sections to modify and how - ONLY related to git diff changes]
+
+**Deletions:**
+- [Specific content to remove, if any - ONLY related to git diff changes]
+
+IMPORTANT CONSTRAINTS:
+- Only suggest changes that are DIRECTLY caused by the git diff
+- Do NOT fix existing typos, formatting issues, or outdated information unless they are directly related to the git diff changes
+- Focus exclusively on how the git diff changes affect AI agent workflows
+- Be very specific about:
+  - Exact section names and locations
+  - Precise content to add or modify
+  - Clear reasoning for each change tied to the git diff
 """
 
-[pipe.analyze_claude_change]
-PipeLLM = "Analyze a single change for CLAUDE.md impact"
-inputs = { change_item = "ClaudeInstructionItem" }
-output = "DocumentationUpdateAnalysis"
-llm = "llm_for_large_text"
+[pipe.generate_claude_updates]
+PipeLLM = "Generate specific updates for CLAUDE.md"
+inputs = { git_diff = "GitDiff", claude_content = "ClaudeContent", claude_decision = "UpdateDecision" }
+output = "Text"
 system_prompt = """
-You are a Claude instruction expert. Analyze code changes to determine what Claude-specific instructions need updating.
-Focus on how changes affect Claude's understanding of patterns, usage, and capabilities.
+You are a Claude instruction expert. Generate specific, actionable updates for CLAUDE.md based on code changes.
+
+CLAUDE.md is specifically for Claude when CODING IN THIS REPOSITORY and USING THE COCODE TOOL - not for external users.
+
+Only generate updates if the decision indicates they are needed.
+CRITICAL: Only suggest changes that are DIRECTLY RELATED to the git diff. Do NOT correct existing mistakes or issues in CLAUDE.md that are unrelated to the current changes.
 """
 prompt_template = """
-Analyze this code change for Claude instruction impact:
+Generate CLAUDE.md updates based on:
 
-Code Change:
-@change_item
+Git Diff:
+@git_diff
 
-Determine what CLAUDE.md instruction updates are needed. For each update, specify:
-- Type: "Addition", "Deletion", "Modification", or "Minor Change"
-- File: CLAUDE.md
-- Location: which section to update
-- Content: exact instructions for Claude
-- Reason: how this helps Claude understand the codebase
+Current CLAUDE.md content:
+@claude_content
 
-Focus on Claude-specific guidance and understanding.
+Update Decision:
+@claude_decision
+
+If UPDATE_NEEDED is NO, respond with "No updates needed for CLAUDE.md based on current analysis."
+
+If UPDATE_NEEDED is YES, provide specific updates in this format:
+
+## CLAUDE.MD UPDATES
+
+**Additions:**
+- [Specific new sections or content to add - ONLY related to git diff changes]
+
+**Modifications:**
+- [Specific existing sections to modify and how - ONLY related to git diff changes]
+
+**Deletions:**
+- [Specific content to remove, if any - ONLY related to git diff changes]
+
+IMPORTANT CONSTRAINTS:
+- Only suggest changes that are DIRECTLY caused by the git diff
+- Do NOT fix existing typos, formatting issues, or outdated information unless they are directly related to the git diff changes
+- Focus exclusively on how the git diff changes affect Claude's understanding of the codebase
+- Be very specific about:
+  - Exact section names and locations
+  - Precise content to add or modify
+  - Clear reasoning for each change tied to the git diff
 """
 
-[pipe.analyze_cursor_change]
-PipeLLM = "Analyze a single change for cursor rules impact"
-inputs = { change_item = "CursorRulesItem" }
-output = "DocumentationUpdateAnalysis"
-llm = "llm_for_large_text"
+[pipe.generate_cursor_rules_updates]
+PipeLLM = "Generate specific updates for cursor rules"
+inputs = { git_diff = "GitDiff", cursor_rules_content = "CursorRulesContent", cursor_decision = "UpdateDecision" }
+output = "Text"
 system_prompt = """
-You are a Cursor configuration expert. Analyze code changes to determine what cursor rules need updating.
-Focus on how changes affect Cursor's behavior, patterns, and configuration.
+You are a Cursor configuration expert. Generate specific, actionable updates for cursor rules based on code changes.
+
+Cursor rules are specifically for developers CODING IN THIS REPOSITORY and USING THE COCODE TOOL - not for external users.
+
+Only generate updates if the decision indicates they are needed.
+CRITICAL: Only suggest changes that are DIRECTLY RELATED to the git diff. Do NOT correct existing mistakes or issues in cursor rules that are unrelated to the current changes.
 """
 prompt_template = """
-Analyze this code change for Cursor rules impact:
+Generate cursor rules updates based on:
 
-Code Change:
-@change_item
+Git Diff:
+@git_diff
 
-Determine what cursor rules updates are needed. For each update, specify:
-- Type: "Addition", "Deletion", "Modification", or "Minor Change"
-- File: cursor rules file path
-- Location: which rule section to update
-- Content: exact rule updates for Cursor
-- Reason: how this helps Cursor behave correctly
+Current cursor rules content:
+@cursor_rules_content
 
-Focus on Cursor-specific configuration and behavior rules.
+Update Decision:
+@cursor_decision
+
+If UPDATE_NEEDED is NO, respond with "No updates needed for cursor rules based on current analysis."
+
+If UPDATE_NEEDED is YES, provide specific updates in this format:
+
+## CURSOR RULES UPDATES
+
+**Additions:**
+- [Specific new rules or content to add - ONLY related to git diff changes]
+
+**Modifications:**
+- [Specific existing rules to modify and how - ONLY related to git diff changes]
+
+**Deletions:**
+- [Specific rules to remove, if any - ONLY related to git diff changes]
+
+IMPORTANT CONSTRAINTS:
+- Only suggest changes that are DIRECTLY caused by the git diff
+- Do NOT fix existing typos, formatting issues, or outdated rules unless they are directly related to the git diff changes
+- Focus exclusively on how the git diff changes affect coding patterns or project structure
+- Be very specific about:
+  - Exact rule locations and formatting
+  - Precise content to add or modify
+  - Clear reasoning for each change tied to the git diff
 """
 
-[pipe.generate_ai_instruction_suggestions]
-PipeLLM = "Generate final AI instruction update suggestions"
-inputs = { agents_analyses = "DocumentationUpdateAnalysis", claude_analyses = "DocumentationUpdateAnalysis", cursor_analyses = "DocumentationUpdateAnalysis" }
+[pipe.consolidate_ai_instruction_updates]
+PipeLLM = "Consolidate all AI instruction updates into final suggestions"
+inputs = { agents_updates = "Text", claude_updates = "Text", cursor_updates = "Text" }
 output = "AIInstructionSuggestions"
-llm = "llm_for_swe"
 system_prompt = """
-You are an AI instruction coordinator. Generate clear, actionable suggestions for updating AI instruction files.
-Focus only on AGENTS.md, CLAUDE.md, and cursor rules. Be very selective - only include meaningful updates.
+You are an AI instruction coordinator. Consolidate all AI instruction file updates into a clear, actionable format.
+
+These AI instruction files (AGENTS.md, CLAUDE.md, cursor rules) are specifically for AI agents and developers CODING IN THIS REPOSITORY and USING THE COCODE TOOL - not for external users.
+
+Only include sections that have actual updates. Skip empty sections entirely.
 """
 prompt_template = """
-Generate AI instruction update suggestions based on these analyses:
+Consolidate these AI instruction updates:
 
-Agents Instruction Analyses:
-@agents_analyses
+AGENTS.md Updates:
+@agents_updates
 
-Claude Instruction Analyses:
-@claude_analyses
+CLAUDE.md Updates:
+@claude_updates
 
-Cursor Rules Analyses:
-@cursor_analyses
+Cursor Rules Updates:
+@cursor_updates
 
 Generate output in this exact format:
 
@@ -228,62 +321,33 @@ I have made changes to my codebase and need you to update the AI instruction fil
 
 ## AGENTS.MD UPDATES (AI Agent Instructions)
 
-**Additions:**
-[List significant additions here]
-
-**Deletions:**
-[List significant deletions here]
-
-**Modifications:**
-[List significant modifications here]
-
-**Other minor changes:**
-[List minor single-line changes that don't warrant separate categories]
+[Include agents updates here, or write "No updates needed" if no changes]
 
 ## CLAUDE.MD UPDATES (Claude AI Instructions)
 
-**Additions:**
-[List significant additions here]
-
-**Deletions:**
-[List significant deletions here]
-
-**Modifications:**
-[List significant modifications here]
-
-**Other minor changes:**
-[List minor single-line changes that don't warrant separate categories]
+[Include claude updates here, or write "No updates needed" if no changes]
 
 ## CURSOR RULES UPDATES (Cursor AI Configuration)
 
-**Additions:**
-[List significant additions here]
+[Include cursor rules updates here, or write "No updates needed" if no changes]
 
-**Deletions:**
-[List significant deletions here]
+Only include sections that have actual updates. If all files show "No updates needed", then respond with:
 
-**Modifications:**
-[List significant modifications here]
-
-**Other minor changes:**
-[List minor single-line changes that don't warrant separate categories]
-
-Only include sections that have actual updates. Skip empty sections entirely.
-Be specific about file paths, locations, and exact content needed.
+"No AI instruction file updates are needed based on the current code changes."
 """
 
-# Main AI instruction pipeline
+# Main AI instruction pipeline with parallel decision making
 [pipe.ai_instruction_update]
-PipeSequence = "AI instruction update analysis for AGENTS.md, CLAUDE.md, and cursor rules"
-inputs = { git_diff = "GitDiff" }
+PipeSequence = "AI instruction update analysis with decision-based updates"
+inputs = { git_diff = "GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
 output = "AIInstructionSuggestions"
 steps = [
-    { pipe = "identify_ai_instruction_items", result = "agents_items" },
-    { pipe = "identify_claude_items", result = "claude_items" },
-    { pipe = "identify_cursor_items", result = "cursor_items" },
-    { pipe = "analyze_ai_instruction_change", batch_over = "agents_items", batch_as = "change_item", result = "agents_analyses" },
-    { pipe = "analyze_claude_change", batch_over = "claude_items", batch_as = "change_item", result = "claude_analyses" },
-    { pipe = "analyze_cursor_change", batch_over = "cursor_items", batch_as = "change_item", result = "cursor_analyses" },
-    { pipe = "generate_ai_instruction_suggestions", result = "ai_suggestions" }
+    { pipe = "should_update_agents_file", result = "agents_decision" },
+    { pipe = "should_update_claude_file", result = "claude_decision" },
+    { pipe = "should_update_cursor_rules", result = "cursor_decision" },
+    { pipe = "generate_agents_updates", result = "agents_updates" },
+    { pipe = "generate_claude_updates", result = "claude_updates" },
+    { pipe = "generate_cursor_rules_updates", result = "cursor_updates" },
+    { pipe = "consolidate_ai_instruction_updates", result = "final_suggestions" }
 ]
 

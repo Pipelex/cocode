@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from typing import Callable, Dict, List, Optional
 
@@ -288,11 +289,61 @@ async def swe_ai_instruction_update_from_diff(
     # Generate git diff
     diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
 
-    # Create working memory with git diff only (no repo structure needed)
+    # Read AI instruction files content
+    def read_file_content(file_path: str) -> str:
+        """Read file content, return empty string if file doesn't exist."""
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                return f.read()
+        except FileNotFoundError:
+            return ""
+        except Exception as e:
+            log.warning(f"Error reading file {file_path}: {e}")
+            return ""
+
+    # Read AGENTS.md content
+    agents_md_path = os.path.join(repo_path, "AGENTS.md")
+    agents_content = read_file_content(agents_md_path)
+
+    # Read CLAUDE.md content
+    claude_md_path = os.path.join(repo_path, "CLAUDE.md")
+    claude_content = read_file_content(claude_md_path)
+
+    # Read cursor rules content (check multiple possible locations)
+    cursor_rules_content = ""
+    possible_cursor_files = [".cursorrules", ".cursor/rules", ".cursor/rules.md", ".cursor/rules/main.md", ".cursor/rules/pipelex.mdc"]
+
+    for cursor_file in possible_cursor_files:
+        cursor_path = os.path.join(repo_path, cursor_file)
+        if os.path.exists(cursor_path):
+            if os.path.isfile(cursor_path):
+                content = read_file_content(cursor_path)
+                if content:
+                    cursor_rules_content += f"=== {cursor_file} ===\n{content}\n\n"
+            elif os.path.isdir(cursor_path):
+                # If it's a directory, read all .md and .mdc files
+                try:
+                    for root, _, files in os.walk(cursor_path):
+                        for file in files:
+                            if file.endswith((".md", ".mdc", ".txt")):
+                                file_path = os.path.join(root, file)
+                                content = read_file_content(file_path)
+                                if content:
+                                    relative_path = os.path.relpath(file_path, repo_path)
+                                    cursor_rules_content += f"=== {relative_path} ===\n{content}\n\n"
+                except Exception as e:
+                    log.warning(f"Error reading cursor rules directory {cursor_path}: {e}")
+
+    # Create working memory with git diff and AI instruction file contents
     release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
     git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
+    agents_content_stuff = StuffFactory.make_from_str(str_value=agents_content, name="agents_content")
+    claude_content_stuff = StuffFactory.make_from_str(str_value=claude_content, name="claude_content")
+    cursor_rules_content_stuff = StuffFactory.make_from_str(str_value=cursor_rules_content, name="cursor_rules_content")
 
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[release_stuff, git_diff_stuff])
+    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(
+        stuff_list=[release_stuff, git_diff_stuff, agents_content_stuff, claude_content_stuff, cursor_rules_content_stuff]
+    )
 
     # Use the AI instruction pipeline
     pipe_code = "ai_instruction_update"
@@ -303,6 +354,7 @@ async def swe_ai_instruction_update_from_diff(
         working_memory=working_memory,
         pipe_run_mode=PipeRunMode.LIVE,
     )
+
     pretty_print(pipe_output, title="AI Instruction Update Analysis")
     swe_stuff = pipe_output.main_stuff
 

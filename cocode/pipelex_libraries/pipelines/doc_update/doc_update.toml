@@ -26,7 +26,6 @@ PipeLLM = "Identify changes that affect user documentation in docs/ directory"
 inputs = { git_diff = "GitDiff" }
 output = "DocsDirectoryItem"
 multiple_output = true
-llm = "llm_for_large_text"
 system_prompt = """
 You are a conservative user documentation analyst. Only identify changes that CLEARLY require user documentation updates.
 Focus ONLY on user-facing features, API changes, installation procedures, and usage instructions.
@@ -65,7 +64,6 @@ Be conservative - when in doubt, don't include it.
 PipeLLM = "Analyze a single change for user documentation impact"
 inputs = { change_item = "DocsDirectoryItem" }
 output = "DocumentationUpdateAnalysis"
-llm = "llm_for_large_text"
 system_prompt = """
 You are a technical documentation expert. Analyze code changes to determine what user documentation updates are needed.
 Focus on user-facing features, API changes, installation procedures, and usage instructions.
@@ -95,7 +93,6 @@ Focus only on docs/ directory files for user documentation.
 PipeLLM = "Generate final user documentation update suggestions"
 inputs = { docs_analyses = "DocumentationUpdateAnalysis" }
 output = "UserDocumentationSuggestions"
-llm = "llm_for_swe"
 system_prompt = """
 You are a user documentation coordinator. Generate clear, actionable suggestions for updating user documentation.
 Focus only on docs/ directory updates. Be specific and practical.
