@@ -17,9 +17,6 @@ from cocode.repox.repox_processor import RepoxException, RepoxProcessor
 from cocode.utils import run_git_diff_command
 
 
-
-
-
 async def swe_from_repo(
     pipe_code: str,
     repo_path: str,
@@ -305,7 +302,7 @@ async def swe_ai_instruction_update_from_diff(
         content = read_file_content(cursorrules_path)
         if content:
             cursor_rules_content = content
-    
+
     # Pattern 2: Multiple .md files in .cursor/rules/ directory
     elif os.path.exists(os.path.join(repo_path, ".cursor/rules")) and os.path.isdir(os.path.join(repo_path, ".cursor/rules")):
         cursor_rules_dir = os.path.join(repo_path, ".cursor/rules")
@@ -315,10 +312,10 @@ async def swe_ai_instruction_update_from_diff(
             for file in os.listdir(cursor_rules_dir):
                 if file.endswith(".mdc"):
                     md_files.append(file)
-            
+
             # Sort files for consistent ordering
             md_files.sort()
-            
+
             # Concatenate all .md files
             for file in md_files:
                 file_path = os.path.join(cursor_rules_dir, file)
