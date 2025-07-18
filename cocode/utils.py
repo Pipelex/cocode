@@ -205,6 +205,18 @@ def run_git_diff_command(repo_path: str, version: str, ignore_patterns: Optional
             "poetry.lock",
             "node_modules",
             "node_modules/**",
+            "*.lock",
+            "*.pyc",
+            "__pycache__",
+            ".git",
+            ".venv",
+            "build/",
+            "dist/",
+            "*.log",
+            "temp/",
+            ".pytest_cache",
+            ".mypy_cache",
+            ".ruff_cache",
         ]
 
         # Combine default patterns with user-provided patterns

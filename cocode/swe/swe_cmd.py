@@ -189,27 +189,11 @@ async def swe_doc_update_from_diff(
     version: str,
     output_filename: str,
     output_dir: str,
+    ignore_patterns: Optional[List[str]] = None,
     doc_dir: Optional[str] = None,
 ) -> None:
     """Generate documentation update suggestions for docs/ directory based on git diff analysis."""
     log.info(f"Generating documentation update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
-
-    # Hardcoded ignore patterns for common files that don't need doc updates
-    ignore_patterns = [
-        "*.lock",
-        "*.pyc",
-        "__pycache__",
-        ".git",
-        ".venv",
-        "node_modules",
-        "build/",
-        "dist/",
-        "*.log",
-        "temp/",
-        ".pytest_cache",
-        ".mypy_cache",
-        ".ruff_cache",
-    ]
 
     # Generate git diff
     diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
@@ -240,26 +224,11 @@ async def swe_ai_instruction_update_from_diff(
     version: str,
     output_filename: str,
     output_dir: str,
+    ignore_patterns: Optional[List[str]] = None,
     doc_dir: Optional[str] = None,
 ) -> None:
     """Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, and cursor rules based on git diff analysis."""
     log.info(f"Generating AI instruction update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
-
-    ignore_patterns = [
-        "*.lock",
-        "*.pyc",
-        "__pycache__",
-        ".git",
-        ".venv",
-        "node_modules",
-        "build/",
-        "dist/",
-        "*.log",
-        "temp/",
-        ".pytest_cache",
-        ".mypy_cache",
-        ".ruff_cache",
-    ]
 
     diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
 

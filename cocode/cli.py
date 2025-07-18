@@ -341,6 +341,12 @@ def swe_doc_update_cmd(
         str,
         typer.Option("--output-filename", "-n", help="Output filename"),
     ] = "doc-update-suggestions.txt",
+    ignore_patterns: Annotated[
+        Optional[List[str]],
+        typer.Option(
+            "--ignore-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
+        ),
+    ] = None,
     doc_dir: Annotated[
         Optional[str],
         typer.Option("--doc-dir", "-d", help="Directory containing documentation files (e.g., 'docs', 'documentation')"),
@@ -355,6 +361,7 @@ def swe_doc_update_cmd(
             version=version,
             output_filename=output_filename,
             output_dir=output_dir,
+            ignore_patterns=ignore_patterns,
             doc_dir=doc_dir,
         )
     )
@@ -380,6 +387,12 @@ def swe_ai_instruction_update_cmd(
         str,
         typer.Option("--output-filename", "-n", help="Output filename"),
     ] = "ai-instruction-update-suggestions.txt",
+    ignore_patterns: Annotated[
+        Optional[List[str]],
+        typer.Option(
+            "--ignore-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
+        ),
+    ] = None,
     doc_dir: Annotated[
         Optional[str],
         typer.Option("--doc-dir", "-d", help="Directory containing documentation files (e.g., 'docs', 'documentation')"),
@@ -394,6 +407,7 @@ def swe_ai_instruction_update_cmd(
             version=version,
             output_filename=output_filename,
             output_dir=output_dir,
+            ignore_patterns=ignore_patterns,
             doc_dir=doc_dir,
         )
     )
