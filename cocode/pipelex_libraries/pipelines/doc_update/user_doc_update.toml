@@ -1,129 +1,117 @@
 domain = "user_doc_update"
-definition = "Pipeline for analyzing git diffs and generating user documentation update suggestions for docs/ directory"
+definition = "Pipeline for updating user documentation in docs/ directory based on git diff"
 
 [concept]
 GitDiff = "A git diff output showing changes between two versions of a codebase"
-DocsDirectoryItem = "A specific item that needs docs/ directory analysis"
-DocumentationUpdateAnalysis = "Detailed analysis of what needs to be added, deleted, or changed in documentation"
-UserDocumentationSuggestions = "Final suggestions for updating user documentation (docs/ directory)"
+DocumentationItem = "A specific change that needs documentation analysis"
+DocumentationAnalysis = "Analysis of what documentation updates are needed"
+DocumentationSuggestions = "Final suggestions for updating user documentation"
 
 [pipe]
 
-[pipe.identify_user_docs_items]
-PipeLLM = "Identify changes that affect user documentation in docs/ directory"
+[pipe.identify_user_doc_changes]
+PipeLLM = "Identify changes that affect user documentation"
 inputs = { git_diff = "GitDiff" }
-output = "DocsDirectoryItem"
+output = "DocumentationItem"
 multiple_output = true
 llm = "llm_for_large_text"
 system_prompt = """
-You are a conservative user documentation analyst. Only identify changes that CLEARLY require user documentation updates.
-Focus ONLY on user-facing features, API changes, installation procedures, and usage instructions.
-Be very selective - most internal changes don't need user documentation updates.
+You are a user documentation analyst. Only identify changes that affect user-facing documentation in the docs/ directory.
+Focus on CLI commands, features, installation, and usage instructions.
 """
 prompt_template = """
 Analyze this git diff to identify changes that need docs/ directory updates:
 
 @git_diff
 
-ONLY identify changes that clearly affect users, such as:
-- New CLI commands or removed commands
-- Changed command behavior or parameters
-- New features users will interact with
+IDENTIFY CHANGES FOR USER DOCUMENTATION:
+- New/removed CLI commands or parameters
+- New/changed user-facing features
 - Installation/setup changes
-- API changes that affect user code
+- API changes affecting user code
+- Usage instruction changes
 
 EXCLUDE:
 - Internal refactoring
 - Test changes
 - Implementation details
-- Minor version bumps without feature changes
-- Code reorganization that doesn't affect user interface
-- AI-specific tools or workflows (these belong in AI instruction files)
+- AI-specific tools or workflows
 
-For each change that needs user documentation, provide:
-- File path where the change occurred
-- Type of change (new feature, removed feature, changed behavior, etc.)
+For each change, provide:
+- File path where change occurred
+- Change type (addition, deletion, modification, minor_change)
 - Brief description of what changed
 - Why users need to know about this
-
-Be conservative - when in doubt, don't include it.
 """
 
-[pipe.analyze_user_docs_change]
+[pipe.analyze_user_doc_change]
 PipeLLM = "Analyze a single change for user documentation impact"
-inputs = { change_item = "DocsDirectoryItem" }
-output = "DocumentationUpdateAnalysis"
+inputs = { change_item = "DocumentationItem" }
+output = "DocumentationAnalysis"
 llm = "llm_for_large_text"
 system_prompt = """
-You are a technical documentation expert. Analyze code changes to determine what user documentation updates are needed.
-Focus on user-facing features, API changes, installation procedures, and usage instructions.
-For single-line changes, evaluate if they represent major functionality changes or minor updates.
+You are a user documentation expert. Analyze code changes to determine what user documentation updates are needed.
+Focus on docs/ directory files only.
 """
 prompt_template = """
-Analyze this code change for user documentation impact:
+Analyze this change for user documentation impact:
 
-Code Change:
 @change_item
 
-Determine what user documentation updates are needed. For each update, specify:
-- Type: "Addition", "Deletion", "Modification", or "Minor Change"
-- File: exact documentation file path in docs/ directory
-- Location: where in the file to make the change
-- Content: exact content to add/modify/remove
-- Reason: why this change is needed for users
-
-**Evaluation criteria for single-line changes:**
-- If it's a new feature, API endpoint, command, or significant behavior change → "Addition"/"Deletion"/"Modification"
-- If it's a minor fix, refactoring, or internal change with minimal user impact → "Minor Change"
-
-Focus only on docs/ directory files for user documentation.
+Determine what user documentation updates are needed:
+- Change Category: Addition/Deletion/Modification/Minor_Change
+- Affected Files: Exact documentation file paths in docs/ directory
+- Content Location: Where in files to make changes
+- Specific Content: Exact text to add/modify/remove
+- Reasoning: Why this change affects user documentation
 """
 
-[pipe.generate_user_documentation_suggestions]
-PipeLLM = "Generate final user documentation update suggestions"
-inputs = { docs_analyses = "DocumentationUpdateAnalysis" }
-output = "UserDocumentationSuggestions"
+[pipe.generate_user_doc_suggestions]
+PipeLLM = "Generate final user documentation suggestions"
+inputs = { doc_analyses = "DocumentationAnalysis" }
+output = "DocumentationSuggestions"
 llm = "llm_for_swe"
 system_prompt = """
 You are a user documentation coordinator. Generate clear, actionable suggestions for updating user documentation.
-Focus only on docs/ directory updates. Be specific and practical.
+Focus only on docs/ directory updates.
 """
 prompt_template = """
-Generate user documentation update suggestions based on this analysis:
+Generate user documentation update suggestions:
 
-Documentation Analyses:
-@docs_analyses
+@doc_analyses
 
-Generate output in this exact format:
+Generate output in this format:
 
 I have made changes to my codebase and need you to update the user documentation accordingly. Here's what changed and what needs to be updated:
 
 ## USER DOCUMENTATION UPDATES (docs/ directory)
 
 **Additions:**
-[List significant additions here]
+[List significant additions with specific file paths and content]
 
 **Deletions:**
-[List significant deletions here]
+[List significant deletions with specific file paths and content]
 
 **Modifications:**
-[List significant modifications here]
+[List significant modifications with specific file paths and content]
 
-**Other minor changes:**
-[List minor single-line changes that don't warrant separate categories]
+**Minor Changes:**
+[List minor changes with specific file paths and content]
 
 Only include sections that have actual updates. Skip empty sections entirely.
-Be specific about file paths, locations, and exact content needed.
+Be specific about exact file paths, locations, and content needed.
+
+If no documentation updates are needed, respond with:
+"No user documentation updates are needed based on the current code changes."
 """
 
-# Main user documentation pipeline
 [pipe.user_doc_update]
-PipeSequence = "User documentation update analysis for docs/ directory"
+PipeSequence = "User documentation update analysis"
 inputs = { git_diff = "GitDiff" }
-output = "UserDocumentationSuggestions"
+output = "DocumentationSuggestions"
 steps = [
-    { pipe = "identify_user_docs_items", result = "docs_items" },
-    { pipe = "analyze_user_docs_change", batch_over = "docs_items", batch_as = "change_item", result = "docs_analyses" },
-    { pipe = "generate_user_documentation_suggestions", result = "user_suggestions" }
+    { pipe = "identify_user_doc_changes", result = "doc_changes" },
+    { pipe = "analyze_user_doc_change", batch_over = "doc_changes", batch_as = "change_item", result = "doc_analyses" },
+    { pipe = "generate_user_doc_suggestions", result = "user_suggestions" }
 ]
 

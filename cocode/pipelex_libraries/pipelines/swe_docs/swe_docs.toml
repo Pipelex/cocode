@@ -6,10 +6,12 @@ SoftwareDoc = "Documentation related to software engineering projects or codebas
 InconsistencyReport = "A text report enumerating any inconsistencies detected within the provided documentation."
 SoftwareFeaturesRecap = "A comprehensive overview of software features highlighting key capabilities, strengths, and limitations without technical implementation details."
 FundamentalsDoc = "A comprehensive overview of the fundamental concepts and principles of software engineering."
-
-[concept.OnboardingDocumentation]
-Concept = "Complete set of documentation needed for onboarding new developers to a project."
-structure = "OnboardingDocumentation"
+EnvironmentBuildDoc = "A comprehensive overview of the environment and build setup for a software project."
+CodingStandardsDoc = "A comprehensive overview of the coding standards and best practices for a software project."
+TestStrategyDoc = "A comprehensive overview of the testing strategy and procedures for a software project."
+ContextualGuidelinesDoc = "A comprehensive overview of the contextual development guidelines and conventions for a software project."
+CollaborationDoc = "A comprehensive overview of the collaboration and workflow information for a software project."
+OnboardingDocumentation = "Complete set of documentation needed for onboarding new developers to a project."
 
 [pipe]
 [pipe.check_docs_consistency]

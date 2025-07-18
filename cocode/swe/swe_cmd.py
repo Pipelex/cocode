@@ -372,16 +372,3 @@ async def swe_ai_instruction_update_from_diff(
         save_as_json_to_path(object_to_save=swe_stuff, path=output_file_path)
     log.info(f"Done, AI instruction update suggestions saved to file: '{output_file_path}'")
 
-
-async def swe_doc_update_from_diff(
-    repo_path: str,
-    version: str,
-    output_filename: str,
-    output_dir: str,
-    doc_dir: Optional[str] = None,
-) -> None:
-    """Generate documentation update suggestions based on git diff analysis (legacy - use swe_user_doc_update_from_diff instead)."""
-    log.info(
-        "[DEPRECATED] Using legacy doc update pipeline. Consider using swe_user_doc_update_from_diff or swe_ai_instruction_update_from_diff instead."
-    )
-    await swe_user_doc_update_from_diff(repo_path, version, output_filename, output_dir, doc_dir)
