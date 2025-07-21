@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.0.6] - 2025-07-18
+
+### Added
+- New pipeline for updating documentation based on `git diff` analysis.
+- New pipeline for updating AI instruction files based on `git diff` analysis.
+
+### Changed
+- Updated dependencies to `pipelex` version `0.6.3`.
+- Modified the `Makefile` to include new commands for installing the latest dependencies and initializing libraries.
+
 ## [v0.0.5] - 2025-07-15
 
 - Added the `pipelex_libraries` folder to the project

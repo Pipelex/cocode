@@ -4,9 +4,14 @@ definition = "Pipelines for software engineering tasks."
 [concept]
 SoftwareDoc = "Documentation related to software engineering projects or codebases."
 InconsistencyReport = "A text report enumerating any inconsistencies detected within the provided documentation."
-OnboardingDocumentation = "Complete set of documentation needed for onboarding new developers to a project."
 SoftwareFeaturesRecap = "A comprehensive overview of software features highlighting key capabilities, strengths, and limitations without technical implementation details."
 FundamentalsDoc = "A comprehensive overview of the fundamental concepts and principles of software engineering."
+EnvironmentBuildDoc = "A comprehensive overview of the environment and build setup for a software project."
+CodingStandardsDoc = "A comprehensive overview of the coding standards and best practices for a software project."
+TestStrategyDoc = "A comprehensive overview of the testing strategy and procedures for a software project."
+ContextualGuidelinesDoc = "A comprehensive overview of the contextual development guidelines and conventions for a software project."
+CollaborationDoc = "A comprehensive overview of the collaboration and workflow information for a software project."
+OnboardingDocumentation = "Complete set of documentation needed for onboarding new developers to a project."
 
 [pipe]
 [pipe.check_docs_consistency]
@@ -32,7 +37,7 @@ If you find no inconsistencies, reply exactly: "No inconsistencies detected.".
 [pipe.extract_onboarding_documentation]
 PipeParallel = "Extract comprehensive onboarding documentation from software project docs"
 inputs = { repo_text = "SoftwareDoc" }
-output = "swe.OnboardingDocumentation"
+output = "OnboardingDocumentation"
 parallels = [
     { pipe = "extract_fundamentals", result = "fundamentals" },
     { pipe = "extract_environment_build", result = "environment_build" },
