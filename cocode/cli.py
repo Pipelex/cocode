@@ -9,9 +9,8 @@ from typing import Annotated, List, Optional
 
 import typer
 from click import Command, Context
-from pipelex import log, pretty_print
-from pipelex.hub import get_required_pipe
-from pipelex.pipe_works.pipe_dry import dry_run_all_pipes
+from pipelex import log
+from pipelex.hub import get_pipeline_tracker
 from pipelex.pipelex import Pipelex
 from pipelex.tools.misc.file_utils import path_exists
 from typer import Context as TyperContext
@@ -23,27 +22,25 @@ from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule
 from cocode.repox.repox_cmd import repox_command
 from cocode.repox.repox_processor import RESULTS_DIR
-from cocode.swe.swe_cmd import swe_from_file, swe_from_repo, swe_from_repo_diff
+from cocode.swe.swe_cmd import (
+    swe_ai_instruction_update_from_diff,
+    swe_doc_update_from_diff,
+    swe_from_file,
+    swe_from_repo,
+    swe_from_repo_diff,
+)
 
 
 class PipeCode(StrEnum):
     EXTRACT_ONBOARDING_DOCUMENTATION = "extract_onboarding_documentation"
-    EXTRACT_FUNDAMENTALS = "extract_fundamentals"
-    EXTRACT_ENVIRONMENT_BUILD = "extract_environment_build"
-    EXTRACT_CODING_STANDARDS = "extract_coding_standards"
-    EXTRACT_TEST_STRATEGY = "extract_test_strategy"
-    EXTRACT_COLLABORATION = "extract_collaboration"
 
 
 def _get_pipe_descriptions() -> str:
     """Generate help text with pipe descriptions from TOML."""
     descriptions = {
         "extract_onboarding_documentation": "Extract comprehensive onboarding documentation from software project docs",
-        "extract_fundamentals": "Extract fundamental project information from documentation",
-        "extract_environment_build": "Extract environment setup and build information from documentation",
-        "extract_coding_standards": "Extract code quality and style information from documentation",
-        "extract_test_strategy": "Extract testing strategy and procedures from documentation",
-        "extract_collaboration": "Extract collaboration and workflow information from documentation",
+        "doc_update": "Generate documentation update suggestions for docs/ directory",
+        "ai_instruction_update": "Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, cursor rules",
     }
 
     help_text = "\n\n"
@@ -323,25 +320,99 @@ def swe_from_repo_diff_cmd(
             ignore_patterns=ignore_patterns,
         )
     )
+    get_pipeline_tracker().output_flowchart()
 
 
-@app.command()
-def validate() -> None:
-    """Run the setup sequence."""
-    asyncio.run(dry_run_all_pipes())
-    log.info("Setup sequence passed OK, config and pipelines are validated.")
-
-
-@app.command("show-pipe")
-def show_pipe(
-    pipe_code: Annotated[
+@app.command("swe-doc-update")
+def swe_doc_update_cmd(
+    version: Annotated[
         str,
-        typer.Argument(help="Pipeline code to show definition for"),
+        typer.Argument(help="Git version/tag/commit to compare current version against"),
     ],
+    repo_path: Annotated[
+        str,
+        typer.Argument(help="Input directory path", exists=True, file_okay=False, dir_okay=True, resolve_path=True),
+    ] = ".",
+    output_dir: Annotated[
+        str,
+        typer.Option("--output-dir", "-o", help="Output directory path"),
+    ] = "results",
+    output_filename: Annotated[
+        str,
+        typer.Option("--output-filename", "-n", help="Output filename"),
+    ] = "doc-update-suggestions.txt",
+    ignore_patterns: Annotated[
+        Optional[List[str]],
+        typer.Option(
+            "--ignore-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
+        ),
+    ] = None,
+    doc_dir: Annotated[
+        Optional[str],
+        typer.Option("--doc-dir", "-d", help="Directory containing documentation files (e.g., 'docs', 'documentation')"),
+    ] = None,
 ) -> None:
-    """Show pipe from the pipe library."""
-    pipe = get_required_pipe(pipe_code=pipe_code)
-    pretty_print(pipe, title=f"Pipe '{pipe_code}'")
+    """Generate documentation update suggestions for docs/ directory based on git diff analysis."""
+    repo_path = _validate_repo_path(repo_path)
+
+    asyncio.run(
+        swe_doc_update_from_diff(
+            repo_path=repo_path,
+            version=version,
+            output_filename=output_filename,
+            output_dir=output_dir,
+            ignore_patterns=ignore_patterns,
+            doc_dir=doc_dir,
+        )
+    )
+
+    get_pipeline_tracker().output_flowchart()
+
+
+@app.command("swe-ai-instruction-update")
+def swe_ai_instruction_update_cmd(
+    version: Annotated[
+        str,
+        typer.Argument(help="Git version/tag/commit to compare current version against"),
+    ],
+    repo_path: Annotated[
+        str,
+        typer.Argument(help="Input directory path", exists=True, file_okay=False, dir_okay=True, resolve_path=True),
+    ] = ".",
+    output_dir: Annotated[
+        str,
+        typer.Option("--output-dir", "-o", help="Output directory path"),
+    ] = "results",
+    output_filename: Annotated[
+        str,
+        typer.Option("--output-filename", "-n", help="Output filename"),
+    ] = "ai-instruction-update-suggestions.txt",
+    ignore_patterns: Annotated[
+        Optional[List[str]],
+        typer.Option(
+            "--ignore-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
+        ),
+    ] = None,
+    doc_dir: Annotated[
+        Optional[str],
+        typer.Option("--doc-dir", "-d", help="Directory containing documentation files (e.g., 'docs', 'documentation')"),
+    ] = None,
+) -> None:
+    """Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, and cursor rules based on git diff analysis."""
+    repo_path = _validate_repo_path(repo_path)
+
+    asyncio.run(
+        swe_ai_instruction_update_from_diff(
+            repo_path=repo_path,
+            version=version,
+            output_filename=output_filename,
+            output_dir=output_dir,
+            ignore_patterns=ignore_patterns,
+            doc_dir=doc_dir,
+        )
+    )
+
+    get_pipeline_tracker().output_flowchart()
 
 
 if __name__ == "__main__":

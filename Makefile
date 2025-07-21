@@ -13,7 +13,6 @@ VENV_RUFF := $(VIRTUAL_ENV)/bin/ruff
 VENV_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
 VENV_MYPY := $(VIRTUAL_ENV)/bin/mypy
 VENV_PIPELEX := $(VIRTUAL_ENV)/bin/pipelex
-VENV_COCODE := $(VIRTUAL_ENV)/bin/cocode
 VENV_MKDOCS := $(VIRTUAL_ENV)/bin/mkdocs
 
 UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
@@ -43,8 +42,10 @@ Usage:
 make env                      - Create python virtual env
 make lock                     - Refresh uv.lock without updating anything
 make install                  - Create local virtualenv & install all dependencies
+make install-latest           - Install dependencies with latest versions (ignores lock file)
 make update                   - Upgrade dependencies via uv
 make validate                 - Run the setup sequence to validate the config and libraries
+make init                     - Run pipelex init-libraries and init-config
 
 make format                   - format with ruff format
 make lint                     - lint with ruff check
@@ -68,7 +69,6 @@ make merge-check-pyright	  - Run pyright merge check without updating files
 make rl                       - Shorthand -> reinitlibraries
 make ri                       - Shorthand -> reinstall
 make v                        - Shorthand -> validate
-make init                     - Run pipelex init
 make codex-tests              - Run tests for Codex (exit on first failure) (no inference, no codex_disabled)
 make gha-tests		          - Run tests for github actions (exit on first failure) (no inference, no gha_disabled)
 make test                     - Run unit tests (no inference)
@@ -98,7 +98,7 @@ endef
 export HELP
 
 .PHONY: \
-	all help env lock install update build \
+	all help env lock install install-latest update build \
 	format lint pyright mypy \
 	cleanderived cleanenv cleanlibraries cleanresults cr cleanall \
 	test t test-quiet tq test-with-prints tp test-inference ti \
@@ -134,18 +134,17 @@ env: check-uv
 		echo "Python virtual env already exists in \`${VIRTUAL_ENV}\`"; \
 	fi
 
-init: env
-	$(call PRINT_TITLE,"Running pipelex init")
-	$(VENV_PIPELEX) init-libraries
-	$(VENV_PIPELEX) init-config
-
 install: env
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
 	uv sync --all-extras && \
-	$(VENV_PIPELEX) init-libraries && \
-	$(VENV_PIPELEX) init-config && \
-	echo "Installed dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
+	echo "Installed dependencies in ${VIRTUAL_ENV}";
+
+install-latest: env
+	$(call PRINT_TITLE,"Installing dependencies with latest versions")
+	@. $(VIRTUAL_ENV)/bin/activate && \
+	uv sync --all-extras --upgrade && \
+	echo "Installed latest dependencies in ${VIRTUAL_ENV}";
 
 lock: env
 	$(call PRINT_TITLE,"Resolving dependencies without update")
@@ -154,13 +153,18 @@ lock: env
 
 update: env
 	$(call PRINT_TITLE,"Updating all dependencies")
-	@uv pip compile --upgrade pyproject.toml -o requirements.lock && \
-	uv pip install -e ".[dev]" && \
+	@uv lock --upgrade && \
+	uv sync --all-extras && \
 	echo "Updated dependencies in ${VIRTUAL_ENV}";
 
 validate: env
 	$(call PRINT_TITLE,"Running setup sequence")
-	$(VENV_COCODE) validate
+	$(VENV_PIPELEX) validate -c cocode/pipelex_libraries
+
+init: env
+	$(call PRINT_TITLE,"Running pipelex init-libraries and init-config")
+	$(VENV_PIPELEX) init-libraries
+	$(VENV_PIPELEX) init-config
 
 ##############################################################################################
 ############################      Cleaning                        ############################
@@ -398,16 +402,16 @@ docs-deploy: env
 ### SHORTHANDS
 ##########################################################################################
 
-c: init format lint pyright mypy
+c: format lint pyright mypy
 	@echo "> done: c = check"
 
-cc: init cleanderived c
+cc: cleanderived c
 	@echo "> done: cc = cleanderived check"
 
-check: init cleanderived check-unused-imports c
+check: cleanderived check-unused-imports c
 	@echo "> done: check"
 
-v: init validate
+v: validate
 	@echo "> done: v = validate"
 
 li: lock install

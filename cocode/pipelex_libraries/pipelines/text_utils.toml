@@ -22,17 +22,3 @@ You need to identify delimiters that will separate the git diff between director
 The diffs should be big enough to be unique.
 """
 
-[pipe.split_text_with_function]
-PipeFunc = "Split large text into chunks using the provided identifiers"
-function_name = "split_text_by_identifiers"
-output = "TextChunk"
-
-[pipe.split_large_text]
-PipeSequence = "Complete pipeline to split large text into smaller chunks"
-inputs = { text = "Text" }
-output = "TextChunk"
-steps = [
-    { pipe = "generate_split_identifiers", result = "split_identifiers" },
-    { pipe = "split_text_with_function", result = "text_chunks" }
-]
-
