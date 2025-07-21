@@ -183,6 +183,20 @@ cocode swe-from-repo-diff write_changelog v1.0.0 . \
     --output-filename "CHANGELOG.md"
 ```
 
+### `swe-doc-update` - Documentation Update Suggestions
+
+This command generates documentation update suggestions based on the differences detected in the git repository.
+
+**Usage**:
+```bash
+cocode swe-doc-update
+```
+
+**Examples**:
+```bash
+cocode swe-doc-update --help
+```
+
 ### `validate` - Configuration Validation
 
 Validate setup and pipelines.
