@@ -1,0 +1,170 @@
+domain = "doc_proofread"
+definition = "Systematically proofread documentation against actual codebase to find inconsistencies using chunking"
+
+[concept]
+FundamentalsDoc = "A comprehensive overview of the fundamental concepts and principles of software engineering"
+DocumentationFile = "A documentation file that needs to be proofread against the codebase"
+RelatedCodeFile = "A code file that is related to a documentation file"
+FilePath = "A path to a file in the codebase"
+CodeFileContent = "Content of a specific code file extracted from the codebase"
+DocumentationInconsistency = "An inconsistency found between documentation and actual code"
+ProofreadingReport = "Complete proofreading report for documentation consistency"
+
+
+[pipe]
+
+
+[pipe.list_docs_dir_files]
+PipeFunc = "List all documentation files in the docs directory"
+inputs = { repo_text = "Text" }
+output = "FilePath"
+function_name = "list_docs_dir_files"
+
+[pipe.read_doc_file]
+PipeFunc = "Read the content of a documentation file"
+inputs = { file_path = "FilePath" }
+output = "DocumentationFile"
+function_name = "read_file_content"
+
+
+
+[pipe.find_related_code_files]
+PipeLLM = "Find code files related to a documentation file using fundamentals"
+inputs = { doc_file = "DocumentationFile", fundamentals = "FundamentalsDoc" }
+output = "FilePath"
+multiple_output = true
+system_prompt = """
+You are a code analyst. Given a documentation file and project fundamentals, identify which code files are most likely related to the documentation.
+Look for function names, class names, module names, command names, and concepts mentioned in the documentation.
+"""
+prompt_template = """
+Find code files related to this documentation:
+
+DOCUMENTATION FILE:
+Path: $doc_file.file_path
+Title: $doc_file.title
+Content:
+@doc_file.doc_content
+
+PROJECT FUNDAMENTALS:
+@fundamentals
+
+Your task:
+1. Use the project fundamentals to understand the project structure and key concepts
+2. Identify specific code files that are likely related to this documentation by looking for:
+   - Function names, class names, or module names mentioned in the docs
+   - Command-line tools or APIs described in the docs
+   - Configuration files or data structures referenced
+   - Examples or code snippets that match actual code
+
+For each related file, provide:
+- The file path (must be exact)
+- Why it's related to the documentation (specific reason)
+- Confidence score (0.0 to 1.0) based on how closely related it appears
+
+Focus on the most relevant files (confidence > 0.3). Maximum 10 files per documentation file.
+
+Note: Use the project fundamentals to find the actual file paths - do not guess or make up paths.
+"""
+
+
+
+[pipe.proofread_single_doc]
+PipeLLM = "Proofread a single documentation file against the project context"
+inputs = { doc_file = "DocumentationFile", fundamentals = "FundamentalsDoc", related_files = "FilePath" }
+output = "DocumentationInconsistency"
+multiple_output = true
+system_prompt = """
+You are a technical documentation auditor. Compare documentation content with project context to identify inconsistencies.
+Use the project fundamentals first to understand the project, then look up specific details in the codebase when needed.
+Focus on finding specific discrepancies between what the documentation says and what the actual code does.
+"""
+prompt_template = """
+Compare this documentation file with the project context to find inconsistencies:
+
+DOCUMENTATION FILE:
+Path: $doc_file.file_path
+Title: $doc_file.title
+Content:
+@doc_file.doc_content
+
+PROJECT FUNDAMENTALS:
+@fundamentals
+
+RELATED CODE FILES:
+@related_files
+
+For each related file, check its content in the codebase context to verify consistency.
+
+Your task:
+1. Use the project fundamentals to understand the project structure and key concepts
+2. Identify specific code files, functions, classes, or commands mentioned in the documentation
+3. Look up those specific elements in the codebase context when needed
+4. Report inconsistencies where the documentation is wrong or outdated
+
+Look for inconsistencies where the documentation:
+1. Shows incorrect function/method signatures
+2. References functions or classes that don't exist
+3. Shows outdated command-line syntax or options
+4. Contains examples that won't work with current code
+5. Missing new features that exist in code but not documented
+6. Shows incorrect configuration options
+7. Has wrong import statements or module names
+8. Shows wrong file paths or directory structures
+
+For each inconsistency found:
+- Identify the specific section in documentation that has the problem
+- Describe exactly what's wrong
+- Quote the problematic documentation content
+- Quote the actual code that contradicts it (with file path if found)
+- Suggest how to fix the documentation
+- Assign severity: 'high' (breaks functionality), 'medium' (confusing), 'low' (minor)
+
+Only report actual inconsistencies where documentation contradicts code, not style differences or missing details.
+If no inconsistencies are found, return an empty result.
+"""
+
+[pipe.generate_proofreading_report]
+PipeLLM = "Generate a comprehensive proofreading report from all inconsistencies found"
+inputs = { all_inconsistencies = "DocumentationInconsistency" }
+output = "ProofreadingReport"
+system_prompt = """
+You are a documentation quality analyst. Generate a comprehensive report summarizing all inconsistencies found during documentation proofreading.
+Organize findings by severity and provide actionable recommendations.
+"""
+prompt_template = """
+Generate a comprehensive proofreading report based on these inconsistencies:
+
+@all_inconsistencies
+
+Create a report that includes:
+1. Executive summary of findings
+2. Total statistics (files checked, inconsistencies found, severity breakdown)
+3. Detailed list of all inconsistencies organized by file and severity
+4. Overall recommendations for improving documentation quality
+
+Focus on providing actionable insights and prioritizing the most critical issues.
+If no inconsistencies were found, still provide a positive report confirming documentation accuracy.
+"""
+
+[pipe.proofread_doc_sequence]
+PipeSequence = "Process a single documentation file to find inconsistencies"
+inputs = { doc_file = "DocumentationFile", fundamentals = "FundamentalsDoc" }
+output = "DocumentationInconsistency"
+steps = [
+    { pipe = "find_related_code_files", result = "related_files" },
+    { pipe = "proofread_single_doc", result = "inconsistencies" }
+]
+
+[pipe.doc_proofread]
+PipeSequence = "Complete documentation proofreading pipeline"
+inputs = { repo_text = "Text" }
+output = "ProofreadingReport"
+steps = [
+    { pipe = "extract_fundamentals", result = "fundamentals" },
+    { pipe = "list_docs_dir_files", result = "doc_file_paths" },
+    { pipe = "read_doc_file", batch_over = "doc_file_paths", batch_as = "file_path", result = "doc_files" },
+    { pipe = "proofread_doc_sequence", batch_over = "doc_files", batch_as = "doc_file", result = "all_inconsistencies" },
+    { pipe = "generate_proofreading_report", result = "final_report" }
+]
+

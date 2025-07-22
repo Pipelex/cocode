@@ -10,7 +10,6 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
 
-from cocode.pipelex_libraries.pipelines.doc_update.doc_update_models import DocumentationSuggestions
 from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule, python_imports_list, python_integral, python_interface
 from cocode.repox.repox_processor import RepoxException, RepoxProcessor
@@ -207,15 +206,13 @@ async def swe_doc_update_from_diff(
         pipe_code="doc_update",
         working_memory=working_memory,
     )
-    doc_suggestions = pipe_output.main_stuff_as(content_type=DocumentationSuggestions)
+    formatted_output = pipe_output.main_stuff_as_str
 
     get_report_delegate().generate_report()
 
     ensure_path(output_dir)
     output_file_path = f"{output_dir}/{output_filename}"
-    text_content = doc_suggestions.documentation_updates_prompt
-
-    save_text_to_path(text=text_content, path=output_file_path)
+    save_text_to_path(text=formatted_output, path=output_file_path)
     log.info(f"Done, documentation update suggestions saved to file: '{output_file_path}'")
 
 

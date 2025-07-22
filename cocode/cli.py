@@ -33,12 +33,14 @@ from cocode.swe.swe_cmd import (
 
 class PipeCode(StrEnum):
     EXTRACT_ONBOARDING_DOCUMENTATION = "extract_onboarding_documentation"
+    DOC_PROOFREAD = "doc_proofread"
 
 
 def _get_pipe_descriptions() -> str:
     """Generate help text with pipe descriptions from TOML."""
     descriptions = {
         "extract_onboarding_documentation": "Extract comprehensive onboarding documentation from software project docs",
+        "doc_proofread": "Systematically proofread documentation against actual codebase to find inconsistencies",
         "doc_update": "Generate documentation update suggestions for docs/ directory",
         "ai_instruction_update": "Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, cursor rules",
     }
@@ -409,6 +411,78 @@ def swe_ai_instruction_update_cmd(
             output_dir=output_dir,
             ignore_patterns=ignore_patterns,
             doc_dir=doc_dir,
+        )
+    )
+
+    get_pipeline_tracker().output_flowchart()
+
+
+@app.command("swe-doc-proofread")
+def swe_doc_proofread_cmd(
+    repo_path: Annotated[
+        str,
+        typer.Argument(help="Input directory path", exists=True, file_okay=False, dir_okay=True, resolve_path=True),
+    ] = ".",
+    output_dir: Annotated[
+        str,
+        typer.Option("--output-dir", "-o", help="Output directory path"),
+    ] = "results",
+    output_filename: Annotated[
+        str,
+        typer.Option("--output-filename", "-n", help="Output filename"),
+    ] = "doc-proofread-report.md",
+    doc_dir: Annotated[
+        str,
+        typer.Option("--doc-dir", "-d", help="Directory containing documentation files"),
+    ] = "docs",
+    include_patterns: Annotated[
+        Optional[List[str]],
+        typer.Option("--include-pattern", "-r", help="Patterns to include in codebase analysis (glob pattern) - can be repeated"),
+    ] = None,
+    ignore_patterns: Annotated[
+        Optional[List[str]],
+        typer.Option("--ignore-pattern", "-i", help="Patterns to ignore in codebase analysis (gitignore format) - can be repeated"),
+    ] = None,
+    dry_run: Annotated[
+        bool,
+        typer.Option("--dry", help="Run pipeline in dry mode (no actual execution)"),
+    ] = False,
+) -> None:
+    """Systematically proofread documentation against actual codebase to find inconsistencies."""
+    repo_path = _validate_repo_path(repo_path)
+
+    # Set default include patterns to focus on documentation and code
+    if include_patterns is None:
+        include_patterns = ["*.md", "*.py", "*.toml", "*.yaml", "*.yml", "*.json", "*.sh", "*.js", "*.ts"]
+
+    # Set default ignore patterns to exclude noise
+    if ignore_patterns is None:
+        ignore_patterns = [
+            "__pycache__/",
+            "*.pyc",
+            ".git/",
+            ".venv/",
+            "node_modules/",
+            "*.log",
+            "build/",
+            "dist/",
+            ".pytest_cache/",
+            "*.egg-info/",
+        ]
+
+    asyncio.run(
+        swe_from_repo(
+            pipe_code="doc_proofread",
+            repo_path=repo_path,
+            ignore_patterns=ignore_patterns,
+            include_patterns=include_patterns,
+            path_pattern=None,
+            python_processing_rule=PythonProcessingRule.INTERFACE,
+            output_style=OutputStyle.REPO_MAP,
+            output_filename=output_filename,
+            output_dir=output_dir,
+            to_stdout=False,
+            dry_run=dry_run,
         )
     )
 
