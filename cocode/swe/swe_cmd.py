@@ -4,10 +4,11 @@ from typing import Callable, Dict, List, Optional
 
 from pipelex import log, pretty_print
 from pipelex.core.stuff import Stuff
+from pipelex.core.stuff_content import TextContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_report_delegate
-from pipelex.pipeline.execute import execute_pipeline
+from pipelex.pipeline.execute import PipeOutput, execute_pipeline
 from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
 
 from cocode.repox.models import OutputStyle
@@ -48,7 +49,6 @@ async def swe_from_repo(
         output_style=output_style,
     )
     repo_text = process_repox(repox_processor=processor)
-
     # Process through SWE pipeline and handle output
     await process_swe_pipeline(
         text=repo_text,
@@ -105,11 +105,17 @@ async def process_swe_pipeline(
     swe_stuff = await process_swe(text=text, pipe_code=pipe_code, variable_name=variable_name)
 
     if to_stdout:
-        print(swe_stuff)
+        if isinstance(swe_stuff.content, TextContent):
+            print(swe_stuff.as_str)
+        else:
+            print(swe_stuff)
     else:
         ensure_path(output_dir)
         output_file_path = f"{output_dir}/{output_filename}"
-        save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
+        if isinstance(swe_stuff.content, TextContent):
+            save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
+        else:
+            save_text_to_path(text=str(swe_stuff), path=output_file_path)
         log.info(f"Done, output saved as text to file: '{output_file_path}'")
 
 
@@ -309,3 +315,43 @@ async def swe_ai_instruction_update_from_diff(
 
     save_text_to_path(text=text_content, path=output_file_path)
     log.info(f"Done, AI instruction update suggestions saved to file: '{output_file_path}'")
+
+
+async def swe_doc_proofread(
+    repo_path: str,
+    output_filename: str,
+    output_dir: str,
+    ignore_patterns: Optional[List[str]] = None,
+    to_stdout: bool = False,
+) -> PipeOutput:
+    """Proofread documentation against codebase for inconsistencies."""
+    log.info(f"Proofreading documentation in '{repo_path}'")
+
+    # Create processor to get repo text
+    processor = RepoxProcessor(
+        repo_path=repo_path,
+        ignore_patterns=ignore_patterns,
+        output_style=OutputStyle.REPO_MAP,
+    )
+    repo_text = process_repox(repox_processor=processor)
+
+    # Create working memory with repo text
+    text_stuff = StuffFactory.make_from_str(str_value=repo_text, name="repo_text")
+    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[text_stuff])
+
+    # Run the proofreading pipeline
+    pipe_output = await execute_pipeline(
+        pipe_code="doc_proofread",
+        working_memory=working_memory,
+    )
+
+    # Save output
+    if to_stdout:
+        print(pipe_output)
+    else:
+        ensure_path(output_dir)
+        output_file_path = f"{output_dir}/{output_filename}"
+        save_text_to_path(text=str(pipe_output), path=output_file_path)
+        log.info(f"Done, output saved as text to file: '{output_file_path}'")
+
+    return pipe_output

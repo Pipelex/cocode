@@ -9,7 +9,7 @@ class DocumentationFile(StructuredContent):
 
     file_path: str = Field(description="Path to the documentation file")
     doc_content: str = Field(description="Content of the documentation file")
-    title: Optional[str] = Field(None, description="Title or main topic of the documentation")
+    title: str = Field(description="Title or main topic of the documentation")
 
 
 class DocumentationChunk(StructuredContent):
