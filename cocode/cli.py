@@ -431,7 +431,7 @@ def swe_doc_proofread_cmd(
     output_filename: Annotated[
         str,
         typer.Option("--output-filename", "-n", help="Output filename"),
-    ] = "doc-proofread-report.md",
+    ] = "doc-proofread-report",
     doc_dir: Annotated[
         str,
         typer.Option("--doc-dir", "-d", help="Directory containing documentation files"),

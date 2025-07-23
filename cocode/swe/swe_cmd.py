@@ -1,4 +1,5 @@
 import os
+import json
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional, cast
 
@@ -11,6 +12,7 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipeline.execute import PipeOutput, execute_pipeline
 from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
 
+from pipelex.core.stuff_content import ListContent
 from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import DocumentationFile, DocumentationInconsistency, RepositoryMap
 from cocode.pipelex_libraries.pipelines.doc_proofread.file_utils import create_documentation_files_from_paths
 from cocode.repox.models import OutputStyle
@@ -398,11 +400,8 @@ async def swe_doc_proofread_cli(
         log.warning(f"No documentation files found in {doc_dir_path}")
         raise ValueError(f"No documentation files found in {doc_dir_path}")
 
-    # Create DocumentationFile objects
     doc_files = create_documentation_files_from_paths(doc_file_paths, doc_dir)
 
-    # Create stuff objects for the pipeline
-    from pipelex.core.stuff_content import ListContent
 
     repo_map_stuff = StuffFactory.make_stuff(
         concept_str="doc_proofread.RepositoryMap", content=RepositoryMap(repo_content=repo_text), name="repo_map"
@@ -411,32 +410,22 @@ async def swe_doc_proofread_cli(
         concept_str="doc_proofread.DocumentationFile", content=ListContent[DocumentationFile](items=doc_files), name="doc_files"
     )
 
-    # Create working memory
     working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[repo_map_stuff, doc_files_stuff])
 
-    # Run the proofreading pipeline
     pipe_output = await execute_pipeline(
         pipe_code="doc_proofread",
         working_memory=working_memory,
     )
-    pretty_print(pipe_output, title="Pipe output")
 
-    # Extract the inconsistencies from the pipeline output
-    # The output structure is: ListContent[ListContent[DocumentationInconsistency]]
-    # This is because we batch over doc_files, and each returns a ListContent of inconsistencies
     main_stuff = pipe_output.working_memory.get_stuff("all_inconsistencies")
     main_stuff_content = cast(ListContent[ListContent[DocumentationInconsistency]], main_stuff.content)
 
-    # Flatten the nested structure: ListContent[ListContent[DocumentationInconsistency]] -> List[DocumentationInconsistency]
     all_inconsistencies: List[DocumentationInconsistency] = []
-    for inner_list in main_stuff_content.items:  # Each inner_list is a ListContent[DocumentationInconsistency]
-        for inconsistency in inner_list.items:  # Each inconsistency is a DocumentationInconsistency
+    for inner_list in main_stuff_content.items: 
+        for inconsistency in inner_list.items: 
             all_inconsistencies.append(inconsistency)
 
     pretty_print(all_inconsistencies, title="All inconsistencies")
-
-    # Convert to JSON format
-    import json
 
     inconsistencies_data: List[Dict[str, Any]] = []
     for inconsistency in all_inconsistencies:
@@ -452,17 +441,12 @@ async def swe_doc_proofread_cli(
 
     json_output = json.dumps(inconsistencies_data, indent=2, ensure_ascii=False)
 
-    # Save output
-    if to_stdout:
-        print(json_output)
-    else:
-        ensure_path(output_dir)
-        # Change extension to .json
-        output_file_path = f"{output_dir}/{output_filename.replace('.md', '.json')}"
-        save_text_to_path(text=json_output, path=output_file_path)
-        log.info(f"Done, output saved as JSON to file: '{output_file_path}'")
+    ensure_path(output_dir)
+    output_file_path = f"{output_dir}/{output_filename}.json"
+    save_text_to_path(text=json_output, path=output_file_path)
+    log.info(f"Done, output saved as JSON to file: '{output_file_path}'")
 
     report = pipe_output.main_stuff_as_str
-    save_text_to_path(text=report, path=f"{output_dir}/{output_filename.replace('.json', '.md')}")
+    save_text_to_path(text=report, path=f"{output_dir}/{output_filename}.md")
 
     return pipe_output
