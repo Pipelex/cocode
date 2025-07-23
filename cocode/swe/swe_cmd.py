@@ -1,18 +1,17 @@
-import os
 import json
+import os
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional, cast
 
 from pipelex import log, pretty_print
 from pipelex.core.stuff import Stuff
-from pipelex.core.stuff_content import TextContent
+from pipelex.core.stuff_content import ListContent, TextContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_report_delegate
 from pipelex.pipeline.execute import PipeOutput, execute_pipeline
 from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
 
-from pipelex.core.stuff_content import ListContent
 from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import DocumentationFile, DocumentationInconsistency, RepositoryMap
 from cocode.pipelex_libraries.pipelines.doc_proofread.file_utils import create_documentation_files_from_paths
 from cocode.repox.models import OutputStyle
@@ -402,7 +401,6 @@ async def swe_doc_proofread_cli(
 
     doc_files = create_documentation_files_from_paths(doc_file_paths, doc_dir)
 
-
     repo_map_stuff = StuffFactory.make_stuff(
         concept_str="doc_proofread.RepositoryMap", content=RepositoryMap(repo_content=repo_text), name="repo_map"
     )
@@ -421,8 +419,8 @@ async def swe_doc_proofread_cli(
     main_stuff_content = cast(ListContent[ListContent[DocumentationInconsistency]], main_stuff.content)
 
     all_inconsistencies: List[DocumentationInconsistency] = []
-    for inner_list in main_stuff_content.items: 
-        for inconsistency in inner_list.items: 
+    for inner_list in main_stuff_content.items:
+        for inconsistency in inner_list.items:
             all_inconsistencies.append(inconsistency)
 
     pretty_print(all_inconsistencies, title="All inconsistencies")
