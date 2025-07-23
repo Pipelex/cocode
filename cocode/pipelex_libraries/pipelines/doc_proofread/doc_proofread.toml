@@ -79,16 +79,23 @@ Create a concise markdown report for Cursor AI with specific, actionable fixes f
 Focus only on critical issues that would break user code or cause major confusion.
 """
 prompt_template = """
-Create a markdown report for Cursor AI to fix these documentation inconsistencies:
+Create a markdown report for an AI agent to fix these documentation inconsistencies:
 
 @all_inconsistencies
 
 Start the report with a direct, conversational opening that conveys: "I found some documentation inconsistencies that need fixing" - but use natural, helpful language.
 
-Then format the rest as a clear, actionable prompt for Cursor with:
-1. A brief summary of issues found
-2. Specific file-by-file fixes needed
-3. Clear instructions for each fix
+Then format each inconsistency with this exact structure:
+
+**Doc file path:** [path to documentation file]
+
+**Issue:** [description of the inconsistency]
+
+**Related files:** [list of related code files]
+
+**Suggested fix:** [specific actionable fix]
+
+---
 
 Make it concise and focused on the most critical issues only.
 """
