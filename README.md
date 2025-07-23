@@ -6,6 +6,19 @@ Cocode is a powerful command-line tool for analyzing and processing code reposit
 
 ## 🚀 Features
 
+### 📝 **Automatic Documentation & Release Management**
+Streamline your documentation workflow with AI-powered automation:
+- **Automatic Changelog Generation**: Generate comprehensive changelogs from git diffs and version comparisons
+- **Smart Documentation Updates**: Automatically update docs and README files based on releases and code changes
+- **Documentation Proofreading**: Detect critical inconsistencies between documentation and actual codebase that could break user code
+
+### 🤖 **AI-Powered Software Engineering Analysis**
+Leverage AI pipelines for advanced code understanding:
+- Extract project fundamentals and architecture insights
+- Generate comprehensive onboarding documentation
+- Analyze software features and capabilities
+- Create structured development guides
+
 ### 📊 **Repository Analysis**
 Transform entire repositories into structured, analyzable formats:
 - Convert codebases to text for AI processing and documentation
@@ -18,19 +31,6 @@ Intelligent Python code analysis with multiple extraction modes:
 - **Interface Mode**: Extract class/function signatures and docstrings only
 - **Imports Mode**: Analyze dependencies and import relationships  
 - **Integral Mode**: Include complete source code
-
-### 🤖 **AI-Powered Software Engineering Analysis**
-Leverage AI pipelines for advanced code understanding:
-- Extract project fundamentals and architecture insights
-- Generate comprehensive onboarding documentation
-- Analyze software features and capabilities
-- Create structured development guides
-
-### 📈 **Version Control Integration**
-Powerful git integration for change analysis:
-- Generate changelogs from git diffs automatically
-- Compare versions and analyze evolution
-- Track feature additions and modifications
 
 ### 🎯 **Flexible Output Formats**
 Choose the right format for your needs:
@@ -55,10 +55,16 @@ Enter your API keys into your `.env` file. The `OPENAI_API_KEY` is enough to get
 
 ## 🛠️ Quick Start
 
-### Validation
+### Automatic Documentation & Release Features
 ```bash
-# Verify setup and pipelines
-cocode validate
+# Generate changelog from version diff
+cocode swe-from-repo-diff write_changelog v1.0.0 . --output-filename CHANGELOG.md
+
+# Proofread documentation against codebase
+cocode swe-doc-proofread --doc-dir docs --output-filename doc-issues.md
+
+# Update documentation based on code changes
+cocode swe-doc-update
 ```
 
 ### Basic Repository Analysis
@@ -88,17 +94,18 @@ cocode swe-from-repo extract_fundamentals . --output-filename overview.json
 cocode swe-from-file extract_features_recap ./analysis.txt --output-filename features.md
 ```
 
-### Git Integration
-```bash
-# Generate changelog from version diff
-cocode swe-from-repo-diff write_changelog v1.0.0 . --output-filename CHANGELOG.md
-```
-
 ## 🔧 Configuration
 
 Cocode integrates with the [Pipelex](https://github.com/Pipelex/pipelex) framework for AI pipeline processing. Configuration files control default settings, output directories, and pipeline behaviors.
 
 For detailed command options and advanced usage, see [CLI_README.md](CLI_README.md).
+
+## ✅ Validation
+
+```bash
+# Verify setup and pipelines
+cocode validate
+```
 
 ---
 

@@ -91,7 +91,7 @@ Then format each inconsistency with this exact structure:
 
 **Issue:** [description of the inconsistency]
 
-**Related files:** [list of related code files]
+**Related codebase files:** [list of related codebase files]
 
 **Suggested fix:** [specific actionable fix]
 
