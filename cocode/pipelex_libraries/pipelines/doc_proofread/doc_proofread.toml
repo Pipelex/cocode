@@ -23,163 +23,61 @@ output = "DocumentationFile"
 function_name = "read_file_content"
 
 [pipe.find_related_code_files]
-PipeLLM = "Find code files related to a documentation file by identifying actual code references and their usages"
+PipeLLM = "Find code files that implement or use elements mentioned in docs"
 inputs = { doc_file = "DocumentationFile", repo_text = "Text" }
 output = "FilePath"
 multiple_output = true
-llm = "llm_for_swe"
+llm = "llm_for_large_text"
 system_prompt = """
-You are a code analyst specializing in finding code references and their usages.
-Your task is to identify code files that ACTUALLY contain or use the elements mentioned in the documentation.
-Focus on finding concrete evidence, not just potential matches.
+Extract code elements mentioned in docs (classes, functions, commands) and find their actual implementations or usages in the codebase.
 """
 prompt_template = """
-Find code files that IMPLEMENT or USE elements mentioned in this documentation:
+Find files that implement or use code elements from this documentation:
 
-DOCUMENTATION FILE:
-Path: $doc_file.file_path
-Title: $doc_file.title
-Content:
-@doc_file.doc_content
+@doc_file
 
-REPOSITORY MAP:
+Available files in repo:
 @repo_text
 
-ANALYSIS STEPS:
-
-1. EXTRACT KEY CODE ELEMENTS
-First, extract from the documentation:
-- Class names (e.g., "class MyClass", "MyClass instance")
-- Function/method names (e.g., "my_function()", "object.method()")
-- Command names (e.g., "run_command", "--argument")
-- Configuration keys (e.g., "config.setting", "CONSTANT_NAME")
-- File paths or patterns (e.g., "*.py", "/path/to/file")
-- Import statements (e.g., "from module import X")
-
-2. SEARCH STRATEGY
-For each element:
-a) DEFINITION FILES: Find files that define/implement the element
-   - Class definitions
-   - Function/method implementations
-   - Command registrations
-   - Configuration schemas
-
-b) USAGE FILES: Find files that use/import the element
-   - Import statements
-   - Function/method calls
-   - Class instantiations
-   - Command invocations
-
-3. VERIFICATION
-For each potential file:
-- Verify the element ACTUALLY exists in the file (don't guess)
-- Check if it's the correct element (not just similar name)
-- Confirm it's actively used (not commented out/deprecated)
-
-OUTPUT FORMAT:
 For each relevant file found:
-{
-  "file_path": "exact/path/to/file",
-  "relevance": {
-    "elements": [
-      {
-        "name": "element_name",
-        "type": "class|function|command|config|import",
-        "relationship": "defines|uses",
-        "line_numbers": [X, Y],  // If available
-        "evidence": "Actual code snippet or import statement"
-      }
-    ],
-    "confidence": 0.0 to 1.0  // Based on evidence strength
-  }
-}
+- File path
+- What code elements it contains (class/function/command name)
+- Whether it implements or uses these elements
 
-IMPORTANT RULES:
-- ONLY include files with CONCRETE evidence of implementation or usage
-- Do NOT guess or assume relationships - must find actual code
-- Prioritize definition files over usage files
-- Skip files with only comments/documentation
-- If an element is not found in any file, explicitly note that
-- Confidence should be based on:
-  1.0: Direct class/function definition
-  0.8: Direct import/usage
-  0.6: Indirect usage (e.g., through inheritance)
-  0.4: Partial match with strong context
-  < 0.3: Do not include
-
-Example of good evidence:
-✅ Found: class UserManager in auth/manager.py
-✅ Used: from auth.manager import UserManager in api/views.py
-
-Example of bad evidence (do not include):
-❌ "Might be related to user management"
-❌ "Similar name found but different context"
-❌ "Could be in one of these directories"
+Only include files with actual code evidence, not just similar names or concepts.
 """
 
 [pipe.proofread_single_doc]
-PipeLLM = "Proofread a single documentation file against related code files and check for grammatical errors"
+PipeLLM = "Find major inconsistencies between docs and code"
 inputs = { doc_file = "DocumentationFile", related_files = "FilePath" }
 output = "DocumentationInconsistency"
 multiple_output = true
 llm = "llm_for_swe"
 system_prompt = """
-You are a technical documentation auditor with expertise in both code analysis and technical writing.
-Your goal is to find critical inconsistencies between documentation and code, as well as documentation quality issues.
-
-Focus on three main categories:
-1. Breaking Changes: Where following the docs would cause errors or failures
-2. Code Incoherencies: Where docs describe functionality that differs from actual code
-3. Documentation Quality: Grammar, spelling, clarity issues
+Find MAJOR inconsistencies between documentation and code that would cause user code to fail.
+Only report issues that would completely break functionality or lead users down the wrong path.
 """
 prompt_template = """
-Review this documentation file for critical issues:
+Find critical problems between these docs and code:
 
-DOCUMENTATION FILE:
-Path: $doc_file.file_path
-Title: $doc_file.title
-Content:
-@doc_file.doc_content
+@doc_file
 
-RELATED CODE FILES:
+CODE:
 @related_files
 
-Analyze in these categories:
+Look for things that would BREAK user code, like:
+- Completely wrong function/class signatures
+- Required parameters marked as optional (or vice versa)
+- Fundamentally incorrect examples
+- Wrong import paths that would fail
+- Critically wrong types that would crash
 
-1. BREAKING CHANGES (High Priority)
-- Installation/setup instructions that would fail
-- Incorrect API signatures or parameters
-- Wrong import statements or package names
-- Invalid configuration settings
-- Outdated command-line arguments
-- Incorrect file paths or permissions
-- Examples that would throw errors if run
+For each major issue:
+- Show what's wrong
+- Show what's actually in the code
+- Explain why it would break things
 
-2. CODE INCOHERENCIES (Medium Priority)
-- Features documented but not implemented
-- Implemented features not documented
-- Different default values in docs vs code
-- Incorrect type hints or return values
-- Wrong class hierarchies or relationships
-- Outdated architectural diagrams
-- Misleading performance characteristics
-
-3. DOCUMENTATION QUALITY (Low Priority)
-- Spelling errors
-- Grammar mistakes
-- Unclear or ambiguous explanations
-- Inconsistent terminology
-- Broken links or references
-- Poor formatting or structure
-- Missing code block language tags
-
-IMPORTANT:
-- For breaking changes: Always verify against actual code
-- For code incoherencies: Must show both doc and code evidence
-- For quality issues: Focus on ones that affect understanding
-- Skip minor style preferences or subjective improvements
-- If no issues found in a category, explicitly state that
-- DO NOT FEEL Obligated to output something if it is not relevant.
+Skip anything that's not a showstopper. If it would just be confusing but still work, ignore it.
 """
 
 [pipe.proofread_doc_sequence]
