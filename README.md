@@ -52,6 +52,7 @@ This will install the dependencies using uv.
 ### Set up environment variables
 
 Enter your API keys into your `.env` file. The `OPENAI_API_KEY` is enough to get you started, but some pipelines require models from other providers.
+Some complex pipelines require GCP credentials (See [GCP credentials](https://docs.pipelex.com/pages/build-reliable-ai-workflows-with-pipelex/ai-plugins-for-multi-llm-workflows/#4-google-vertex-ai-configuration) for more details), or Anthropic API keys `ANTHROPIC_API_KEY`.
 
 ## 🛠️ Quick Start
 

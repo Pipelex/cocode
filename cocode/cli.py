@@ -24,7 +24,7 @@ from cocode.repox.repox_cmd import repox_command
 from cocode.repox.repox_processor import RESULTS_DIR
 from cocode.swe.swe_cmd import (
     swe_ai_instruction_update_from_diff,
-    swe_doc_proofread_cli,
+    swe_doc_proofread,
     swe_doc_update_from_diff,
     swe_from_file,
     swe_from_repo,
@@ -468,7 +468,7 @@ def swe_doc_proofread_cmd(
         ]
 
     asyncio.run(
-        swe_doc_proofread_cli(
+        swe_doc_proofread(
             repo_path=repo_path,
             doc_dir=doc_dir,
             output_filename=output_filename,

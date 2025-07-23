@@ -322,46 +322,6 @@ async def swe_ai_instruction_update_from_diff(
 
 async def swe_doc_proofread(
     repo_path: str,
-    output_filename: str,
-    output_dir: str,
-    ignore_patterns: Optional[List[str]] = None,
-    to_stdout: bool = False,
-) -> PipeOutput:
-    """Proofread documentation against codebase for inconsistencies."""
-    log.info(f"Proofreading documentation in '{repo_path}'")
-
-    # Create processor to get repo text
-    processor = RepoxProcessor(
-        repo_path=repo_path,
-        ignore_patterns=ignore_patterns,
-        output_style=OutputStyle.REPO_MAP,
-    )
-    repo_text = process_repox(repox_processor=processor)
-
-    # Create working memory with repo text
-    text_stuff = StuffFactory.make_from_str(str_value=repo_text, name="repo_text")
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[text_stuff])
-
-    # Run the proofreading pipeline
-    pipe_output = await execute_pipeline(
-        pipe_code="doc_proofread",
-        working_memory=working_memory,
-    )
-
-    # Save output
-    if to_stdout:
-        print(pipe_output)
-    else:
-        ensure_path(output_dir)
-        output_file_path = f"{output_dir}/{output_filename}"
-        save_text_to_path(text=str(pipe_output), path=output_file_path)
-        log.info(f"Done, output saved as text to file: '{output_file_path}'")
-
-    return pipe_output
-
-
-async def swe_doc_proofread_cli(
-    repo_path: str,
     doc_dir: str,
     output_filename: str,
     output_dir: str,
