@@ -24,6 +24,7 @@ from cocode.repox.repox_cmd import repox_command
 from cocode.repox.repox_processor import RESULTS_DIR
 from cocode.swe.swe_cmd import (
     swe_ai_instruction_update_from_diff,
+    swe_doc_proofread_cli,
     swe_doc_update_from_diff,
     swe_from_file,
     swe_from_repo,
@@ -443,10 +444,6 @@ def swe_doc_proofread_cmd(
         Optional[List[str]],
         typer.Option("--ignore-pattern", "-i", help="Patterns to ignore in codebase analysis (gitignore format) - can be repeated"),
     ] = None,
-    dry_run: Annotated[
-        bool,
-        typer.Option("--dry", help="Run pipeline in dry mode (no actual execution)"),
-    ] = False,
 ) -> None:
     """Systematically proofread documentation against actual codebase to find inconsistencies."""
     repo_path = _validate_repo_path(repo_path)
@@ -471,18 +468,14 @@ def swe_doc_proofread_cmd(
         ]
 
     asyncio.run(
-        swe_from_repo(
-            pipe_code="doc_proofread",
+        swe_doc_proofread_cli(
             repo_path=repo_path,
-            ignore_patterns=ignore_patterns,
-            include_patterns=include_patterns,
-            path_pattern=None,
-            python_processing_rule=PythonProcessingRule.INTERFACE,
-            output_style=OutputStyle.REPO_MAP,
+            doc_dir=doc_dir,
             output_filename=output_filename,
             output_dir=output_dir,
+            include_patterns=include_patterns,
+            ignore_patterns=ignore_patterns,
             to_stdout=False,
-            dry_run=dry_run,
         )
     )
 

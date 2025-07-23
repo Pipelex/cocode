@@ -3,28 +3,17 @@ definition = "Systematically proofread documentation against actual codebase to 
 
 [concept]
 DocumentationFile = "A documentation file that needs to be proofread against the codebase"
-RelatedCodeFile = "A code file that is related to a documentation file"
 FilePath = "A path to a file in the codebase"
-CodeFileContent = "Content of a specific code file extracted from the codebase"
+RepositoryMap = "A repository map containing the codebase structure and file contents"
+CodebaseFileContent = "Content of a codebase file"
 DocumentationInconsistency = "An inconsistency found between documentation and actual code"
+MarkdownReport = "A markdown report containing documentation inconsistencies formatted as a Cursor prompt"
 
 [pipe]
 
-[pipe.list_docs_dir_files]
-PipeFunc = "List all documentation files in the docs directory"
-inputs = { repo_text = "Text" }
-output = "FilePath"
-function_name = "list_docs_dir_files"
-
-[pipe.read_doc_file]
-PipeFunc = "Read the content of a documentation file"
-inputs = { file_path = "FilePath" }
-output = "DocumentationFile"
-function_name = "read_file_content"
-
 [pipe.find_related_code_files]
 PipeLLM = "Find code files that implement or use elements mentioned in docs"
-inputs = { doc_file = "DocumentationFile", repo_text = "Text" }
+inputs = { doc_file = "DocumentationFile", repo_map = "RepositoryMap" }
 output = "FilePath"
 multiple_output = true
 llm = "llm_for_large_text"
@@ -37,19 +26,14 @@ Find files that implement or use code elements from this documentation:
 @doc_file
 
 Available files in repo:
-@repo_text
-
-For each relevant file found:
-- File path
-- What code elements it contains (class/function/command name)
-- Whether it implements or uses these elements
+@repo_map
 
 Only include files with actual code evidence, not just similar names or concepts.
 """
 
 [pipe.proofread_single_doc]
 PipeLLM = "Find major inconsistencies between docs and code"
-inputs = { doc_file = "DocumentationFile", related_files = "FilePath" }
+inputs = { doc_file = "DocumentationFile", related_files = "CodebaseFileContent" }
 output = "DocumentationInconsistency"
 multiple_output = true
 llm = "llm_for_swe"
@@ -60,7 +44,7 @@ Only report issues that would completely break functionality or lead users down 
 prompt_template = """
 Find critical problems between these docs and code:
 
-@doc_file
+@doc_file.doc_content
 
 CODE:
 @related_files
@@ -72,30 +56,55 @@ Look for things that would BREAK user code, like:
 - Wrong import paths that would fail
 - Critically wrong types that would crash
 
-For each major issue:
-- Show what's wrong
-- Show what's actually in the code
-- Explain why it would break things
-
 Skip anything that's not a showstopper. If it would just be confusing but still work, ignore it.
 """
 
 [pipe.proofread_doc_sequence]
 PipeSequence = "Process a single documentation file to find inconsistencies"
-inputs = { doc_file = "DocumentationFile", repo_text = "Text" }
+inputs = { doc_file = "DocumentationFile", repo_map = "RepositoryMap" }
 output = "DocumentationInconsistency"
 steps = [
-    { pipe = "find_related_code_files", result = "related_files" },
+    { pipe = "find_related_code_files", result = "related_file_paths" },
+    { pipe = "read_doc_file", result = "related_files" },
     { pipe = "proofread_single_doc", result = "inconsistencies" }
 ]
 
+[pipe.create_cursor_report]
+PipeLLM = "Create a markdown report with inconsistencies formatted as a Cursor prompt"
+inputs = { all_inconsistencies = "DocumentationInconsistency" }
+output = "MarkdownReport"
+llm = "llm_for_swe"
+system_prompt = """
+Create a concise markdown report for Cursor AI with specific, actionable fixes for documentation inconsistencies.
+Focus only on critical issues that would break user code or cause major confusion.
+"""
+prompt_template = """
+Create a markdown report for Cursor AI to fix these documentation inconsistencies:
+
+@all_inconsistencies
+
+Start the report with a direct, conversational opening that conveys: "I found some documentation inconsistencies that need fixing" - but use natural, helpful language.
+
+Then format the rest as a clear, actionable prompt for Cursor with:
+1. A brief summary of issues found
+2. Specific file-by-file fixes needed
+3. Clear instructions for each fix
+
+Make it concise and focused on the most critical issues only.
+"""
+
 [pipe.doc_proofread]
-PipeSequence = "Complete documentation proofreading pipeline"
-inputs = { repo_text = "Text" }
-output = "DocumentationInconsistency"
+PipeSequence = "Complete documentation proofreading pipeline for CLI usage"
+inputs = { repo_map = "RepositoryMap", doc_files = "DocumentationFile" }
+output = "MarkdownReport"
 steps = [
-    { pipe = "list_docs_dir_files", result = "doc_file_paths" },
-    { pipe = "read_doc_file", batch_over = "doc_file_paths", batch_as = "file_path", result = "doc_files" },
-    { pipe = "proofread_doc_sequence", batch_over = "doc_files", batch_as = "doc_file", result = "all_inconsistencies" }
+    { pipe = "proofread_doc_sequence", batch_over = "doc_files", batch_as = "doc_file", result = "all_inconsistencies" },
+    { pipe = "create_cursor_report", result = "cursor_report" }
 ]
+
+[pipe.read_doc_file]
+PipeFunc = "Read the content of related codebase files"
+inputs = { related_file_paths = "FilePath" }
+output = "CodebaseFileContent"
+function_name = "read_file_content"
 

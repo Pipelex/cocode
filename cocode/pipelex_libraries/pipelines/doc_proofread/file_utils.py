@@ -5,75 +5,74 @@ from pipelex.core.stuff_content import ListContent, StuffContent
 from pipelex.core.working_memory import WorkingMemory
 from pipelex.tools.func_registry import func_registry
 
-from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import FilePath
+from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import DocumentationFile, FilePath
 
 
-def list_docs_dir_files(working_memory: WorkingMemory) -> StuffContent:
-    """List all documentation files in the docs directory.
+def create_documentation_files_from_paths(doc_file_paths: List[str], doc_dir: str = "docs/") -> List[DocumentationFile]:
+    """Create DocumentationFile objects from file paths.
 
     Args:
-        working_memory: Working memory containing repo_text
+        doc_file_paths: List of documentation file paths
+        doc_dir: Base documentation directory (used for filtering)
 
     Returns:
-        ListContent of FilePath objects
+        List of DocumentationFile objects
     """
-    from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import FilePath
+    doc_files: List[DocumentationFile] = []
 
-    # Get all markdown files in the docs directory
-    doc_files: List[StuffContent] = []
-    docs_dir = Path("docs")
-    if docs_dir.exists():
-        for file_path in docs_dir.rglob("*.md"):
-            if "CHANGELOG.md" not in str(file_path):  # Skip changelog files
-                doc_files.append(FilePath(path=str(file_path)))
+    for file_path in doc_file_paths:
+        # Skip if not in doc_dir (when specified)
+        if doc_dir and doc_dir not in file_path:
+            continue
 
-    # Also include README.md from the root if it exists
-    readme_path = Path("README.md")
-    if readme_path.exists():
-        doc_files.append(FilePath(path=str(readme_path)))
+        try:
+            with open(file_path, "r", encoding="utf-8") as file:
+                content = file.read()
 
-    # If no files found, return a dummy file
-    if not doc_files:
-        doc_files = [FilePath(path="docs/example.md")]
+                # Extract title from first heading in markdown
+                title = ""
+                for line in content.split("\n"):
+                    if line.startswith("#"):
+                        title = line.lstrip("#").strip()
+                        break
+                if not title:
+                    title = Path(file_path).stem.replace("_", " ").title()
 
-    return ListContent[StuffContent](items=doc_files)
+                doc_files.append(DocumentationFile(file_path=file_path, doc_content=content, title=title))
+        except Exception as e:
+            print(f"Warning: Could not read file {file_path}: {e}")
+            continue
+
+    return doc_files
 
 
 def read_file_content(working_memory: WorkingMemory) -> StuffContent:
-    """Read the content of a documentation file.
+    """Read the content of related codebase files.
 
     Args:
-        working_memory: Working memory containing file_path
+        working_memory: Working memory containing related_file_paths
 
     Returns:
-        DocumentationFile object
+        ListContent of CodebaseFileContent objects
     """
-    from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import DocumentationFile
+    from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import CodebaseFileContent
 
-    # Extract the file path from working memory
-    file_path_stuff = working_memory.get_stuff_as("file_path", content_type=FilePath)
-    file_path = file_path_stuff.path
+    # Extract the file paths from working memory
+    file_paths_list = working_memory.get_stuff_as_list("related_file_paths", item_type=FilePath)
 
-    try:
-        with open(file_path, "r", encoding="utf-8") as file:
-            content = file.read()
-            # Extract title from first heading in markdown
-            title = ""
-            for line in content.split("\n"):
-                if line.startswith("#"):
-                    title = line.lstrip("#").strip()
-                    break
-            if not title:
-                title = Path(file_path).stem.replace("_", " ").title()
+    codebase_files: List[CodebaseFileContent] = []
+    for file_path in file_paths_list.items:
+        try:
+            with open(file_path.path, "r", encoding="utf-8") as file:
+                content = file.read()
+                codebase_files.append(CodebaseFileContent(file_path=file_path.path, content=content))
+        except Exception as e:
+            # For errors, add a placeholder with error info
+            codebase_files.append(
+                CodebaseFileContent(file_path=file_path.path, content=f"# File not found or unreadable: {file_path.path}\n# Error: {str(e)}")
+            )
 
-            return DocumentationFile(file_path=file_path, doc_content=content, title=title)
-    except Exception:
-        # For errors, return a dummy file
-        return DocumentationFile(
-            file_path=file_path, doc_content="# Example Documentation\n\nThis is example documentation content.", title="Example Documentation"
-        )
+    return ListContent[CodebaseFileContent](items=codebase_files)
 
 
-# Register functions in the func_registry for PipeFunc usage
 func_registry.register_function(read_file_content, name="read_file_content")
-func_registry.register_function(list_docs_dir_files, name="list_docs_dir_files")
