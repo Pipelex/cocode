@@ -34,7 +34,6 @@ from cocode.swe.swe_cmd import (
 
 class PipeCode(StrEnum):
     EXTRACT_ONBOARDING_DOCUMENTATION = "extract_onboarding_documentation"
-    DOC_PROOFREAD = "doc_proofread"
 
 
 def _get_pipe_descriptions() -> str:
