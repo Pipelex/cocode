@@ -11,6 +11,7 @@ import typer
 from click import Command, Context
 from pipelex import log
 from pipelex.hub import get_pipeline_tracker
+from pipelex.pipe_works.pipe_dry import dry_run_all_pipes
 from pipelex.pipelex import Pipelex
 from pipelex.tools.misc.file_utils import path_exists
 from typer import Context as TyperContext
@@ -24,6 +25,7 @@ from cocode.repox.repox_cmd import repox_command
 from cocode.repox.repox_processor import RESULTS_DIR
 from cocode.swe.swe_cmd import (
     swe_ai_instruction_update_from_diff,
+    swe_doc_proofread,
     swe_doc_update_from_diff,
     swe_from_file,
     swe_from_repo,
@@ -39,6 +41,7 @@ def _get_pipe_descriptions() -> str:
     """Generate help text with pipe descriptions from TOML."""
     descriptions = {
         "extract_onboarding_documentation": "Extract comprehensive onboarding documentation from software project docs",
+        "doc_proofread": "Systematically proofread documentation against actual codebase to find inconsistencies",
         "doc_update": "Generate documentation update suggestions for docs/ directory",
         "ai_instruction_update": "Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, cursor rules",
     }
@@ -89,6 +92,13 @@ def main(ctx: TyperContext) -> None:
 
     if ctx.invoked_subcommand is None:
         print(ctx.get_help())
+
+
+@app.command()
+def validate() -> None:
+    """Run the setup sequence."""
+    asyncio.run(dry_run_all_pipes())
+    log.info("Setup sequence passed OK, config and pipelines are validated.")
 
 
 def _validate_repo_path(repo_path: str) -> str:
@@ -409,6 +419,70 @@ def swe_ai_instruction_update_cmd(
             output_dir=output_dir,
             ignore_patterns=ignore_patterns,
             doc_dir=doc_dir,
+        )
+    )
+
+    get_pipeline_tracker().output_flowchart()
+
+
+@app.command("swe-doc-proofread")
+def swe_doc_proofread_cmd(
+    repo_path: Annotated[
+        str,
+        typer.Argument(help="Input directory path", exists=True, file_okay=False, dir_okay=True, resolve_path=True),
+    ] = ".",
+    output_dir: Annotated[
+        str,
+        typer.Option("--output-dir", "-o", help="Output directory path"),
+    ] = "results",
+    output_filename: Annotated[
+        str,
+        typer.Option("--output-filename", "-n", help="Output filename"),
+    ] = "doc-proofread-report",
+    doc_dir: Annotated[
+        str,
+        typer.Option("--doc-dir", "-d", help="Directory containing documentation files"),
+    ] = "docs",
+    include_patterns: Annotated[
+        Optional[List[str]],
+        typer.Option("--include-pattern", "-r", help="Patterns to include in codebase analysis (glob pattern) - can be repeated"),
+    ] = None,
+    ignore_patterns: Annotated[
+        Optional[List[str]],
+        typer.Option("--ignore-pattern", "-i", help="Patterns to ignore in codebase analysis (gitignore format) - can be repeated"),
+    ] = None,
+) -> None:
+    """Systematically proofread documentation against actual codebase to find inconsistencies."""
+    repo_path = _validate_repo_path(repo_path)
+
+    # Set default include patterns to focus on documentation and code
+    if include_patterns is None:
+        include_patterns = ["*.md", "*.py", "*.toml", "*.yaml", "*.yml", "*.json", "*.sh", "*.js", "*.ts"]
+
+    # Set default ignore patterns to exclude noise
+    if ignore_patterns is None:
+        ignore_patterns = [
+            "__pycache__/",
+            "*.pyc",
+            ".git/",
+            ".venv/",
+            "node_modules/",
+            "*.log",
+            "build/",
+            "dist/",
+            ".pytest_cache/",
+            "*.egg-info/",
+        ]
+
+    asyncio.run(
+        swe_doc_proofread(
+            repo_path=repo_path,
+            doc_dir=doc_dir,
+            output_filename=output_filename,
+            output_dir=output_dir,
+            include_patterns=include_patterns,
+            ignore_patterns=ignore_patterns,
+            to_stdout=False,
         )
     )
 

@@ -27,7 +27,7 @@ You are an expert technical writer. Your task is to format a final changelog in 
 prompt_template = """
 Create a properly formatted changelog in markdown format using the following structure:
 
-## [v.X.Y.Z] - $release_date
+## [vX.Y.Z] - $release_date
 
 Then organize the changes into these sections (only include sections that have content):
 

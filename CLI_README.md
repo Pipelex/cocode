@@ -197,6 +197,51 @@ cocode swe-doc-update
 cocode swe-doc-update --help
 ```
 
+### `swe-doc-proofread` - Documentation Proofreading
+
+Systematically proofread documentation against actual codebase to find inconsistencies that could break user code or cause major confusion.
+
+**Usage**:
+```bash
+# Proofread docs directory against current repository
+cocode swe-doc-proofread
+
+# Specify custom documentation directory
+cocode swe-doc-proofread --doc-dir documentation
+
+# Proofread external project documentation
+cocode swe-doc-proofread ../my-project/ --doc-dir docs --output-filename my-project-issues
+
+# Focus on specific file patterns in codebase analysis
+cocode swe-doc-proofread --include-pattern "*.py" --include-pattern "*.ts"
+
+# Exclude certain patterns from codebase analysis
+cocode swe-doc-proofread --ignore-pattern "test_*" --ignore-pattern "*.md"
+```
+
+**Options:**
+- `repo_path`: Repository path to analyze (default: current directory)
+- `--doc-dir, -d`: Directory containing documentation files (default: "docs")
+- `--output-dir, -o`: Output directory (default: "results")
+- `--output-filename, -n`: Output filename (default: "doc-proofread-report")
+- `--include-pattern, -r`: Include patterns for codebase analysis (can be repeated)
+- `--ignore-pattern, -i`: Ignore patterns for codebase analysis (can be repeated)
+
+**Output Format:**
+The command generates a markdown report with the following structure for each inconsistency:
+
+- **Doc file path:** Path to the documentation file with issues
+- **Issue:** Description of the inconsistency found
+- **Related files:** Code files that are relevant to the issue
+- **Suggested fix:** Specific actionable solution
+
+The tool focuses on critical issues that would break user code, such as:
+- Wrong function/class signatures
+- Required parameters marked as optional (or vice versa)
+- Incorrect examples that would fail
+- Wrong import paths
+- Critical type mismatches
+
 ### `validate` - Configuration Validation
 
 Validate setup and pipelines.
