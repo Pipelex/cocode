@@ -31,7 +31,6 @@ pip install cocode
 cocode validate
 ```
 
-
 ### Set up environment variables
 
 Enter your API keys into your `.env` file. The `OPENAI_API_KEY` is enough to get you started, but some pipelines require models from other providers.
