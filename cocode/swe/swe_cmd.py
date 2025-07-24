@@ -1,14 +1,13 @@
 import json
 import os
-from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional, cast
 
 from pipelex import log, pretty_print
 from pipelex.core.pipe_run_params import PipeRunMode
-from pipelex.core.stuff_content import ListContent, TextContent
+from pipelex.core.stuff_content import ListContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
-from pipelex.hub import get_concept_provider, get_report_delegate
+from pipelex.hub import get_report_delegate
 from pipelex.pipeline.execute import PipeOutput, execute_pipeline
 from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
 
@@ -16,7 +15,7 @@ from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models impor
 from cocode.pipelex_libraries.pipelines.doc_proofread.file_utils import create_documentation_files_from_paths
 from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule, python_imports_list, python_integral, python_interface
-from cocode.repox.repox_processor import RepoxException, RepoxProcessor
+from cocode.repox.repox_processor import RepoxProcessor
 from cocode.swe.swe_utils import get_repo_text_for_swe, process_swe_pipeline_result
 from cocode.utils import NoDifferencesFound, run_git_diff_command
 
@@ -138,6 +137,9 @@ async def swe_from_repo_diff(
     except NoDifferencesFound as exc:
         log.info(f"Aborting: {exc}")
         return
+
+    # print(code_diff)
+    # return
 
     # Load the working memory with the text
     code_diff_stuff = StuffFactory.make_from_str(str_value=code_diff, name="code_diff", concept_str="swe.CodeDiff")

@@ -26,6 +26,7 @@ You are an expert technical writer and software architect. Your task is to caref
 """
 prompt_template = """
 Analyze the following code diff. Write a changelog in markdown format that summarizes the changes made to the codebase between two versions.
+Be sure to inclide changes to code but also complementary pipelines, scripts, docs.
 
 @code_diff
 """
