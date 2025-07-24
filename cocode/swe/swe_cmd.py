@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional, cast
 
 from pipelex import log, pretty_print
+from pipelex.core.pipe_run_params import PipeRunMode
 from pipelex.core.stuff_content import ListContent, TextContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
@@ -30,7 +31,7 @@ async def swe_from_repo(
     output_filename: str,
     output_dir: str,
     to_stdout: bool,
-    dry_run: bool,
+    pipe_run_mode: PipeRunMode,
 ) -> None:
     text_processing_funcs: Dict[str, Callable[[str], str]] = {}
     match python_processing_rule:
@@ -51,11 +52,21 @@ async def swe_from_repo(
         output_style=output_style,
     )
     repo_text = process_repox(repox_processor=processor)
-    # Process through SWE pipeline and handle output
-    await process_swe_pipeline(
-        text=repo_text,
+
+    # Load the working memory with the text
+    repo_text_stuff = StuffFactory.make_from_str(str_value=repo_text, name="repo_text", concept_str="swe.RepoText")
+    working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=repo_text_stuff)
+
+    # Run the pipe
+    pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
-        dry_run=dry_run,
+        working_memory=working_memory,
+        pipe_run_mode=pipe_run_mode,
+    )
+
+    #  handle output
+    await process_swe_pipeline_result(
+        pipe_output=pipe_output,
         output_filename=output_filename,
         output_dir=output_dir,
         to_stdout=to_stdout,
@@ -68,7 +79,7 @@ async def swe_from_file(
     output_filename: str,
     output_dir: str,
     to_stdout: bool,
-    dry_run: bool,
+    pipe_run_mode: PipeRunMode,
 ) -> None:
     """Process SWE analysis from an existing text file instead of building from repository."""
     log.info(f"Processing SWE from file: '{input_file_path}'")
@@ -83,36 +94,33 @@ async def swe_from_file(
         log.error(f"Error reading input file '{input_file_path}': {e}")
         raise
 
-    # Process through SWE pipeline and handle output
-    await process_swe_pipeline(
-        text=text,
+    # Load the working memory with the text
+    text_stuff = StuffFactory.make_from_str(str_value=text, name="text", concept_str="swe.RepoText")
+    working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=text_stuff)
+
+    # Run the pipe
+    pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
-        dry_run=dry_run,
+        working_memory=working_memory,
+        pipe_run_mode=pipe_run_mode,
+    )
+
+    # Process through SWE pipeline and handle output
+    await process_swe_pipeline_result(
+        pipe_output=pipe_output,
         output_filename=output_filename,
         output_dir=output_dir,
         to_stdout=to_stdout,
     )
 
 
-async def process_swe_pipeline(
-    text: str,
-    pipe_code: str,
-    dry_run: bool,
+async def process_swe_pipeline_result(
+    pipe_output: PipeOutput,
     output_filename: str,
     output_dir: str,
     to_stdout: bool,
-    variable_name: str = "repo_text",
 ) -> None:
     """Common function to process text through SWE pipeline and handle output."""
-    # Load the working memory with the text
-    text_stuff = StuffFactory.make_from_str(str_value=text, name=variable_name)
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[text_stuff])
-
-    # Run the pipe
-    pipe_output = await execute_pipeline(
-        pipe_code=pipe_code,
-        working_memory=working_memory,
-    )
     pretty_print(pipe_output, title="Pipe output")
     swe_stuff = pipe_output.main_stuff
 
@@ -164,7 +172,7 @@ async def swe_from_repo_diff(
     output_filename: str,
     output_dir: str,
     to_stdout: bool,
-    dry_run: bool,
+    pipe_run_mode: PipeRunMode,
     ignore_patterns: Optional[List[str]] = None,
 ) -> None:
     """Process SWE analysis from a git diff comparing current version to specified version."""
@@ -177,15 +185,23 @@ async def swe_from_repo_diff(
         log.info(f"Aborting: {exc}")
         return
 
-    # Process through SWE pipeline and handle output
-    await process_swe_pipeline(
-        text=code_diff,
+    # Load the working memory with the text
+    code_diff_stuff = StuffFactory.make_from_str(str_value=code_diff, name="code_diff", concept_str="swe.CodeDiff")
+    working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=code_diff_stuff)
+
+    # Run the pipe
+    pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
-        dry_run=dry_run,
+        working_memory=working_memory,
+        pipe_run_mode=pipe_run_mode,
+    )
+
+    # Process through SWE pipeline and handle output
+    await process_swe_pipeline_result(
+        pipe_output=pipe_output,
         output_filename=output_filename,
         output_dir=output_dir,
         to_stdout=to_stdout,
-        variable_name="code_diff",
     )
 
 

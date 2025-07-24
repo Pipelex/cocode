@@ -10,6 +10,7 @@ from typing import Annotated, List, Optional
 import typer
 from click import Command, Context
 from pipelex import log
+from pipelex.core.pipe_run_params import PipeRunMode
 from pipelex.hub import get_pipeline_tracker
 from pipelex.pipe_works.pipe_dry import dry_run_all_pipes
 from pipelex.pipelex import Pipelex
@@ -223,6 +224,7 @@ def swe_from_repo_cmd(
     repo_path = _validate_repo_path(repo_path)
     output_dir = _get_output_dir(output_dir)
     to_stdout = output_dir == "stdout"
+    pipe_run_mode = PipeRunMode.DRY if dry_run else PipeRunMode.LIVE
 
     asyncio.run(
         swe_from_repo(
@@ -236,7 +238,7 @@ def swe_from_repo_cmd(
             output_filename=output_filename,
             output_dir=output_dir,
             to_stdout=to_stdout,
-            dry_run=dry_run,
+            pipe_run_mode=pipe_run_mode,
         )
     )
 
@@ -267,6 +269,7 @@ def swe_from_file_cmd(
     """Process SWE analysis from an existing text file."""
     output_dir = _get_output_dir(output_dir)
     to_stdout = output_dir == "stdout"
+    pipe_run_mode = PipeRunMode.DRY if dry_run else PipeRunMode.LIVE
 
     asyncio.run(
         swe_from_file(
@@ -275,7 +278,7 @@ def swe_from_file_cmd(
             output_filename=output_filename,
             output_dir=output_dir,
             to_stdout=to_stdout,
-            dry_run=dry_run,
+            pipe_run_mode=pipe_run_mode,
         )
     )
 
@@ -317,6 +320,7 @@ def swe_from_repo_diff_cmd(
     repo_path = _validate_repo_path(repo_path)
     output_dir = _get_output_dir(output_dir)
     to_stdout = output_dir == "stdout"
+    pipe_run_mode = PipeRunMode.DRY if dry_run else PipeRunMode.LIVE
 
     asyncio.run(
         swe_from_repo_diff(
@@ -326,7 +330,7 @@ def swe_from_repo_diff_cmd(
             output_filename=output_filename,
             output_dir=output_dir,
             to_stdout=to_stdout,
-            dry_run=dry_run,
+            pipe_run_mode=pipe_run_mode,
             ignore_patterns=ignore_patterns,
         )
     )
