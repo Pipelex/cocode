@@ -49,8 +49,11 @@ cocode swe-doc-update v1.0.0 .
 
 # Proofread documentation against codebase
 cocode swe-doc-proofread --doc-dir docs .
-
 ```
+
+### 📁 Output Location
+
+The results of these commands will be saved in a `results` (default behavior) folder at the root of your project.
 
 ## 🔧 Other Features
 
