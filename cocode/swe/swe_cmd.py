@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional, cast
 
 from pipelex import log, pretty_print
-from pipelex.core.stuff import Stuff
 from pipelex.core.stuff_content import ListContent, TextContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
