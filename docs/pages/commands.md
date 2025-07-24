@@ -79,6 +79,49 @@ cocode swe-from-repo-diff [OPTIONS] PIPE_CODE GIT_REF REPO_PATH
 - Ranges: `v1.0.0..v2.0.0`
 - Relative: `HEAD~10`
 
+## swe-doc-proofread
+
+Proofread documentation against codebase to detect inconsistencies.
+
+```bash
+cocode swe-doc-proofread [OPTIONS] REPO_PATH
+```
+
+**Purpose:**
+Detect critical inconsistencies between documentation and actual codebase that could break user code.
+
+**Options:**
+
+- `--doc-dir` - Documentation directory to analyze (default: `docs`)
+- `-o, --output-dir` - Output directory (default: `./results/`)
+- `-n, --output-filename` - Output filename
+- `--dry` - Dry run without API calls
+- Plus all filtering options from `repox`
+
+## swe-doc-update
+
+Update documentation based on code changes.
+
+```bash
+cocode swe-doc-update [OPTIONS] GIT_REF REPO_PATH
+```
+
+**Purpose:**
+Automatically update docs and README files based on releases and code changes.
+
+**Git references:**
+
+- Tags: `v1.0.0`
+- Commits: `abc123`
+- Ranges: `v1.0.0..v2.0.0`
+- Relative: `HEAD~10`
+
+**Options:**
+
+- `-o, --output-dir` - Output directory (default: `./results/`)
+- `-n, --output-filename` - Output filename
+- `--dry` - Dry run without API calls
+
 ## GitHub commands
 
 GitHub-related operations and utilities.

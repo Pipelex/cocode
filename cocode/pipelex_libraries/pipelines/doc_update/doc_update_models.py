@@ -23,6 +23,26 @@ class AIInstructionFileType(str, Enum):
     CURSOR_RULES = "cursor_rules"
 
 
+class GitDiffCitation(StructuredContent):
+    """A citation from the git diff that supports a documentation change."""
+
+    file_path: str = Field(description="Path to the file in the git diff")
+    line_range: Optional[str] = Field(None, description="Line range in the format 'start,count' or 'line_number'")
+    diff_section: str = Field(description="The relevant section of the git diff showing the change")
+    change_type: str = Field(description="Type of change: added, removed, or modified")
+    old_code: Optional[str] = Field(None, description="The old code that was changed or removed")
+    new_code: Optional[str] = Field(None, description="The new code that was added or modified")
+
+
+class ExactChange(StructuredContent):
+    """Exact change instruction with old and new patterns."""
+
+    old_pattern: Optional[str] = Field(None, description="The exact old code/text pattern to find and replace")
+    new_pattern: Optional[str] = Field(None, description="The exact new code/text pattern to replace with")
+    change_description: str = Field(description="Human-readable description of what this change does")
+    context_hint: Optional[str] = Field(None, description="Additional context about where to find this pattern")
+
+
 class DocumentationItem(StructuredContent):
     """A specific item that requires documentation analysis."""
 
@@ -32,6 +52,7 @@ class DocumentationItem(StructuredContent):
     description: str = Field(description="Brief description of what changed")
     reason_for_update: str = Field(description="Why documentation needs updating")
     affected_doc_files: List[str] = Field(description="Specific documentation files that need updates")
+    git_citations: List[GitDiffCitation] = Field(default_factory=list, description="Git diff citations supporting this change")
 
 
 class DocumentationAnalysis(StructuredContent):
@@ -43,6 +64,18 @@ class DocumentationAnalysis(StructuredContent):
     content_location: str = Field(description="Where in files to make changes")
     specific_content: str = Field(description="Exact text to add/modify/remove")
     impact_reasoning: str = Field(description="Why this change affects documentation")
+    git_citations: List[GitDiffCitation] = Field(default_factory=list, description="Git diff citations supporting this analysis")
+
+
+class DocumentationChangeItem(StructuredContent):
+    """A specific documentation change with its supporting git diff citations."""
+
+    file_path: str = Field(description="Documentation file that needs to be updated")
+    location: str = Field(description="Specific location within the file (e.g., section, line number)")
+    content_description: str = Field(description="Description of what content needs to be updated")
+    change_reason: str = Field(description="Why this change is needed")
+    exact_changes: List[ExactChange] = Field(default_factory=list, description="Exact old/new patterns for specific changes")
+    git_citations: List[GitDiffCitation] = Field(default_factory=list, description="Git diff citations supporting this change")
 
 
 class AIInstructionFileAnalysis(StructuredContent):
@@ -78,3 +111,6 @@ class DocumentationSuggestions(StructuredContent):
     """Final structured suggestions for updating all documentation."""
 
     documentation_updates_prompt: str = Field(description="Complete prompt text for documentation updates")
+    structured_changes: List[DocumentationChangeItem] = Field(
+        default_factory=list, description="Structured list of documentation changes with git citations"
+    )
