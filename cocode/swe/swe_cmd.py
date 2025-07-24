@@ -105,9 +105,8 @@ async def process_swe_pipeline(
 ) -> None:
     """Common function to process text through SWE pipeline and handle output."""
     # Load the working memory with the text
-    release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
     text_stuff = StuffFactory.make_from_str(str_value=text, name=variable_name)
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[release_stuff, text_stuff])
+    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[text_stuff])
 
     # Run the pipe
     pipe_output = await execute_pipeline(
@@ -204,10 +203,9 @@ async def swe_doc_update_from_diff(
     # Generate git diff
     diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
 
-    release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
     git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
 
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[release_stuff, git_diff_stuff])
+    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[git_diff_stuff])
 
     pipe_output = await execute_pipeline(
         pipe_code="doc_update",
@@ -287,14 +285,13 @@ async def swe_ai_instruction_update_from_diff(
             log.warning(f"Error reading cursor rules directory {cursor_rules_dir}: {e}")
 
     # Create working memory with git diff and AI instruction file contents
-    release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
     git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
     agents_content_stuff = StuffFactory.make_from_str(str_value=agents_content, name="agents_content")
     claude_content_stuff = StuffFactory.make_from_str(str_value=claude_content, name="claude_content")
     cursor_rules_content_stuff = StuffFactory.make_from_str(str_value=cursor_rules_content, name="cursor_rules_content")
 
     working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(
-        stuff_list=[release_stuff, git_diff_stuff, agents_content_stuff, claude_content_stuff, cursor_rules_content_stuff]
+        stuff_list=[git_diff_stuff, agents_content_stuff, claude_content_stuff, cursor_rules_content_stuff]
     )
 
     pipe_output = await execute_pipeline(
