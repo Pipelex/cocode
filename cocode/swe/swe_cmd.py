@@ -105,7 +105,20 @@ async def process_swe_pipeline(
     variable_name: str = "repo_text",
 ) -> None:
     """Common function to process text through SWE pipeline and handle output."""
-    swe_stuff = await process_swe(text=text, pipe_code=pipe_code, variable_name=variable_name)
+    # Load the working memory with the text
+    release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
+    text_stuff = StuffFactory.make_from_str(str_value=text, name=variable_name)
+    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[release_stuff, text_stuff])
+
+    # Run the pipe
+    pipe_output = await execute_pipeline(
+        pipe_code=pipe_code,
+        working_memory=working_memory,
+    )
+    pretty_print(pipe_output, title="Pipe output")
+    swe_stuff = pipe_output.main_stuff
+
+    get_report_delegate().generate_report()
 
     if to_stdout:
         if isinstance(swe_stuff.content, TextContent):
@@ -146,24 +159,6 @@ def process_repox(
     return output_content
 
 
-async def process_swe(text: str, pipe_code: str, variable_name: str = "text") -> Stuff:
-    # Load the working memory with the text
-    release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
-    text_stuff = StuffFactory.make_from_str(str_value=text, name=variable_name)
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[release_stuff, text_stuff])
-    # Run the pipe
-    pipe_output = await execute_pipeline(
-        pipe_code=pipe_code,
-        working_memory=working_memory,
-    )
-    pretty_print(pipe_output, title="Pipe output")
-    swe_stuff = pipe_output.main_stuff
-
-    get_report_delegate().generate_report()
-
-    return swe_stuff
-
-
 async def swe_from_repo_diff(
     pipe_code: str,
     repo_path: str,
@@ -179,20 +174,20 @@ async def swe_from_repo_diff(
 
     # Generate git diff
     try:
-        diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+        code_diff = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
     except NoDifferencesFound as exc:
         log.info(f"Aborting: {exc}")
         return
 
     # Process through SWE pipeline and handle output
     await process_swe_pipeline(
-        text=diff_text,
+        text=code_diff,
         pipe_code=pipe_code,
         dry_run=dry_run,
         output_filename=output_filename,
         output_dir=output_dir,
         to_stdout=to_stdout,
-        variable_name="text",
+        variable_name="code_diff",
     )
 
 

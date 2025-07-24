@@ -9,12 +9,27 @@ ReleaseChangelog = "A text report in markdown format that summarizes the changes
 [pipe]
 [pipe.write_changelog]
 PipeSequence = "Write a comprehensive changelog for a software project"
-inputs = { text = "Text", release_date = "Text" }
+inputs = { code_diff = "CodeDiff", release_date = "Text" }
 output = "Text"
 steps = [
-    { pipe = "write_changelog_from_text", result = "changelog_sections" },
+    { pipe = "write_changelog_from_code_diff", result = "changelog_sections" },
     { pipe = "format_final_changelog", result = "changelog" },
 ]
+
+[pipe.write_changelog_from_code_diff]
+PipeLLM = "Write a changelog for a software project."
+inputs = { code_diff = "CodeDiff" }
+output = "ReleaseChangelog"
+llm = "llm_for_swe"
+system_prompt = """
+You are an expert technical writer and software architect. Your task is to carefully review the code diff and write a changelog in markdown format.
+"""
+prompt_template = """
+Analyze the following code diff. Write a changelog in markdown format that summarizes the changes made to the codebase between two versions.
+
+@code_diff
+"""
+
 
 [pipe.format_final_changelog]
 PipeLLM = "Format the final changelog in markdown with proper structure"
@@ -57,19 +72,5 @@ Ensure each bullet point is clear, concise, and user-friendly.
 Please add back ticks to the variables.
 DO NOT ADD ANYTHING ELSE THAN THE MARKDOWN FORMAT.
 Do not add ```markdown``` at the beginning or at the end.
-"""
-
-[pipe.write_changelog_from_text]
-PipeLLM = "Write a changelog for a software project."
-inputs = { text = "Text" }
-output = "ReleaseChangelog"
-llm = "llm_for_swe"
-system_prompt = """
-You are an expert technical writer and software architect. Your task is to carefully review the code diff and write a changelog in markdown format.
-"""
-prompt_template = """
-Analyze the following code diff. Write a changelog in markdown format that summarizes the changes made to the codebase between two versions.
-
-@text
 """
 
