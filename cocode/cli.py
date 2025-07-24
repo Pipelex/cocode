@@ -14,6 +14,7 @@ from pipelex.hub import get_pipeline_tracker
 from pipelex.pipelex import Pipelex
 from pipelex.tools.misc.file_utils import path_exists
 from typer import Context as TyperContext
+from pipelex.pipe_works.pipe_dry import dry_run_all_pipes
 from typer.core import TyperGroup
 from typing_extensions import override
 
@@ -92,6 +93,11 @@ def main(ctx: TyperContext) -> None:
     if ctx.invoked_subcommand is None:
         print(ctx.get_help())
 
+@app.command()
+def validate() -> None:
+    """Run the setup sequence."""
+    asyncio.run(dry_run_all_pipes())
+    log.info("Setup sequence passed OK, config and pipelines are validated.")
 
 def _validate_repo_path(repo_path: str) -> str:
     """Validate and convert repo_path to absolute path."""
