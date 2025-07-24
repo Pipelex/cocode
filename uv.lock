@@ -1805,7 +1805,7 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.6.6"
+version = "0.6.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -1834,9 +1834,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/62/2c/24ea5fcb43b14e8f0c03bae0e267acd701a0d785668b40a4204647bc1c9c/pipelex-0.6.6.tar.gz", hash = "sha256:30d1b925c4193f7333491780027eb2a248d8373e38e94a5826b64947f08a3032", size = 186698, upload-time = "2025-07-24T09:38:13.966Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/36/e0/4dff525b780e0644d82255744462c182678ea8f76d5562d4e823e0a7e988/pipelex-0.6.7.tar.gz", hash = "sha256:310cade82e5a4dc203eaea7a5da5dd603d93d100de9f53511f9eb58ea7f75f33", size = 186662, upload-time = "2025-07-24T13:14:58.852Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/36/16/eb773383d3767f33d23312ce9f1cb83b9b836b361f5cca1058238f07d233/pipelex-0.6.6-py3-none-any.whl", hash = "sha256:a35db541921559ffe4b0de54db260a7b9b8231f4a17e249ad1aeecf5c77b5f0b", size = 306295, upload-time = "2025-07-24T09:38:12.513Z" },
+    { url = "https://files.pythonhosted.org/packages/2c/e6/e8c17467c7fdf6f0a6e7aa6784e32d092a3551c4ba35c9a9f7d808bf7a67/pipelex-0.6.7-py3-none-any.whl", hash = "sha256:2058e1972db3a3ef07f5e1ae67d2065a7703dff5ef70816b131a4648f58d2af0", size = 306249, upload-time = "2025-07-24T13:14:57.25Z" },
 ]
 
 [package.optional-dependencies]

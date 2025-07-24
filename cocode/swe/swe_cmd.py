@@ -17,7 +17,7 @@ from cocode.pipelex_libraries.pipelines.doc_proofread.file_utils import create_d
 from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule, python_imports_list, python_integral, python_interface
 from cocode.repox.repox_processor import RepoxException, RepoxProcessor
-from cocode.utils import run_git_diff_command
+from cocode.utils import NoDifferencesFound, run_git_diff_command
 
 
 async def swe_from_repo(
@@ -178,7 +178,11 @@ async def swe_from_repo_diff(
     log.info(f"Processing SWE from git diff: comparing current to '{version}' in '{repo_path}'")
 
     # Generate git diff
-    diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+    try:
+        diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+    except NoDifferencesFound as exc:
+        log.info(f"Aborting: {exc}")
+        return
 
     # Process through SWE pipeline and handle output
     await process_swe_pipeline(
