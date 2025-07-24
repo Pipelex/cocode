@@ -48,3 +48,6 @@ settings.local.json
 
 # To be removed
 /pipelex_libraries
+
+# GCP credentials
+gcp_credentials.json

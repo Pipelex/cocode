@@ -168,7 +168,7 @@ Be specific about utility methods and helper functions that are part of the code
 
 [pipe.combine_ai_instruction_analyses]
 PipeLLM = "Combine all AI instruction file analyses into comprehensive suggestions"
-inputs = { agents_analysis = "AIInstructionFileAnalysis", claude_analysis = "AIInstructionFileAnalysis", cursor_analysis = "AIInstructionFileAnalysis" }
+inputs = { parallel_analyses = "AIInstructionParallelResults" }
 output = "AIInstructionUpdateSuggestions"
 system_prompt = """
 You are an AI instruction coordinator. Combine individual file analyses into comprehensive, actionable suggestions.
@@ -177,12 +177,7 @@ Generate clear, structured output that separates each file's requirements.
 prompt_template = """
 Combine these AI instruction file analyses into comprehensive suggestions:
 
-AGENTS.MD ANALYSIS:
-@agents_analysis
-CLAUDE.MD ANALYSIS:
-@claude_analysis
-CURSOR RULES ANALYSIS:
-@cursor_analysis
+@parallel_analyses
 
 Extract the individual analyses for each file type and create a comprehensive summary that:
 1. Assigns each analysis to the correct file type
@@ -282,6 +277,7 @@ parallels = [
     { pipe = "analyze_claude_md_changes", result = "claude_analysis" },
     { pipe = "analyze_cursor_rules_changes", result = "cursor_analysis" }
 ]
+combined_output = "ai_instruction_update.AIInstructionParallelResults"
 
 [pipe.ai_instruction_update]
 PipeSequence = "AI instruction update analysis with parallel file processing and formatting"

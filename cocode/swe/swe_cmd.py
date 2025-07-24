@@ -1,16 +1,19 @@
+import json
 import os
 from datetime import datetime
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, cast
 
 from pipelex import log, pretty_print
 from pipelex.core.stuff import Stuff
+from pipelex.core.stuff_content import ListContent, TextContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_report_delegate
-from pipelex.pipeline.execute import execute_pipeline
+from pipelex.pipeline.execute import PipeOutput, execute_pipeline
 from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
 
-from cocode.pipelex_libraries.pipelines.doc_update.doc_update_models import DocumentationSuggestions
+from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import DocumentationFile, DocumentationInconsistency, RepositoryMap
+from cocode.pipelex_libraries.pipelines.doc_proofread.file_utils import create_documentation_files_from_paths
 from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule, python_imports_list, python_integral, python_interface
 from cocode.repox.repox_processor import RepoxException, RepoxProcessor
@@ -49,7 +52,6 @@ async def swe_from_repo(
         output_style=output_style,
     )
     repo_text = process_repox(repox_processor=processor)
-
     # Process through SWE pipeline and handle output
     await process_swe_pipeline(
         text=repo_text,
@@ -106,11 +108,17 @@ async def process_swe_pipeline(
     swe_stuff = await process_swe(text=text, pipe_code=pipe_code, variable_name=variable_name)
 
     if to_stdout:
-        print(swe_stuff)
+        if isinstance(swe_stuff.content, TextContent):
+            print(swe_stuff.as_str)
+        else:
+            print(swe_stuff)
     else:
         ensure_path(output_dir)
         output_file_path = f"{output_dir}/{output_filename}"
-        save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
+        if isinstance(swe_stuff.content, TextContent):
+            save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
+        else:
+            save_text_to_path(text=str(swe_stuff), path=output_file_path)
         log.info(f"Done, output saved as text to file: '{output_file_path}'")
 
 
@@ -207,15 +215,13 @@ async def swe_doc_update_from_diff(
         pipe_code="doc_update",
         working_memory=working_memory,
     )
-    doc_suggestions = pipe_output.main_stuff_as(content_type=DocumentationSuggestions)
+    formatted_output = pipe_output.main_stuff_as_str
 
     get_report_delegate().generate_report()
 
     ensure_path(output_dir)
     output_file_path = f"{output_dir}/{output_filename}"
-    text_content = doc_suggestions.documentation_updates_prompt
-
-    save_text_to_path(text=text_content, path=output_file_path)
+    save_text_to_path(text=formatted_output, path=output_file_path)
     log.info(f"Done, documentation update suggestions saved to file: '{output_file_path}'")
 
 
@@ -312,3 +318,93 @@ async def swe_ai_instruction_update_from_diff(
 
     save_text_to_path(text=text_content, path=output_file_path)
     log.info(f"Done, AI instruction update suggestions saved to file: '{output_file_path}'")
+
+
+async def swe_doc_proofread(
+    repo_path: str,
+    doc_dir: str,
+    output_filename: str,
+    output_dir: str,
+    ignore_patterns: Optional[List[str]] = None,
+    include_patterns: Optional[List[str]] = None,
+    to_stdout: bool = False,
+) -> PipeOutput:
+    """Proofread documentation against codebase using CLI approach with RepoxProcessor."""
+    log.info(f"Proofreading documentation in '{repo_path}' using CLI approach")
+
+    # Create processor to get repo map
+    processor = RepoxProcessor(
+        repo_path=repo_path,
+        ignore_patterns=ignore_patterns,
+        include_patterns=include_patterns,
+        output_style=OutputStyle.REPO_MAP,
+    )
+    repo_text = process_repox(repox_processor=processor)
+
+    # Get documentation files from the specified doc_dir
+    doc_file_paths: List[str] = []
+    doc_dir_path = os.path.join(repo_path, doc_dir)
+    if os.path.exists(doc_dir_path):
+        for root, _, files in os.walk(doc_dir_path):
+            for file in files:
+                if file.endswith(".md") and "CHANGELOG" not in file:
+                    doc_file_paths.append(os.path.join(root, file))
+
+    # Also include README.md from the root if it exists
+    readme_path = os.path.join(repo_path, "README.md")
+    if os.path.exists(readme_path):
+        doc_file_paths.append(readme_path)
+
+    if not doc_file_paths:
+        log.warning(f"No documentation files found in {doc_dir_path}")
+        raise ValueError(f"No documentation files found in {doc_dir_path}")
+
+    doc_files = create_documentation_files_from_paths(doc_file_paths, doc_dir)
+
+    repo_map_stuff = StuffFactory.make_stuff(
+        concept_str="doc_proofread.RepositoryMap", content=RepositoryMap(repo_content=repo_text), name="repo_map"
+    )
+    doc_files_stuff = StuffFactory.make_stuff(
+        concept_str="doc_proofread.DocumentationFile", content=ListContent[DocumentationFile](items=doc_files), name="doc_files"
+    )
+
+    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[repo_map_stuff, doc_files_stuff])
+
+    pipe_output = await execute_pipeline(
+        pipe_code="doc_proofread",
+        working_memory=working_memory,
+    )
+
+    main_stuff = pipe_output.working_memory.get_stuff("all_inconsistencies")
+    main_stuff_content = cast(ListContent[ListContent[DocumentationInconsistency]], main_stuff.content)
+
+    all_inconsistencies: List[DocumentationInconsistency] = []
+    for inner_list in main_stuff_content.items:
+        for inconsistency in inner_list.items:
+            all_inconsistencies.append(inconsistency)
+
+    pretty_print(all_inconsistencies, title="All inconsistencies")
+
+    inconsistencies_data: List[Dict[str, Any]] = []
+    for inconsistency in all_inconsistencies:
+        inconsistencies_data.append(
+            {
+                "doc_file_path": inconsistency.doc_file_path,
+                "related_files": inconsistency.related_files,
+                "issue_description": inconsistency.issue_description,
+                "doc_content": inconsistency.doc_content,
+                "actual_code": inconsistency.actual_code,
+            }
+        )
+
+    json_output = json.dumps(inconsistencies_data, indent=2, ensure_ascii=False)
+
+    ensure_path(output_dir)
+    output_file_path = f"{output_dir}/{output_filename}.json"
+    save_text_to_path(text=json_output, path=output_file_path)
+    log.info(f"Done, output saved as JSON to file: '{output_file_path}'")
+
+    report = pipe_output.main_stuff_as_str
+    save_text_to_path(text=report, path=f"{output_dir}/{output_filename}.md")
+
+    return pipe_output
