@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.0.7] - 2025-07-24
+
+### Added
+- New pipeline for proofreading documentation: `cocode swe-doc-proofread . --doc-dir docs`
+
+### Changed
+- Updated dependencies to `pipelex` version `v0.6.6`. See full `Pipelex` changelog [here](https://github.com/Pipelex/pipelex/blob/main/CHANGELOG.md).
+- Updated LLM configurations in `cocode_deck.toml` and `vertexai.toml` files.
+
 ## [v0.0.6] - 2025-07-18
 
 ### Added
