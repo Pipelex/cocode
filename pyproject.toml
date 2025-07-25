@@ -1,6 +1,6 @@
 [project]
 name = "cocode"
-version = "0.0.7"
+version = "0.0.8"
 description = "Cocode is the friend of your code"
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -14,7 +14,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "pipelex[mistralai,anthropic,google,bedrock,fal]==0.6.8",
+    "pipelex[anthropic,google,bedrock]==0.6.8",
     "PyGithub==2.4.0",
 ]
 
