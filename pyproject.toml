@@ -13,7 +13,10 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-dependencies = ["pipelex[anthropic,google,bedrock]>=0.6.6", "PyGithub==2.4.0"]
+dependencies = [
+    "pipelex[mistralai,anthropic,google,bedrock,fal] @ git+https://github.com/Pipelex/pipelex.git@dev",
+    "PyGithub==2.4.0",
+]
 
 [project.optional-dependencies]
 docs = [
@@ -49,6 +52,9 @@ cocode = "cocode.cli:app"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["cocode"]
