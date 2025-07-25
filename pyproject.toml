@@ -14,9 +14,12 @@ classifiers = [
 ]
 
 dependencies = [
-    "pipelex[mistralai,anthropic,google,bedrock,fal] @ git+https://github.com/Pipelex/pipelex.git@dev",
+    "pipelex[mistralai,anthropic,google,bedrock,fal]==0.6.8",
     "PyGithub==2.4.0",
 ]
+
+[tool.uv.sources]
+pipelex = { path = "../pipelex", editable = true }
 
 [project.optional-dependencies]
 docs = [
