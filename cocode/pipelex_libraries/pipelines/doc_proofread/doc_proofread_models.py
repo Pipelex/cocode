@@ -28,7 +28,7 @@ class CodebaseFileContent(StructuredContent):
     """Content of a codebase file."""
 
     file_path: str = Field(description="Path to the codebase file")
-    content: str = Field(description="Content of the codebase file")
+    file_content: str = Field(description="Content of the codebase file")
 
 
 class DocumentationInconsistency(StructuredContent):
