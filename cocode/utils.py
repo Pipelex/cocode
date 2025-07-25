@@ -6,8 +6,13 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 from pipelex import log
+from pipelex.tools.exceptions import RootException
 from pipelex.tools.misc.file_utils import load_text_from_path
 from pipelex.tools.misc.filetype_utils import FileType, detect_file_type_from_path
+
+
+class NoDifferencesFound(RootException):
+    pass
 
 
 def run_tree_command(
@@ -247,17 +252,12 @@ def run_git_diff_command(repo_path: str, version: str, ignore_patterns: Optional
 
         diff_text = result.stdout
         if not diff_text.strip():
-            log.warning(f"No differences found between current version and '{version}'")
-            return f"No differences found between current version and '{version}'"
+            raise NoDifferencesFound(f"No differences found between current version and '{version}' in '{repo_path}'")
 
         log.info(f"Generated git diff with {len(diff_text.splitlines())} lines")
         return diff_text
 
     except subprocess.CalledProcessError as e:
         error_msg = f"Git diff command failed: {e.stderr}"
-        log.error(error_msg)
-        raise RuntimeError(error_msg)
-    except Exception as e:
-        error_msg = f"Error generating git diff: {e}"
         log.error(error_msg)
         raise RuntimeError(error_msg)
