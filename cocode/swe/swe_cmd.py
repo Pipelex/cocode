@@ -1,11 +1,10 @@
 import json
 import os
-from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional, cast
 
 from pipelex import log, pretty_print
-from pipelex.core.stuff import Stuff
-from pipelex.core.stuff_content import ListContent, TextContent
+from pipelex.core.pipe_run_params import PipeRunMode
+from pipelex.core.stuff_content import ListContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_report_delegate
@@ -16,8 +15,9 @@ from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models impor
 from cocode.pipelex_libraries.pipelines.doc_proofread.file_utils import create_documentation_files_from_paths
 from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule, python_imports_list, python_integral, python_interface
-from cocode.repox.repox_processor import RepoxException, RepoxProcessor
-from cocode.utils import run_git_diff_command
+from cocode.repox.repox_processor import RepoxProcessor
+from cocode.swe.swe_utils import get_repo_text_for_swe, process_swe_pipeline_result
+from cocode.utils import NoDifferencesFound, run_git_diff_command
 
 
 async def swe_from_repo(
@@ -31,7 +31,7 @@ async def swe_from_repo(
     output_filename: str,
     output_dir: str,
     to_stdout: bool,
-    dry_run: bool,
+    pipe_run_mode: PipeRunMode,
 ) -> None:
     text_processing_funcs: Dict[str, Callable[[str], str]] = {}
     match python_processing_rule:
@@ -51,12 +51,24 @@ async def swe_from_repo(
         text_processing_funcs=text_processing_funcs,
         output_style=output_style,
     )
-    repo_text = process_repox(repox_processor=processor)
-    # Process through SWE pipeline and handle output
-    await process_swe_pipeline(
-        text=repo_text,
+    repo_text = get_repo_text_for_swe(repox_processor=processor)
+
+    # Load the working memory with the text
+    repo_text_stuff = StuffFactory.make_from_str(str_value=repo_text, name="repo_text", concept_str="swe.RepoText")
+    working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=repo_text_stuff)
+
+    # Run the pipe
+    pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
-        dry_run=dry_run,
+        working_memory=working_memory,
+        pipe_run_mode=pipe_run_mode,
+    )
+
+    get_report_delegate().generate_report()
+
+    #  handle output
+    await process_swe_pipeline_result(
+        pipe_output=pipe_output,
         output_filename=output_filename,
         output_dir=output_dir,
         to_stdout=to_stdout,
@@ -69,7 +81,7 @@ async def swe_from_file(
     output_filename: str,
     output_dir: str,
     to_stdout: bool,
-    dry_run: bool,
+    pipe_run_mode: PipeRunMode,
 ) -> None:
     """Process SWE analysis from an existing text file instead of building from repository."""
     log.info(f"Processing SWE from file: '{input_file_path}'")
@@ -84,84 +96,26 @@ async def swe_from_file(
         log.error(f"Error reading input file '{input_file_path}': {e}")
         raise
 
-    # Process through SWE pipeline and handle output
-    await process_swe_pipeline(
-        text=text,
-        pipe_code=pipe_code,
-        dry_run=dry_run,
-        output_filename=output_filename,
-        output_dir=output_dir,
-        to_stdout=to_stdout,
-    )
-
-
-async def process_swe_pipeline(
-    text: str,
-    pipe_code: str,
-    dry_run: bool,
-    output_filename: str,
-    output_dir: str,
-    to_stdout: bool,
-    variable_name: str = "repo_text",
-) -> None:
-    """Common function to process text through SWE pipeline and handle output."""
-    swe_stuff = await process_swe(text=text, pipe_code=pipe_code, variable_name=variable_name)
-
-    if to_stdout:
-        if isinstance(swe_stuff.content, TextContent):
-            print(swe_stuff.as_str)
-        else:
-            print(swe_stuff)
-    else:
-        ensure_path(output_dir)
-        output_file_path = f"{output_dir}/{output_filename}"
-        if isinstance(swe_stuff.content, TextContent):
-            save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
-        else:
-            save_text_to_path(text=str(swe_stuff), path=output_file_path)
-        log.info(f"Done, output saved as text to file: '{output_file_path}'")
-
-
-def process_repox(
-    repox_processor: RepoxProcessor,
-    nb_padding_lines: int = 2,
-) -> str:
-    """Save repository structure and contents to a text file."""
-
-    tree_structure: str = repox_processor.get_tree_structure()
-    if not tree_structure.strip():
-        log.error(f"No tree structure found for path: {repox_processor.repo_path}")
-        raise RepoxException(f"No tree structure found for path: {repox_processor.repo_path}")
-    log.verbose(f"Final tree structure to be written: {tree_structure}")
-
-    file_contents = repox_processor.process_file_contents()
-
-    output_content = repox_processor.build_output_content(
-        tree_structure=tree_structure,
-        file_contents=file_contents,
-    )
-
-    output_content = "\n" * nb_padding_lines + output_content
-    output_content = output_content + "\n" * nb_padding_lines
-    return output_content
-
-
-async def process_swe(text: str, pipe_code: str, variable_name: str = "text") -> Stuff:
     # Load the working memory with the text
-    release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
-    text_stuff = StuffFactory.make_from_str(str_value=text, name=variable_name)
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[release_stuff, text_stuff])
+    text_stuff = StuffFactory.make_from_str(str_value=text, name="text", concept_str="swe.RepoText")
+    working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=text_stuff)
+
     # Run the pipe
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
         working_memory=working_memory,
+        pipe_run_mode=pipe_run_mode,
     )
-    pretty_print(pipe_output, title="Pipe output")
-    swe_stuff = pipe_output.main_stuff
 
     get_report_delegate().generate_report()
 
-    return swe_stuff
+    # Process through SWE pipeline and handle output
+    await process_swe_pipeline_result(
+        pipe_output=pipe_output,
+        output_filename=output_filename,
+        output_dir=output_dir,
+        to_stdout=to_stdout,
+    )
 
 
 async def swe_from_repo_diff(
@@ -171,24 +125,41 @@ async def swe_from_repo_diff(
     output_filename: str,
     output_dir: str,
     to_stdout: bool,
-    dry_run: bool,
+    pipe_run_mode: PipeRunMode,
     ignore_patterns: Optional[List[str]] = None,
 ) -> None:
     """Process SWE analysis from a git diff comparing current version to specified version."""
     log.info(f"Processing SWE from git diff: comparing current to '{version}' in '{repo_path}'")
 
     # Generate git diff
-    diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+    try:
+        code_diff = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+    except NoDifferencesFound as exc:
+        log.info(f"Aborting: {exc}")
+        return
+
+    # print(code_diff)
+    # return
+
+    # Load the working memory with the text
+    code_diff_stuff = StuffFactory.make_from_str(str_value=code_diff, name="code_diff", concept_str="swe.CodeDiff")
+    working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=code_diff_stuff)
+
+    # Run the pipe
+    pipe_output = await execute_pipeline(
+        pipe_code=pipe_code,
+        working_memory=working_memory,
+        pipe_run_mode=pipe_run_mode,
+    )
+
+    get_report_delegate().generate_report()
 
     # Process through SWE pipeline and handle output
-    await process_swe_pipeline(
-        text=diff_text,
-        pipe_code=pipe_code,
-        dry_run=dry_run,
+    await process_swe_pipeline_result(
+        pipe_output=pipe_output,
         output_filename=output_filename,
         output_dir=output_dir,
         to_stdout=to_stdout,
-        variable_name="text",
     )
 
 
@@ -206,10 +177,9 @@ async def swe_doc_update_from_diff(
     # Generate git diff
     diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
 
-    release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
     git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
 
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[release_stuff, git_diff_stuff])
+    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[git_diff_stuff])
 
     pipe_output = await execute_pipeline(
         pipe_code="doc_update",
@@ -289,14 +259,13 @@ async def swe_ai_instruction_update_from_diff(
             log.warning(f"Error reading cursor rules directory {cursor_rules_dir}: {e}")
 
     # Create working memory with git diff and AI instruction file contents
-    release_stuff = StuffFactory.make_from_str(str_value=f"{datetime.now().strftime('%Y-%m-%d')}", name="release_date")
     git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
     agents_content_stuff = StuffFactory.make_from_str(str_value=agents_content, name="agents_content")
     claude_content_stuff = StuffFactory.make_from_str(str_value=claude_content, name="claude_content")
     cursor_rules_content_stuff = StuffFactory.make_from_str(str_value=cursor_rules_content, name="cursor_rules_content")
 
     working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(
-        stuff_list=[release_stuff, git_diff_stuff, agents_content_stuff, claude_content_stuff, cursor_rules_content_stuff]
+        stuff_list=[git_diff_stuff, agents_content_stuff, claude_content_stuff, cursor_rules_content_stuff]
     )
 
     pipe_output = await execute_pipeline(
@@ -339,7 +308,7 @@ async def swe_doc_proofread(
         include_patterns=include_patterns,
         output_style=OutputStyle.REPO_MAP,
     )
-    repo_text = process_repox(repox_processor=processor)
+    repo_text = get_repo_text_for_swe(repox_processor=processor)
 
     # Get documentation files from the specified doc_dir
     doc_file_paths: List[str] = []

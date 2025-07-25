@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- NoDifferencesFound exception class for handling cases where no differences are found in git diff.
+
+### Changed
+- Modified swe_diff.toml to reflect changes in pipeline steps and inputs/outputs.
+- Refactored CLI commands to use PipeRunMode instead of dry_run.
+
+### Removed
+- Moved utility code from swe_cmd.py to swe_utils.py.
+
 ## [v0.0.7] - 2025-07-24
 
 ### Added

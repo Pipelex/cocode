@@ -1,11 +1,11 @@
 from pathlib import Path
 from typing import List
 
-from pipelex.core.stuff_content import ListContent, StuffContent
+from pipelex.core.stuff_content import ListContent
 from pipelex.core.working_memory import WorkingMemory
 from pipelex.tools.func_registry import func_registry
 
-from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import DocumentationFile, FilePath
+from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import CodebaseFileContent, DocumentationFile, FilePath
 
 
 def create_documentation_files_from_paths(doc_file_paths: List[str], doc_dir: str = "docs/") -> List[DocumentationFile]:
@@ -46,7 +46,7 @@ def create_documentation_files_from_paths(doc_file_paths: List[str], doc_dir: st
     return doc_files
 
 
-def read_file_content(working_memory: WorkingMemory) -> StuffContent:
+def read_file_content(working_memory: WorkingMemory) -> ListContent[CodebaseFileContent]:
     """Read the content of related codebase files.
 
     Args:
@@ -55,9 +55,7 @@ def read_file_content(working_memory: WorkingMemory) -> StuffContent:
     Returns:
         ListContent of CodebaseFileContent objects
     """
-    from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import CodebaseFileContent
 
-    # Extract the file paths from working memory
     file_paths_list = working_memory.get_stuff_as_list("related_file_paths", item_type=FilePath)
 
     codebase_files: List[CodebaseFileContent] = []
@@ -65,11 +63,10 @@ def read_file_content(working_memory: WorkingMemory) -> StuffContent:
         try:
             with open(file_path.path, "r", encoding="utf-8") as file:
                 content = file.read()
-                codebase_files.append(CodebaseFileContent(file_path=file_path.path, content=content))
+                codebase_files.append(CodebaseFileContent(file_path=file_path.path, file_content=content))
         except Exception as e:
-            # For errors, add a placeholder with error info
             codebase_files.append(
-                CodebaseFileContent(file_path=file_path.path, content=f"# File not found or unreadable: {file_path.path}\n# Error: {str(e)}")
+                CodebaseFileContent(file_path=file_path.path, file_content=f"# File not found or unreadable: {file_path.path}\n# Error: {str(e)}")
             )
 
     return ListContent[CodebaseFileContent](items=codebase_files)
