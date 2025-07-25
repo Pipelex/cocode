@@ -98,6 +98,7 @@ def main(ctx: TyperContext) -> None:
 @app.command()
 def validate() -> None:
     """Run the setup sequence."""
+    Pipelex.get_instance().validate_libraries()
     asyncio.run(dry_run_all_pipes())
     log.info("Setup sequence passed OK, config and pipelines are validated.")
 
