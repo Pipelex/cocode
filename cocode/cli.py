@@ -386,7 +386,6 @@ def swe_doc_update_cmd(
             output_filename=output_filename,
             output_dir=output_dir,
             ignore_patterns=ignore_patterns,
-            doc_dir=doc_dir,
         )
     )
 
@@ -417,10 +416,6 @@ def swe_ai_instruction_update_cmd(
             "--ignore-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
         ),
     ] = None,
-    doc_dir: Annotated[
-        Optional[str],
-        typer.Option("--doc-dir", "-d", help="Directory containing documentation files (e.g., 'docs', 'documentation')"),
-    ] = None,
 ) -> None:
     """Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, and cursor rules based on git diff analysis."""
     repo_path = _validate_repo_path(repo_path)
@@ -432,7 +427,6 @@ def swe_ai_instruction_update_cmd(
             output_filename=output_filename,
             output_dir=output_dir,
             ignore_patterns=ignore_patterns,
-            doc_dir=doc_dir,
         )
     )
 
@@ -496,7 +490,6 @@ def swe_doc_proofread_cmd(
             output_dir=output_dir,
             include_patterns=include_patterns,
             ignore_patterns=ignore_patterns,
-            to_stdout=False,
         )
     )
 
