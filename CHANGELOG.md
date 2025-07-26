@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [v0.0.9] - 2025-07-26
 
 - Updated pipelex dependency from version 0.6.8 to 0.6.9
 
