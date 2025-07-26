@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.0.9] - 2025-07-26
+
+- Updated pipelex dependency from version 0.6.8 to 0.6.9
+
+### Added
+- README example for new CLI command `swe-ai-instruction-update` for updating AI instruction files
+- New PipeCode enum values for extraction and documentation operations: EXTRACT_FUNDAMENTALS, EXTRACT_ENVIRONMENT_BUILD, EXTRACT_CODING_STANDARDS, EXTRACT_TEST_STRATEGY, EXTRACT_COLLABORATION, DOC_PROOFREAD, DOC_UPDATE, AI_INSTRUCTION_UPDATE
+
+### Changed
+- Simplified pipeline input handling to use input_memory instead of working_memory pattern
+- Updated pipeline type definitions from CodeDiff to swe_diff.GitDiff for better naming consistency
+- Switched default LLM model from gpt-4o to claude-4-sonnet for software engineering tasks
+- Polished code related to cursor rules file detection with support for .cursor/rules directory pattern, using failable_load_text_from_path for better error handling
+
+### Fixed
+- Corrected typo in documentation update prompt template ('inclide' to 'include')
+- Removed redundant doc_dir parameter from AI instruction update command
+- Cleaned up unused to_stdout parameter from doc proofread command
+
 ## [v0.0.8] - 2025-07-25
 
 ### Added

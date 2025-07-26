@@ -517,7 +517,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
     { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["anthropic", "google", "bedrock"], specifier = "==0.6.8" },
+    { name = "pipelex", extras = ["anthropic", "google", "bedrock"], specifier = "==0.6.9" },
     { name = "pygithub", specifier = "==2.4.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
@@ -1805,7 +1805,7 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.6.8"
+version = "0.6.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -1834,9 +1834,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ec/2a/ff702bc4359fd44eeca47f1c0b4671359b8aeb59a8419d44a9d3149bb284/pipelex-0.6.8.tar.gz", hash = "sha256:2c25dce4e35f04afec3a72cc282442cac10e47a927fa5047005b384f63aac01f", size = 188839, upload-time = "2025-07-25T09:52:29.826Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/97/f7/6d2ab2de5555c00eb683ceee0ceec7da51587e0be1f2643f528d62170bdc/pipelex-0.6.9.tar.gz", hash = "sha256:5b905c385d44e388a987174f7836cfd0a7cab3aa80daaf90bc24ae5b4500fb74", size = 188907, upload-time = "2025-07-26T18:47:48.231Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/6b/d54803d1c2da08e3a1861dd5aa34b6971553a96ce22cb72c39eb11d46389/pipelex-0.6.8-py3-none-any.whl", hash = "sha256:a1f0e2533c34a50ad134b7cfc230d67a4ecc496ba2d7d102f5c8647be4e4e626", size = 308630, upload-time = "2025-07-25T09:52:28.239Z" },
+    { url = "https://files.pythonhosted.org/packages/ab/6c/e242d14f86749705a68e75457eb4db3f57be82708195f38fdb1c3daf9802/pipelex-0.6.9-py3-none-any.whl", hash = "sha256:b23bccc1a4daa713fa204d71fb83c04201af1238360945a4eeb385681871dfbe", size = 308694, upload-time = "2025-07-26T18:47:46.042Z" },
 ]
 
 [package.optional-dependencies]

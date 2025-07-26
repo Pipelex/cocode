@@ -46,6 +46,9 @@ cocode swe-from-repo-diff write_changelog v1.0.0 .
 # Update documentation based on code changes
 cocode swe-doc-update v1.0.0 .
 
+# Update AI instructions (AGENTS.md, CLAUDE.md, cursor rules) based on code changes
+cocode swe-ai-instruction-update v1.0.0 .
+
 # Proofread documentation against codebase
 cocode swe-doc-proofread --doc-dir docs .
 ```
