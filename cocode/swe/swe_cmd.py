@@ -9,7 +9,7 @@ from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_report_delegate
 from pipelex.pipeline.execute import PipeOutput, execute_pipeline
-from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
+from pipelex.tools.misc.file_utils import ensure_path, failable_load_text_from_path, load_text_from_path, save_text_to_path
 
 from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import DocumentationFile, DocumentationInconsistency, RepositoryMap
 from cocode.pipelex_libraries.pipelines.doc_proofread.file_utils import create_documentation_files_from_paths
@@ -53,15 +53,11 @@ async def swe_from_repo(
     )
     repo_text = get_repo_text_for_swe(repox_processor=processor)
 
-    # Load the working memory with the text
-    repo_text_stuff = StuffFactory.make_from_str(str_value=repo_text, name="repo_text", concept_str="swe.RepoText")
-    working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=repo_text_stuff)
-
     # Run the pipe
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
-        working_memory=working_memory,
         pipe_run_mode=pipe_run_mode,
+        input_memory={"repo_text": repo_text},
     )
 
     get_report_delegate().generate_report()
@@ -86,25 +82,13 @@ async def swe_from_file(
     """Process SWE analysis from an existing text file instead of building from repository."""
     log.info(f"Processing SWE from file: '{input_file_path}'")
 
-    try:
-        with open(input_file_path, "r", encoding="utf-8") as file:
-            text = file.read()
-    except FileNotFoundError:
-        log.error(f"Input file not found: '{input_file_path}'")
-        raise
-    except Exception as e:
-        log.error(f"Error reading input file '{input_file_path}': {e}")
-        raise
-
-    # Load the working memory with the text
-    text_stuff = StuffFactory.make_from_str(str_value=text, name="text", concept_str="swe.RepoText")
-    working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=text_stuff)
+    text = load_text_from_path(input_file_path)
 
     # Run the pipe
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
-        working_memory=working_memory,
         pipe_run_mode=pipe_run_mode,
+        input_memory={"text": text},
     )
 
     get_report_delegate().generate_report()
@@ -133,23 +117,21 @@ async def swe_from_repo_diff(
 
     # Generate git diff
     try:
-        code_diff = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+        git_diff = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
     except NoDifferencesFound as exc:
         log.info(f"Aborting: {exc}")
         return
 
-    # print(code_diff)
-    # return
-
-    # Load the working memory with the text
-    code_diff_stuff = StuffFactory.make_from_str(str_value=code_diff, name="code_diff", concept_str="swe.CodeDiff")
-    working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=code_diff_stuff)
-
     # Run the pipe
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
-        working_memory=working_memory,
         pipe_run_mode=pipe_run_mode,
+        input_memory={
+            "git_diff": {
+                "concept": "swe_diff.GitDiff",
+                "content": git_diff,
+            }
+        },
     )
 
     get_report_delegate().generate_report()
@@ -169,21 +151,21 @@ async def swe_doc_update_from_diff(
     output_filename: str,
     output_dir: str,
     ignore_patterns: Optional[List[str]] = None,
-    doc_dir: Optional[str] = None,
 ) -> None:
     """Generate documentation update suggestions for docs/ directory based on git diff analysis."""
     log.info(f"Generating documentation update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
 
     # Generate git diff
-    diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
-
-    git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
-
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[git_diff_stuff])
+    git_diff = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
 
     pipe_output = await execute_pipeline(
         pipe_code="doc_update",
-        working_memory=working_memory,
+        input_memory={
+            "git_diff": {
+                "concept": "swe_diff.GitDiff",
+                "content": git_diff,
+            }
+        },
     )
     formatted_output = pipe_output.main_stuff_as_str
 
@@ -201,44 +183,31 @@ async def swe_ai_instruction_update_from_diff(
     output_filename: str,
     output_dir: str,
     ignore_patterns: Optional[List[str]] = None,
-    doc_dir: Optional[str] = None,
 ) -> None:
     """Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, and cursor rules based on git diff analysis."""
     log.info(f"Generating AI instruction update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
 
     diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
 
-    def read_file_content(file_path: str) -> str:
-        """Read file content, return empty string if file doesn't exist."""
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                return f.read()
-        except FileNotFoundError:
-            return ""
-        except Exception as e:
-            log.warning(f"Error reading file {file_path}: {e}")
-            return ""
-
     # Read AGENTS.md content
     agents_md_path = os.path.join(repo_path, "AGENTS.md")
-    agents_content = read_file_content(agents_md_path)
+    agents_content = failable_load_text_from_path(agents_md_path) or ""
 
     # Read CLAUDE.md content
     claude_md_path = os.path.join(repo_path, "CLAUDE.md")
-    claude_content = read_file_content(claude_md_path)
+    claude_content = failable_load_text_from_path(claude_md_path) or ""
 
     # Read cursor rules content (check two possible patterns)
     cursor_rules_content = ""
-    # Pattern 1: Single .cursorrules file
     cursorrules_path = os.path.join(repo_path, ".cursorrules")
-    if os.path.exists(cursorrules_path) and os.path.isfile(cursorrules_path):
-        content = read_file_content(cursorrules_path)
-        if content:
-            cursor_rules_content = content
+    cursor_rules_dir = os.path.join(repo_path, ".cursor/rules")
+
+    # Pattern 1: Single .cursorrules file
+    if content := failable_load_text_from_path(cursorrules_path):
+        cursor_rules_content = content
 
     # Pattern 2: Multiple .md files in .cursor/rules/ directory
-    elif os.path.exists(os.path.join(repo_path, ".cursor/rules")) and os.path.isdir(os.path.join(repo_path, ".cursor/rules")):
-        cursor_rules_dir = os.path.join(repo_path, ".cursor/rules")
+    elif os.path.exists(cursor_rules_dir) and os.path.isdir(cursor_rules_dir):
         try:
             # Get all .md files in the directory and sort them for consistent ordering
             md_files: List[str] = []
@@ -252,11 +221,10 @@ async def swe_ai_instruction_update_from_diff(
             # Concatenate all .md files
             for file in md_files:
                 file_path = os.path.join(cursor_rules_dir, file)
-                content = read_file_content(file_path)
-                if content:
+                if content := failable_load_text_from_path(file_path):
                     cursor_rules_content += f"=== {file} ===\n{content}\n\n"
-        except Exception as e:
-            log.warning(f"Error reading cursor rules directory {cursor_rules_dir}: {e}")
+        except Exception as exc:
+            log.warning(f"Error reading cursor rules directory {cursor_rules_dir}: {exc}")
 
     # Create working memory with git diff and AI instruction file contents
     git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
@@ -296,7 +264,6 @@ async def swe_doc_proofread(
     output_dir: str,
     ignore_patterns: Optional[List[str]] = None,
     include_patterns: Optional[List[str]] = None,
-    to_stdout: bool = False,
 ) -> PipeOutput:
     """Proofread documentation against codebase using CLI approach with RepoxProcessor."""
     log.info(f"Proofreading documentation in '{repo_path}' using CLI approach")

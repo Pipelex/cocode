@@ -2,7 +2,6 @@ domain = "ai_instruction_update"
 definition = "Pipeline for updating AI instruction files (AGENTS.md, CLAUDE.md, cursor rules) based on git diff"
 
 [concept]
-GitDiff = "A git diff output showing changes between two versions of a codebase"
 AgentsContent = "Content of the AGENTS.md file"
 ClaudeContent = "Content of the CLAUDE.md file"
 CursorRulesContent = "Content of cursor rules files"
@@ -14,7 +13,7 @@ AIInstructionUpdateSuggestions = "Comprehensive suggestions for updating all AI 
 
 [pipe.analyze_agents_md_changes]
 PipeLLM = "Analyze changes needed for AGENTS.md file"
-inputs = { git_diff = "GitDiff", agents_content = "AgentsContent" }
+inputs = { git_diff = "swe_diff.GitDiff", agents_content = "AgentsContent" }
 output = "AIInstructionFileAnalysis"
 system_prompt = """
 You are an AI instruction expert specializing in AGENTS.md files.
@@ -65,7 +64,7 @@ Be specific about utility methods and helper functions that are part of the code
 
 [pipe.analyze_claude_md_changes]
 PipeLLM = "Analyze changes needed for CLAUDE.md file"
-inputs = { git_diff = "GitDiff", claude_content = "ClaudeContent" }
+inputs = { git_diff = "swe_diff.GitDiff", claude_content = "ClaudeContent" }
 output = "AIInstructionFileAnalysis"
 system_prompt = """
 You are an AI instruction expert specializing in CLAUDE.md files.
@@ -117,7 +116,7 @@ Be specific about utility methods and helper functions that are part of the code
 
 [pipe.analyze_cursor_rules_changes]
 PipeLLM = "Analyze changes needed for cursor rules files"
-inputs = { git_diff = "GitDiff", cursor_rules_content = "CursorRulesContent" }
+inputs = { git_diff = "swe_diff.GitDiff", cursor_rules_content = "CursorRulesContent" }
 output = "AIInstructionFileAnalysis"
 system_prompt = """
 You are an AI instruction expert specializing in cursor rules files.
@@ -270,22 +269,22 @@ IMPORTANT FORMATTING RULES:
 
 [pipe.ai_instruction_update_parallel]
 PipeParallel = "Analyze changes for all AI instruction files in parallel"
-inputs = { git_diff = "GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
+inputs = { git_diff = "swe_diff.GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
 output = "AIInstructionParallelResults"
 parallels = [
     { pipe = "analyze_agents_md_changes", result = "agents_analysis" },
     { pipe = "analyze_claude_md_changes", result = "claude_analysis" },
-    { pipe = "analyze_cursor_rules_changes", result = "cursor_analysis" }
+    { pipe = "analyze_cursor_rules_changes", result = "cursor_analysis" },
 ]
 combined_output = "ai_instruction_update.AIInstructionParallelResults"
 
 [pipe.ai_instruction_update]
 PipeSequence = "AI instruction update analysis with parallel file processing and formatting"
-inputs = { git_diff = "GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
+inputs = { git_diff = "swe_diff.GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
 output = "Text"
 steps = [
     { pipe = "ai_instruction_update_parallel", result = "parallel_analyses" },
     { pipe = "combine_ai_instruction_analyses", result = "combined_suggestions" },
-    { pipe = "format_ai_instruction_output", result = "ai_instruction_output" }
+    { pipe = "format_ai_instruction_output", result = "ai_instruction_output" },
 ]
 
