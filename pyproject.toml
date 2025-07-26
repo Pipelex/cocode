@@ -14,9 +14,14 @@ classifiers = [
 ]
 
 dependencies = [
-    "pipelex[anthropic,google,bedrock]==0.6.8",
+    # "pipelex[anthropic,google,bedrock]==0.6.8",
+    "pipelex[anthropic,google,bedrock] @ git+https://github.com/Pipelex/pipelex.git@feature/Simplify-input-memory",
     "PyGithub==2.4.0",
 ]
+
+
+[tool.uv.sources]
+pipelex = { path = "../pipelex", editable = true }
 
 [project.optional-dependencies]
 docs = [

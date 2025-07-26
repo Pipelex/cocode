@@ -36,6 +36,15 @@ from cocode.swe.swe_cmd import (
 
 class PipeCode(StrEnum):
     EXTRACT_ONBOARDING_DOCUMENTATION = "extract_onboarding_documentation"
+    EXTRACT_FUNDAMENTALS = "extract_fundamentals"
+    EXTRACT_ENVIRONMENT_BUILD = "extract_environment_build"
+    EXTRACT_CODING_STANDARDS = "extract_coding_standards"
+    EXTRACT_TEST_STRATEGY = "extract_test_strategy"
+    EXTRACT_COLLABORATION = "extract_collaboration"
+
+    DOC_PROOFREAD = "doc_proofread"
+    DOC_UPDATE = "doc_update"
+    AI_INSTRUCTION_UPDATE = "ai_instruction_update"
 
 
 def _get_pipe_descriptions() -> str:

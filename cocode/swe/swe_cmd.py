@@ -53,15 +53,13 @@ async def swe_from_repo(
     )
     repo_text = get_repo_text_for_swe(repox_processor=processor)
 
-    # Load the working memory with the text
-    repo_text_stuff = StuffFactory.make_from_str(str_value=repo_text, name="repo_text", concept_str="swe.RepoText")
-    working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=repo_text_stuff)
-
     # Run the pipe
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
-        working_memory=working_memory,
         pipe_run_mode=pipe_run_mode,
+        input_memory={
+            "repo_text": repo_text,
+        },
     )
 
     get_report_delegate().generate_report()
@@ -138,15 +136,16 @@ async def swe_from_repo_diff(
         log.info(f"Aborting: {exc}")
         return
 
-    # Load the working memory with the text
-    git_diff_stuff = StuffFactory.make_from_str(str_value=git_diff, name="git_diff", concept_str="swe_diff.GitDiff")
-    working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=git_diff_stuff)
-
     # Run the pipe
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
-        working_memory=working_memory,
         pipe_run_mode=pipe_run_mode,
+        input_memory={
+            "git_diff": {
+                "concept": "swe_diff.GitDiff",
+                "content": git_diff,
+            }
+        },
     )
 
     get_report_delegate().generate_report()
@@ -172,15 +171,16 @@ async def swe_doc_update_from_diff(
     log.info(f"Generating documentation update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
 
     # Generate git diff
-    diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
-
-    git_diff_stuff = StuffFactory.make_from_str(str_value=diff_text, name="git_diff")
-
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[git_diff_stuff])
+    git_diff = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
 
     pipe_output = await execute_pipeline(
         pipe_code="doc_update",
-        working_memory=working_memory,
+        input_memory={
+            "git_diff": {
+                "concept": "swe_diff.GitDiff",
+                "content": git_diff,
+            }
+        },
     )
     formatted_output = pipe_output.main_stuff_as_str
 
