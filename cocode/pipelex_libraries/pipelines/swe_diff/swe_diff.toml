@@ -1,5 +1,5 @@
 domain = "swe_diff"
-definition = "Pipelines for analyzing differences between two software engineering documents."
+definition = "Pipelines for analyzing differences between two versions of a codebase."
 
 [concept]
 CodeDiff = "A technical report produced by Git and enumerating the differences between two versions of a codebase."
@@ -22,11 +22,11 @@ inputs = { code_diff = "CodeDiff" }
 output = "StructuredChangelog"
 llm = "llm_for_swe"
 system_prompt = """
-You are an expert technical writer and software architect. Your task is to carefully review the code diff and write a changelog in markdown format.
+You are an expert technical writer and software architect. Your task is to carefully review the code diff and write a structured changelog.
 """
 prompt_template = """
-Analyze the following code diff. Write a changelog in markdown format that summarizes the changes made to the codebase between two versions.
-Be sure to inclide changes to code but also complementary pipelines, scripts, docs.
+Analyze the following code diff. Write a structured changelog that summarizes the changes made to the codebase between two versions.
+Be sure to include changes to code but also complementary pipelines, scripts, docs.
 
 @code_diff
 """
