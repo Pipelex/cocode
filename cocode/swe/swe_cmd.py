@@ -133,17 +133,14 @@ async def swe_from_repo_diff(
 
     # Generate git diff
     try:
-        code_diff = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+        git_diff = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
     except NoDifferencesFound as exc:
         log.info(f"Aborting: {exc}")
         return
 
-    # print(code_diff)
-    # return
-
     # Load the working memory with the text
-    code_diff_stuff = StuffFactory.make_from_str(str_value=code_diff, name="code_diff", concept_str="swe.CodeDiff")
-    working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=code_diff_stuff)
+    git_diff_stuff = StuffFactory.make_from_str(str_value=git_diff, name="git_diff", concept_str="swe_diff.GitDiff")
+    working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=git_diff_stuff)
 
     # Run the pipe
     pipe_output = await execute_pipeline(
