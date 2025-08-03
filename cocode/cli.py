@@ -314,7 +314,7 @@ def swe_from_repo_diff_cmd(
     output_filename: Annotated[
         str,
         typer.Option("--output-filename", "-n", help="Output filename"),
-    ] = "swe-diff-analysis.txt",
+    ] = "swe-diff-analysis.md",
     dry_run: Annotated[
         bool,
         typer.Option("--dry", help="Run pipeline in dry mode (no actual execution)"),

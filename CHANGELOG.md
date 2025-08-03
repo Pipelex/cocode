@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.0.10] - 2025-08-02
+
+### Changed
+ - Default output file extension changed from .txt to .md for SWE diff analysis
+ - Pipelex dependency constraint relaxed from exact version 0.6.9 to minimum version >=0.6.9
+ - Jinja2 template formatting improved with consistent indentation for changelog sections
+
 ## [v0.0.9] - 2025-07-26
 
 - Updated pipelex dependency from version 0.6.8 to 0.6.9
