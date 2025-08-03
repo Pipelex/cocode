@@ -41,45 +41,44 @@ jinja2 = """
 
 {% if structured_changelog.added %}
 ### Added
-{% for item in structured_changelog.added %}
-- {{ item }}
-{% endfor %}
-
+    {% for item in structured_changelog.added %}
+ - {{ item }}
+    {% endfor %}
 {% endif %}
+
 {% if structured_changelog.changed %}
 ### Changed
-{% for item in structured_changelog.changed %}
-- {{ item }}
-{% endfor %}
-
+    {% for item in structured_changelog.changed %}
+ - {{ item }}
+    {% endfor %}
 {% endif %}
+
 {% if structured_changelog.fixed %}
 ### Fixed
-{% for item in structured_changelog.fixed %}
-- {{ item }}
-{% endfor %}
-
+    {% for item in structured_changelog.fixed %}
+ - {{ item }}
+    {% endfor %}
 {% endif %}
+
 {% if structured_changelog.removed %}
 ### Removed
-{% for item in structured_changelog.removed %}
-- {{ item }}
-{% endfor %}
-
+    {% for item in structured_changelog.removed %}
+ - {{ item }}
+    {% endfor %}
 {% endif %}
+
 {% if structured_changelog.deprecated %}
 ### Deprecated
-{% for item in structured_changelog.deprecated %}
-- {{ item }}
-{% endfor %}
-
+    {% for item in structured_changelog.deprecated %}
+ - {{ item }}
+    {% endfor %}
 {% endif %}
+
 {% if structured_changelog.security %}
 ### Security
-{% for item in structured_changelog.security %}
-- {{ item }}
-{% endfor %}
-
+    {% for item in structured_changelog.security %}
+ - {{ item }}
+    {% endfor %}
 {% endif %}
 """
 

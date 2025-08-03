@@ -474,7 +474,7 @@ wheels = [
 
 [[package]]
 name = "cocode"
-version = "0.0.8"
+version = "0.0.9"
 source = { editable = "." }
 dependencies = [
     { name = "pipelex", extra = ["anthropic", "bedrock", "google"] },
@@ -517,7 +517,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
     { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["anthropic", "google", "bedrock"], specifier = "==0.6.9" },
+    { name = "pipelex", extras = ["anthropic", "google", "bedrock"], specifier = ">=0.6.9" },
     { name = "pygithub", specifier = "==2.4.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
