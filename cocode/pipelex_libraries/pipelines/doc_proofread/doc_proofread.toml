@@ -12,7 +12,8 @@ MarkdownReport = "A markdown report containing documentation inconsistencies for
 [pipe]
 
 [pipe.find_related_code_files]
-PipeLLM = "Find code files that implement or use elements mentioned in docs"
+type = "PipeLLM"
+definition = "Find code files that implement or use elements mentioned in docs"
 inputs = { doc_file = "DocumentationFile", repo_map = "RepositoryMap" }
 output = "FilePath"
 multiple_output = true
@@ -32,7 +33,8 @@ Only include files with actual code evidence, not just similar names or concepts
 """
 
 [pipe.proofread_single_doc]
-PipeLLM = "Find major inconsistencies between docs and code"
+type = "PipeLLM"
+definition = "Find major inconsistencies between docs and code"
 inputs = { doc_file = "DocumentationFile", related_files = "CodebaseFileContent" }
 output = "DocumentationInconsistency"
 multiple_output = true
@@ -60,7 +62,8 @@ Skip anything that's not a showstopper. If it would just be confusing but still 
 """
 
 [pipe.proofread_doc_sequence]
-PipeSequence = "Process a single documentation file to find inconsistencies"
+type = "PipeSequence"
+definition = "Process a single documentation file to find inconsistencies"
 inputs = { doc_file = "DocumentationFile", repo_map = "RepositoryMap" }
 output = "DocumentationInconsistency"
 steps = [
@@ -70,7 +73,8 @@ steps = [
 ]
 
 [pipe.create_cursor_report]
-PipeLLM = "Create a markdown report with inconsistencies formatted as a Cursor prompt"
+type = "PipeLLM"
+definition = "Create a markdown report with inconsistencies formatted as a Cursor prompt"
 inputs = { all_inconsistencies = "DocumentationInconsistency" }
 output = "MarkdownReport"
 llm = "llm_for_swe"
@@ -101,7 +105,8 @@ Make it concise and focused on the most critical issues only.
 """
 
 [pipe.doc_proofread]
-PipeSequence = "Complete documentation proofreading pipeline for CLI usage"
+type = "PipeSequence"
+definition = "Complete documentation proofreading pipeline for CLI usage"
 inputs = { repo_map = "RepositoryMap", doc_files = "DocumentationFile" }
 output = "MarkdownReport"
 steps = [
@@ -110,7 +115,8 @@ steps = [
 ]
 
 [pipe.read_doc_file]
-PipeFunc = "Read the content of related codebase files"
+type = "PipeFunc"
+definition = "Read the content of related codebase files"
 inputs = { related_file_paths = "FilePath" }
 output = "CodebaseFileContent"
 function_name = "read_file_content"

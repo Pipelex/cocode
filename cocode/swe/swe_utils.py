@@ -1,5 +1,5 @@
 from pipelex import log, pretty_print
-from pipelex.core.stuff_content import TextContent
+from pipelex.core.stuffs.stuff_content import TextContent
 from pipelex.pipeline.execute import PipeOutput
 from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
 

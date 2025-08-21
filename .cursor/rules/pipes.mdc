@@ -125,7 +125,8 @@ RulesToApply = "Rules to be applied to an expense"
 
 # Example of a PipeLLM that uses no input
 [pipe.write_poem]
-PipeLLM = "Write a poem"
+type = "PipeLLM"
+definition = "Write a poem"
 output = "Text"
 llm = "llm_for_creative_writing"
 prompt = """
@@ -134,7 +135,8 @@ Write a poem about an AI that meets a Software and they fall in l0ve.
 
 # Example of a PipeLLM that uses @ prefix to insert a block of text
 [pipe.process_text]
-PipeLLM = "Process input text using an LLM"
+type = "PipeLLM"
+definition = "Process input text using an LLM"
 inputs = { text = "Text" }
 output = "Text"
 llm = "llm_to_summarize_text"
@@ -150,7 +152,8 @@ Summarize the following text:
 
 # Example of a PipeLLM that uses '@' prefix to insert a block of text but also a '$' prefix to insert text inline in a sentence (that is teh case for the $topic)
 [pipe.summarize_topic]
-PipeLLM = "Summarize a dense text with of focus on a specific topic."
+type = "PipeLLM"
+definition = "Summarize a dense text with of focus on a specific topic."
 inputs = { topic = "Topic", text = "Text" }
 output = "Summary"
 prompt_template = """
@@ -164,7 +167,8 @@ Your summary should not be longer than 2 sentences.
 
 # Example of a PipeLLM with image vision processing by a VLM
 [pipe.get_html_table_from_image]
-PipeLLM = "Convert table screenshot to HTML"
+type = "PipeLLM"
+definition = "Convert table screenshot to HTML"
 inputs = { table_screenshot = "TableScreenshot" }
 output = "HtmlTable"
 system_prompt = """
@@ -181,7 +185,8 @@ llm = "llm_to_extract_tables"
 
 # Example of a PipeSequence
 [pipe.answer_question_with_instructions]
-PipeSequence = "Answer a question with instructions"
+type = "PipeSequence"
+definition = "Answer a question with instructions"
 inputs = { question = "Question" }
 output = "FormattedAnswer"
 steps = [
@@ -192,7 +197,8 @@ steps = [
 
 # Example of a PipeParallel
 [pipe.extract_expense_report]
-PipeParallel = "Extract useful information from an expense report"
+type = "PipeParallel"
+definition = "Extract useful information from an expense report"
 inputs = { expense_report = "ExpenseReportText" }
 output = "Composite"
 parallels = [
@@ -202,7 +208,8 @@ parallels = [
 
 # Example of a PipeCondition
 [pipe.expense_conditional_validation]
-PipeCondition = "Choose the rules to apply"
+type = "PipeCondition"
+definition = "Choose the rules to apply"
 inputs = { expense = "Expense" }
 output = "RulesToApply"
 expression = "expense_category.category"
