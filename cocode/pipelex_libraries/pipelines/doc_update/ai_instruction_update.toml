@@ -12,7 +12,8 @@ AIInstructionUpdateSuggestions = "Comprehensive suggestions for updating all AI 
 [pipe]
 
 [pipe.analyze_agents_md_changes]
-PipeLLM = "Analyze changes needed for AGENTS.md file"
+type = "PipeLLM"
+definition = "Analyze changes needed for AGENTS.md file"
 inputs = { git_diff = "swe_diff.GitDiff", agents_content = "AgentsContent" }
 output = "AIInstructionFileAnalysis"
 system_prompt = """
@@ -63,7 +64,8 @@ Be specific about utility methods and helper functions that are part of the code
 """
 
 [pipe.analyze_claude_md_changes]
-PipeLLM = "Analyze changes needed for CLAUDE.md file"
+type = "PipeLLM"
+definition = "Analyze changes needed for CLAUDE.md file"
 inputs = { git_diff = "swe_diff.GitDiff", claude_content = "ClaudeContent" }
 output = "AIInstructionFileAnalysis"
 system_prompt = """
@@ -115,7 +117,8 @@ Be specific about utility methods and helper functions that are part of the code
 """
 
 [pipe.analyze_cursor_rules_changes]
-PipeLLM = "Analyze changes needed for cursor rules files"
+type = "PipeLLM"
+definition = "Analyze changes needed for cursor rules files"
 inputs = { git_diff = "swe_diff.GitDiff", cursor_rules_content = "CursorRulesContent" }
 output = "AIInstructionFileAnalysis"
 system_prompt = """
@@ -166,7 +169,8 @@ Be specific about utility methods and helper functions that are part of the code
 """
 
 [pipe.combine_ai_instruction_analyses]
-PipeLLM = "Combine all AI instruction file analyses into comprehensive suggestions"
+type = "PipeLLM"
+definition = "Combine all AI instruction file analyses into comprehensive suggestions"
 inputs = { parallel_analyses = "AIInstructionParallelResults" }
 output = "AIInstructionUpdateSuggestions"
 system_prompt = """
@@ -188,7 +192,8 @@ The output should be structured to clearly show what needs to be done for each f
 """
 
 [pipe.format_ai_instruction_output]
-PipeLLM = "Format AI instruction update suggestions into a clear, user-friendly text output"
+type = "PipeLLM"
+definition = "Format AI instruction update suggestions into a clear, user-friendly text output"
 inputs = { combined_suggestions = "AIInstructionUpdateSuggestions" }
 output = "Text"
 system_prompt = """
@@ -268,7 +273,8 @@ IMPORTANT FORMATTING RULES:
 """
 
 [pipe.ai_instruction_update_parallel]
-PipeParallel = "Analyze changes for all AI instruction files in parallel"
+type = "PipeParallel"
+definition = "Analyze changes for all AI instruction files in parallel"
 inputs = { git_diff = "swe_diff.GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
 output = "AIInstructionParallelResults"
 parallels = [
@@ -279,7 +285,8 @@ parallels = [
 combined_output = "ai_instruction_update.AIInstructionParallelResults"
 
 [pipe.ai_instruction_update]
-PipeSequence = "AI instruction update analysis with parallel file processing and formatting"
+type = "PipeSequence"
+definition = "AI instruction update analysis with parallel file processing and formatting"
 inputs = { git_diff = "swe_diff.GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
 output = "Text"
 steps = [
