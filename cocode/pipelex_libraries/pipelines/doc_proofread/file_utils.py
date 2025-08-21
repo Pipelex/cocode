@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import List
 
-from pipelex.core.stuff_content import ListContent
-from pipelex.core.working_memory import WorkingMemory
+from pipelex.core.memory.working_memory import WorkingMemory
+from pipelex.core.stuffs.stuff_content import ListContent
 from pipelex.tools.func_registry import func_registry
 
 from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import CodebaseFileContent, DocumentationFile, FilePath
