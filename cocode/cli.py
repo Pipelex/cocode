@@ -10,7 +10,7 @@ from typing import Annotated, List, Optional
 import typer
 from click import Command, Context
 from pipelex import log
-from pipelex.core.pipe_run_params import PipeRunMode
+from pipelex.core.pipes.pipe_run_params import PipeRunMode
 from pipelex.hub import get_pipeline_tracker
 from pipelex.pipe_works.pipe_dry import dry_run_all_pipes
 from pipelex.pipelex import Pipelex

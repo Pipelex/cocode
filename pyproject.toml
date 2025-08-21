@@ -13,7 +13,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-dependencies = ["pipelex[anthropic,google,bedrock]>=0.6.9", "PyGithub==2.4.0"]
+dependencies = ["pipelex[anthropic,google,bedrock]>=0.7.0", "PyGithub==2.4.0"]
 
 [project.optional-dependencies]
 docs = [
