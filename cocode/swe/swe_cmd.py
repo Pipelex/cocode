@@ -7,7 +7,7 @@ from pipelex.core.memory.working_memory_factory import WorkingMemoryFactory
 from pipelex.core.pipes.pipe_run_params import PipeRunMode
 from pipelex.core.stuffs.stuff_content import ListContent
 from pipelex.core.stuffs.stuff_factory import StuffFactory
-from pipelex.hub import get_report_delegate
+from pipelex.hub import get_concept_provider, get_report_delegate
 from pipelex.pipeline.execute import PipeOutput, execute_pipeline
 from pipelex.tools.misc.file_utils import ensure_path, failable_load_text_from_path, load_text_from_path, save_text_to_path
 
@@ -298,10 +298,14 @@ async def swe_doc_proofread(
     doc_files = create_documentation_files_from_paths(doc_file_paths, doc_dir)
 
     repo_map_stuff = StuffFactory.make_stuff(
-        concept_str="doc_proofread.RepositoryMap", content=RepositoryMap(repo_content=repo_text), name="repo_map"
+        concept=get_concept_provider().get_required_concept(concept_string="doc_proofread.RepositoryMap"),
+        content=RepositoryMap(repo_content=repo_text),
+        name="repo_map",
     )
     doc_files_stuff = StuffFactory.make_stuff(
-        concept_str="doc_proofread.DocumentationFile", content=ListContent[DocumentationFile](items=doc_files), name="doc_files"
+        concept=get_concept_provider().get_required_concept(concept_string="doc_proofread.DocumentationFile"),
+        content=ListContent[DocumentationFile](items=doc_files),
+        name="doc_files",
     )
 
     working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[repo_map_stuff, doc_files_stuff])
