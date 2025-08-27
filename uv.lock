@@ -248,6 +248,15 @@ wheels = [
 ]
 
 [[package]]
+name = "backports-strenum"
+version = "1.3.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/35/c7/2ed54c32fed313591ffb21edbd48db71e68827d43a61938e5a0bc2b6ec91/backports_strenum-1.3.1.tar.gz", hash = "sha256:77c52407342898497714f0596e86188bb7084f89063226f4ba66863482f42414", size = 7257, upload-time = "2023-12-09T14:36:40.937Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d6/50/56cf20e2ee5127b603b81d5a69580a1a325083e2b921aa8f067da83927c0/backports_strenum-1.3.1-py3-none-any.whl", hash = "sha256:cdcfe36dc897e2615dc793b7d3097f54d359918fc448754a517e6f23044ccf83", size = 8304, upload-time = "2023-12-09T14:36:39.905Z" },
+]
+
+[[package]]
 name = "backrefs"
 version = "5.9"
 source = { registry = "https://pypi.org/simple" }
@@ -474,7 +483,7 @@ wheels = [
 
 [[package]]
 name = "cocode"
-version = "0.0.12"
+version = "0.0.13"
 source = { editable = "." }
 dependencies = [
     { name = "pipelex", extra = ["anthropic", "bedrock", "google"] },
@@ -517,7 +526,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
     { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["anthropic", "google", "bedrock"], specifier = ">=0.7.0" },
+    { name = "pipelex", extras = ["anthropic", "google", "bedrock"], specifier = ">=0.8.1" },
     { name = "pygithub", specifier = "==2.4.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
@@ -1805,10 +1814,11 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.7.0"
+version = "0.8.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
+    { name = "backports-strenum", marker = "python_full_version < '3.11'" },
     { name = "filetype" },
     { name = "httpx" },
     { name = "instructor" },
@@ -1835,9 +1845,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b9/3d/7ced91f4d48b5daf77849c3f944644a1d1985571e55f013eaed4e7b25589/pipelex-0.7.0.tar.gz", hash = "sha256:6405875b1be3a4b473fcf5d32b06557361c0bf6f2e12e828d12f27239cdb8e02", size = 206520, upload-time = "2025-08-21T08:26:08.428Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9a/24/29f780261cb426ae1c24699c43fc43de61037313b8f28f2c42cde89fa641/pipelex-0.8.1.tar.gz", hash = "sha256:69629b869b7a80e20556e26309a1c7e35056b21e9bd979dcb2ce5e48a3aa202a", size = 216349, upload-time = "2025-08-27T11:03:27.789Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/99/53/7daa50ed96ec64358401ce2a58a8826760591f86530c32165c5e311a8910/pipelex-0.7.0-py3-none-any.whl", hash = "sha256:68d723e38f6211e35ae488a6a1b4d74af2ed8e5fc7496ded8415edb26ee23883", size = 334549, upload-time = "2025-08-21T08:26:06.859Z" },
+    { url = "https://files.pythonhosted.org/packages/b2/82/f627b6c3069aeff94c5277b60c25571a15d87f87caaf8058a45d3f8ab31f/pipelex-0.8.1-py3-none-any.whl", hash = "sha256:94c31050c56967a789e8ec04486e1e3484fa844fab292a5945541c1c4f3e5001", size = 350833, upload-time = "2025-08-27T11:03:25.85Z" },
 ]
 
 [package.optional-dependencies]
