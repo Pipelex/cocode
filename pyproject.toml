@@ -1,6 +1,6 @@
 [project]
 name = "cocode"
-version = "0.0.14"
+version = "0.0.15"
 description = "Cocode is the friend of your code"
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]

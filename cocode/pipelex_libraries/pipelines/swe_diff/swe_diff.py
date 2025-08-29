@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from typing import List, Self
+from typing import List
 
 from pipelex import log
 from pipelex.core.stuffs.stuff_content import StructuredContent
 from pydantic import Field, model_validator
+from typing_extensions import Self
 
 
 class StructuredChangelog(StructuredContent):
