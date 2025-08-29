@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.0.15] - 2025-08-29
+
+### Changed
+
+- Fixed `typing_extensions` import error in `cocode/pipelex_libraries/pipelines/swe_diff/swe_diff.py` to use `typing_extensions` instead of `typing`.
+
 ## [v0.0.14] - 2025-08-29
 
 ### Fixed
