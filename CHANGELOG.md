@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.0.14] - 2025-08-29
+
+### Fixed
+
+- Fixed `StrEnum` import error in `cocode/cli.py` and `cocode/repox/process_python.py` to use `pipelex.types.StrEnum` instead of `enum.StrEnum`.
+
 ## [v0.0.13] - 2025-08-27
 
 ### Changed
