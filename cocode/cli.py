@@ -3,7 +3,6 @@ CLI interface for cocode.
 """
 
 import asyncio
-from enum import StrEnum
 from pathlib import Path
 from typing import Annotated, List, Optional
 
@@ -15,6 +14,7 @@ from pipelex.hub import get_pipeline_tracker
 from pipelex.pipe_works.pipe_dry import dry_run_all_pipes
 from pipelex.pipelex import Pipelex
 from pipelex.tools.misc.file_utils import path_exists
+from pipelex.types import StrEnum
 from typer import Context as TyperContext
 from typer.core import TyperGroup
 from typing_extensions import override
