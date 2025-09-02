@@ -6,7 +6,7 @@ Cocode is a powerful command-line tool for analyzing and processing code reposit
 
 <h3 align="center">Cocode demo</h3>
   <p align="center">
-    <a href="https://www.youtube.com/watch?v=T56MOkoZwm8"><img src="https://raw.githubusercontent.com/Pipelex/cocode/dev/.github/assets/demo-thumbnail.png" alt="Cocode Demo" width="600" style="max-width: 100%; height: auto;"></a>
+    <a href="https://www.youtube.com/watch?v=T56MOkoZwm8"><img src="https://raw.githubusercontent.com/Pipelex/cocode/main/.github/assets/demo-thumbnail.png" alt="Cocode Demo" width="600" style="max-width: 100%; height: auto;"></a>
   </p>
 
 ## 🚀 Main Features
