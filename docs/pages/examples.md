@@ -45,7 +45,7 @@ cocode swe-from-repo extract_fundamentals . \
 
 # From specific docs
 cocode swe-from-repo extract_fundamentals . \
-  --include-pattern "*.md" --include-pattern "*.toml" \
+  --include-pattern "*.md" --include-pattern "*.plx" \
   --output-filename project-info.json
 ```
 

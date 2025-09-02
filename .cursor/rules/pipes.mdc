@@ -1,6 +1,6 @@
 ---
 description: 
-globs: **/pipelex_libraries/pipelines/**/*.toml
+globs: **/pipelex_libraries/pipelines/**/*.plx
 alwaysApply: false
 ---
 This rule explains how to build pipes.
@@ -16,8 +16,8 @@ pipelex/libraries
 
 ## Pipeline file naming
 
-- Pipeline TOML files should be placed in the `pipelex/libraries/pipelines/` directory or a subdirectory of it
-- The file name should be descriptive, in snake_case and end with `.toml`
+- Pipeline PLX files should be placed in the `pipelex/libraries/pipelines/` directory or a subdirectory of it
+- The file name should be descriptive, in snake_case and end with `.plx`
 - The file should contain both concepts and pipes definitions
 
 ## Pipeline file structure
@@ -30,7 +30,7 @@ pipelex/libraries
 
 - Format: `domain = "domain_name"`
 - Add a definition: `definition = "Description of the domain"`
-- Note: the domain name is usually the toml filename for domains that fit in a single toml file. Otherwise, the domain name should be the name of the subdirectory where the files of the domain are gathered
+- Note: the domain name is usually the plx filename for domains that fit in a single plx file. Otherwise, the domain name should be the name of the subdirectory where the files of the domain are gathered
 
 # Concept definitions
 
@@ -50,14 +50,14 @@ A Concept MUST NEVER be a plural noun and you should never create a SomeConceptL
 
 ## Simple text-based concept definition
 
-```toml
+```plx
 [concept]
 ConceptName = "Description of the concept"
 ```
 
 ## Detailed concept definition with `structure` and `refines`
 
-```toml
+```plx
 [concept.ConceptName]
 Concept = "Description of the concept"
 structure = "StructureName"
@@ -101,11 +101,11 @@ Some subclasses of StuffContent exist which you should never use directly:
 - Naming: pipe names are snake_case, like python functions (e.g., `extract_gantt_tasks`)
 - Define pipes using as PipeLLM, PipeSequence, PipeParallel, PipeCondition
 
-# Full pipeline toml template
+# Full pipeline plx template
 
 Get inspiration from this template filled with appropriate examples:
 
-```toml
+```plx
 domain = "template"
 definition = "Template file demonstrating different pipe types in Pipelex"
 
@@ -220,5 +220,5 @@ expression = "expense_category.category"
 When building a pipe:
 - First think about the logical steps you need to take. Then, plan the actual use of different patterns offered by Pipelex pipes, to apply them appropriately when you want to run things in sequence (PipeSequence) or in parallel, ot save time (PipeParallel).
 - Think about what PipeLLM you are going to need and which LLM skills they will need.
-- Write the pipe's toml and required structure in pipelex/pipelex_libraries/pipelines
+- Write the pipe's plx and required structure in pipelex/pipelex_libraries/pipelines
 

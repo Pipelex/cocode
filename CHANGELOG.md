@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.1.0] - 2025-09-02
+
+### Changed
+
+- Bump `pipelex` to `v0.9.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+- Switched from `TOML` to `PLX` for pipeline definitions.
+
 ## [v0.0.15] - 2025-08-29
 
 ### Changed
@@ -62,7 +69,7 @@
 - `NoDifferencesFound` exception class for handling cases where no differences are found in git diff.
 
 ### Changed
-- Modified `swe_diff.toml` to reflect changes in pipeline steps and inputs/outputs.
+- Modified `swe_diff.plx` to reflect changes in pipeline steps and inputs/outputs.
 - Refactored CLI commands to use `PipeRunMode` instead of `dry_run`.
 
 ### Removed

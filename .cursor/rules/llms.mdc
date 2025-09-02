@@ -30,7 +30,7 @@ best-claude = "claude-3-7-sonnet"
 
 Here is an example of using an llm_handle to specify which LLM to use in a PipeLLM:
 
-```toml
+```plx
 [pipe.hello_world]
 type = "PipeLLM"
 definition = "Write text about Hello World."
@@ -55,7 +55,7 @@ llm_to_reason_on_diagram = { llm_handle = "best-claude", temperature = 0.5 }
 
 The interest is that these presets can be used to set the LLM choice in a PipeLLM, like this:
 
-```toml
+```plx
 [pipe.extract_invoice]
 type = "PipeLLM"
 definition = "Extract invoice information from an invoice text transcript"

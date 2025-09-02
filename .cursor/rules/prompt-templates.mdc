@@ -1,6 +1,6 @@
 ---
 description: 
-globs: **/pipelex_libraries/pipelines/toml/**/*.toml
+globs: **/pipelex_libraries/pipelines/**/*.plx
 alwaysApply: false
 ---
 This rule explains how to write prompt templates in PipeLLM definitions. These prompts will be rendered and become the user_text or the system_prompt part of LLM chat completion queries.
@@ -19,7 +19,7 @@ Before handing over templates to jinja2, we preprocess them in order to support 
 If the inserted text is supposedly long text, made of several lines or paragraphs, you want it inserted inside a block, possibly a block tagged and delimlited with proper syntax as one would do in a markdown documentation. To include stuff as a block, use the "@" prefix.
 
 Example template:
-```python
+```plx
 prompt_template = """
 Match the expense with its corresponding invoice:
 
@@ -39,7 +39,7 @@ In this example, the expense data and the invoices data are obviously made of se
 If the inserted text is short text and it makes sense to have it inserted directly into a sentence, you want it inserted inline. To insert stuff inline, use the "$" prefix. This will insert the stuff without delimiters and the content will be rendered as plain text.
 
 Example template:
-```python
+```plx
 prompt_template = """
 Your goal is to summarize everything related to $topic in the provided text:
 
