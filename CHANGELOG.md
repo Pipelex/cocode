@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.1.1] - 2025-09-02
+
+### Added
+
+- Added demo video to README.md
+
 ## [v0.1.0] - 2025-09-02
 
 ### Changed

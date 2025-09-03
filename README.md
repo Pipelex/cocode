@@ -4,11 +4,10 @@
 
 Cocode is a powerful command-line tool for analyzing and processing code repositories. It converts repository structures and contents into text formats, extracts code interfaces, and performs software engineering analysis using **AI-powered pipelines** using [Pipelex](https://github.com/Pipelex/pipelex).
 
-## ⚠️ Limitations
-
-This tool is in early development! There are many things to fix and improve. You may encounter bugs, incomplete features, or unexpected behavior. We're actively working on making Cocode more robust and user-friendly.
-
-If you run into issues or have suggestions, please check our [GitHub Issues](https://github.com/Pipelex/cocode/issues) section to report problems or see what we're working on.
+<h3 align="center">Cocode demo</h3>
+  <p align="center">
+    <a href="https://www.youtube.com/watch?v=T56MOkoZwm8"><img src="https://raw.githubusercontent.com/Pipelex/cocode/main/.github/assets/demo-thumbnail.png" alt="Cocode Demo" width="600" style="max-width: 100%; height: auto;"></a>
+  </p>
 
 ## 🚀 Main Features
 
@@ -41,16 +40,16 @@ Some complex pipelines require GCP credentials (See [GCP credentials](https://do
 ### Automatic Documentation & Release Features
 ```bash
 # Update documentation based on code changes
-cocode swe-doc-update v1.0.0 .
+cocode swe-doc-update v1.0.0 path/to/your/local/repository
 
 # Proofread documentation against codebase
-cocode swe-doc-proofread --doc-dir docs .
+cocode swe-doc-proofread --doc-dir docs path/to/your/local/repository
 
 # Generate changelog from version diff
-cocode swe-from-repo-diff write_changelog v1.0.0 .
+cocode swe-from-repo-diff write_changelog v1.0.0 path/to/your/local/repository
 
 # Update AI instructions (AGENTS.md, CLAUDE.md, cursor rules) based on code changes
-cocode swe-ai-instruction-update v1.0.0 .
+cocode swe-ai-instruction-update v1.0.0 path/to/your/local/repository
 ```
 
 ### 📁 Output Location
@@ -87,6 +86,12 @@ Choose the right format for your needs:
 - **Import List**: Dependency analysis format
 
 ### Commands for Other Features
+
+## ⚠️ Limitations
+
+This tool is in early development! There are many things to fix and improve. You may encounter bugs, incomplete features, or unexpected behavior. We're actively working on making Cocode more robust and user-friendly.
+
+If you run into issues or have suggestions, please check our [GitHub Issues](https://github.com/Pipelex/cocode/issues) section to report problems or see what we're working on.
 
 #### Basic Repository Analysis
 ```bash
