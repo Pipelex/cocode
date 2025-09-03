@@ -56,6 +56,10 @@ cocode swe-ai-instruction-update v1.0.0 path/to/your/local/repository
 
 The results of these commands will be saved in a `results` (default behavior) folder at the root of your project.
 
+### IDE extension
+
+We **highly** recommend installing our own extension for PLX files into your IDE of choice. You can find it in the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=Pipelex.pipelex).
+
 ## 🔧 Other Features
 
 ### 🤖 **AI-Powered Software Engineering Analysis**
