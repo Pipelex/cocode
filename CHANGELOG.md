@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Deactivates pipeline tracking and activity tracking in `pipelex.toml`.
+- Deactivated pipeline tracking and activity tracking in `pipelex.toml`.
 - Added IDE extension link to `README.md`.
 
 ## [v0.1.1] - 2025-09-02
