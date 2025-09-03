@@ -160,7 +160,7 @@ update: env
 
 validate: env
 	$(call PRINT_TITLE,"Running setup sequence")
-	$(VENV_PIPELEX) validate -c cocode/pipelex_libraries
+	$(VENV_PIPELEX) validate all -c cocode/pipelex_libraries
 
 init: env
 	$(call PRINT_TITLE,"Running pipelex init-libraries and init-config")
