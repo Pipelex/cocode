@@ -43,10 +43,10 @@ Some complex pipelines require GCP credentials (See [GCP credentials](https://do
 cocode swe-doc-update v1.0.0 path/to/your/local/repository
 
 # Proofread documentation against codebase
-cocode swe-doc-proofread --doc-dir docs path/to/your/local/repository
+cocode swe-doc-proofread --doc-dir docs path/to/your/local/repository # Requires GCP credentials for Gemini
 
 # Generate changelog from version diff
-cocode swe-from-repo-diff write_changelog v1.0.0 path/to/your/local/repository
+cocode swe-from-repo-diff write_changelog v1.0.0 path/to/your/local/repository # Requires Anthropic API key for claude
 
 # Update AI instructions (AGENTS.md, CLAUDE.md, cursor rules) based on code changes
 cocode swe-ai-instruction-update v1.0.0 path/to/your/local/repository
@@ -55,6 +55,10 @@ cocode swe-ai-instruction-update v1.0.0 path/to/your/local/repository
 ### 📁 Output Location
 
 The results of these commands will be saved in a `results` (default behavior) folder at the root of your project.
+
+### IDE extension
+
+We **highly** recommend installing our own extension for PLX files into your IDE of choice. You can find it in the [Open VSX Registry](https://open-vsx.org/extension/Pipelex/pipelex). It's coming soon to VS Code marketplace too and if you are using Cursor, Windsurf or another VS Code fork, you can search for it directly in your extensions tab.
 
 ## 🔧 Other Features
 
