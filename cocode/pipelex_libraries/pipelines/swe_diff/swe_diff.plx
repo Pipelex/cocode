@@ -18,7 +18,7 @@ steps = [
     { pipe = "format_changelog_as_markdown", result = "markdown_changelog" },
 ]
 
-[pipe.write_changelog_v2]
+[pipe.write_changelog_enhanced]
 type = "PipeSequence"
 definition = "Write a comprehensive changelog for a software project"
 inputs = { git_diff = "GitDiff" }

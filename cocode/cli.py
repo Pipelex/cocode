@@ -50,7 +50,7 @@ class PipeCode(StrEnum):
 
     # SWE diff analysis
     WRITE_CHANGELOG = "write_changelog"
-    WRITE_CHANGELOG_V2 = "write_changelog_v2"
+    WRITE_CHANGELOG_ENHANCED = "write_changelog_enhanced"
 
     # Text utilities
     GENERATE_SPLIT_IDENTIFIERS = "generate_split_identifiers"
@@ -74,7 +74,7 @@ def _get_pipe_descriptions() -> str:
         "doc_update": "Generate documentation update suggestions for docs/ directory",
         "ai_instruction_update": "Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, cursor rules",
         "write_changelog": "Write a comprehensive changelog for a software project from git diff",
-        "write_changelog_v2": "Write a comprehensive changelog with draft and polish steps from git diff",
+        "write_changelog_enhanced": "Write a comprehensive changelog with draft and polish steps from git diff",
         "generate_split_identifiers": "Analyze large text and generate optimal split identifiers",
         "check_docs_consistency": "Identify inconsistencies in a set of software engineering documents",
     }
