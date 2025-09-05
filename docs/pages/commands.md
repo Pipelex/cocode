@@ -98,6 +98,84 @@ Detect critical inconsistencies between documentation and actual codebase that c
 - `--dry` - Dry run without API calls
 - Plus all filtering options from `repox`
 
+## github
+
+GitHub repository management commands.
+
+### github auth
+
+Check GitHub authentication status.
+
+```bash
+cocode github auth
+```
+
+Displays authenticated user info and API rate limits.
+
+### github repo-info
+
+Get repository information.
+
+```bash
+cocode github repo-info REPO
+```
+
+**Arguments:**
+- `REPO` - Repository as `owner/repo` or repository ID
+
+### github check-branch
+
+Check if a branch exists.
+
+```bash
+cocode github check-branch REPO BRANCH
+```
+
+**Arguments:**
+- `REPO` - Repository as `owner/repo` or repository ID
+- `BRANCH` - Branch name to check
+
+### github list-branches
+
+List repository branches.
+
+```bash
+cocode github list-branches [OPTIONS] REPO
+```
+
+**Arguments:**
+- `REPO` - Repository as `owner/repo` or repository ID
+
+**Options:**
+- `--limit` - Maximum branches to show (default: 10)
+
+### github sync-labels
+
+Sync issue labels from JSON file.
+
+```bash
+cocode github sync-labels [OPTIONS] REPO LABELS_FILE
+```
+
+**Arguments:**
+- `REPO` - Repository as `owner/repo` or repository ID
+- `LABELS_FILE` - JSON file with label definitions
+
+**Options:**
+- `--dry-run` - Preview changes without applying
+- `--delete-extra` - Remove labels not in JSON file
+
+**Label JSON format:**
+```json
+[
+  {
+    "name": "bug",
+    "color": "d73a4a",
+    "description": "Something isn't working"
+  }
+]
+```
+
 ## swe-doc-update
 
 Update documentation based on code changes.
@@ -190,19 +268,6 @@ cocode github sync-labels [OPTIONS] REPO LABELS_FILE
 **Options:**
 - `--dry-run` - Show what would be done without making changes
 - `--delete-extra` - Delete labels not in the standard set
-
-## show-pipe
-
-Show pipe definition from the pipe library.
-
-```bash
-cocode show-pipe PIPE_CODE
-```
-
-**Arguments:**
-- `PIPE_CODE` - Pipeline code to show definition for
-
-Displays the complete pipe definition including configuration, steps, and metadata from the pipe library.
 
 ## Other commands
 

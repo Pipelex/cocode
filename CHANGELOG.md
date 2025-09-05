@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.1.3] - 2025-09-06
+
+### Added
+
+ - Better support for BlackboxAI IDE
+ - VS Code extensions recommendations file with Pipelex, Ruff, and MyPy extensions
+ - File association for .plx files in VS Code settings
+ - Bump `pipelex` to `v0.9.3`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
+
 ## [v0.1.2] - 2025-09-03
 
 ### Changed
@@ -45,7 +55,7 @@
 ## [v0.0.11] - 2025-08-02
 
 ### Added
- - Added comprehensive changelog generation pipeline (`write_changelog_v2`) with three-stage processing: draft generation, polishing, and markdown formatting
+ - Added comprehensive changelog generation pipeline (`write_changelog_enhanced`) with three-stage processing: draft generation, polishing, and markdown formatting
  - Added `DraftChangelog` concept definition for intermediate changelog processing
  - Added AI-powered `draft_changelog_from_git_diff` pipe that analyzes code diffs using LLM to extract changes, improvements, and features
  - Added `polish_changelog` pipe that removes redundancy, groups related changes, and applies markdown formatting
