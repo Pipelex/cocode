@@ -69,6 +69,13 @@ cocode swe-from-file extract_features_recap ./results/pipelex-docs.txt \
 # SWE analysis: Generate changelog from git diff
 cocode swe-from-repo-diff write_changelog v0.2.4 ../pipelex-cookbook/ \
     --output-filename "changelog.md"
+
+# GitHub operations
+cocode github auth  # Check authentication status
+cocode github repo-info pipelex/cocode  # Get repository information
+cocode github check-branch pipelex/cocode main  # Check if branch exists
+cocode github list-branches pipelex/cocode --limit 10  # List branches
+cocode github sync-labels pipelex/cocode ./labels.json  # Sync labels
 ```
 
 ## Overview
@@ -242,6 +249,84 @@ The tool focuses on critical issues that would break user code, such as:
 - Wrong import paths
 - Critical type mismatches
 
+### `github` - GitHub Repository Management
+
+Manage GitHub repositories, branches, and labels.
+
+**Subcommands:**
+
+#### `github auth`
+Check GitHub authentication status and display rate limit information.
+
+```bash
+cocode github auth
+```
+
+#### `github repo-info`
+Get detailed information about a GitHub repository.
+
+```bash
+# Using owner/repo format
+cocode github repo-info pipelex/cocode
+
+# Using repository ID
+cocode github repo-info 123456789
+```
+
+#### `github check-branch`
+Check if a specific branch exists in a repository.
+
+```bash
+cocode github check-branch pipelex/cocode main
+cocode github check-branch pipelex/cocode feature-branch
+```
+
+#### `github list-branches`
+List branches in a repository with optional limit.
+
+```bash
+# List first 10 branches (default)
+cocode github list-branches pipelex/cocode
+
+# List first 20 branches
+cocode github list-branches pipelex/cocode --limit 20
+```
+
+#### `github sync-labels`
+Synchronize issue labels from a JSON file to a repository.
+
+```bash
+# Dry run to preview changes
+cocode github sync-labels pipelex/cocode ./labels.json --dry-run
+
+# Sync labels, keeping existing ones
+cocode github sync-labels pipelex/cocode ./labels.json
+
+# Sync labels and delete extras not in JSON file
+cocode github sync-labels pipelex/cocode ./labels.json --delete-extra
+```
+
+**Label JSON Format:**
+```json
+[
+  {
+    "name": "bug",
+    "color": "d73a4a",
+    "description": "Something isn't working"
+  },
+  {
+    "name": "enhancement",
+    "color": "a2eeef",
+    "description": "New feature or request"
+  }
+]
+```
+
+**Options:**
+- `--dry-run`: Preview changes without making them
+- `--delete-extra`: Remove labels not in the JSON file
+- `--limit`: Maximum number of items to display (for list commands)
+
 ### `validate` - Configuration Validation
 
 Validate setup and pipelines.
@@ -312,6 +397,19 @@ cocode repox --path-pattern ".cursor/rules" --include-pattern "*.mdc"
 - Use `--output-dir stdout` to print to console instead of file
 - Use `cocode validate` to check configuration and pipelines
 - Configuration files are loaded from `pipelex_libraries/` directory
+
+### GitHub Authentication
+
+For GitHub commands, authentication is handled via the `GITHUB_TOKEN` environment variable or PyGithub's default authentication methods:
+
+1. **Environment Variable**: Set `GITHUB_TOKEN` in your `.env` file or environment
+2. **GitHub CLI**: If you have `gh` CLI installed and authenticated
+3. **Personal Access Token**: Create at https://github.com/settings/tokens
+
+```bash
+# Check authentication status
+cocode github auth
+```
 
 ## Getting Started
 
