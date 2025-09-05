@@ -56,7 +56,7 @@ class PipeCode(StrEnum):
     GENERATE_SPLIT_IDENTIFIERS = "generate_split_identifiers"
 
     # SWE docs consistency check
-    CHECK_DOCS_CONSISTENCY = "check_docs_consistency"
+    CHECK_DOCS_INCONSISTENCIES = "check_doc_inconsistencies"
 
 
 def _get_pipe_descriptions() -> str:
@@ -76,7 +76,7 @@ def _get_pipe_descriptions() -> str:
         "write_changelog": "Write a comprehensive changelog for a software project from git diff",
         "write_changelog_enhanced": "Write a comprehensive changelog with draft and polish steps from git diff",
         "generate_split_identifiers": "Analyze large text and generate optimal split identifiers",
-        "check_docs_consistency": "Identify inconsistencies in a set of software engineering documents",
+        "check_doc_inconsistencies": "Identify inconsistencies in a set of software engineering documents",
     }
 
     help_text = "\n\n"
