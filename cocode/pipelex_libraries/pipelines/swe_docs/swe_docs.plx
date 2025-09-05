@@ -14,7 +14,7 @@ CollaborationDoc = "A comprehensive overview of the collaboration and workflow i
 OnboardingDocumentation = "Complete set of documentation needed for onboarding new developers to a project."
 
 [pipe]
-[pipe.check_docs_consistency]
+[pipe.check_doc_inconsistencies]
 type = "PipeLLM"
 definition = "Identify inconsistencies in a set of software engineering documents."
 inputs = { repo_text = "SoftwareDoc" }

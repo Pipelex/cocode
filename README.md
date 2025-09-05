@@ -50,6 +50,13 @@ cocode swe-from-repo-diff write_changelog v1.0.0 path/to/your/local/repository #
 
 # Update AI instructions (AGENTS.md, CLAUDE.md, cursor rules) based on code changes
 cocode swe-ai-instruction-update v1.0.0 path/to/your/local/repository
+
+# GitHub operations
+cocode github auth  # Check GitHub authentication status
+cocode github repo-info owner/repo  # Get repository information
+cocode github check-branch owner/repo main  # Check if branch exists
+cocode github list-branches owner/repo  # List repository branches
+cocode github sync-labels owner/repo labels.json  # Sync labels from JSON file
 ```
 
 ### 📁 Output Location
@@ -88,6 +95,32 @@ Choose the right format for your needs:
 - **Flat**: Clean content-only output
 - **Tree**: Directory structure visualization
 - **Import List**: Dependency analysis format
+
+### 🔗 **GitHub Integration**
+Powerful GitHub repository management features:
+- **Authentication**: Check and manage GitHub authentication status
+- **Repository Info**: Get detailed information about repositories
+- **Branch Management**: Check branches, list branches
+- **Label Sync**: Synchronize issue labels across repositories from JSON templates
+
+### GitHub Commands
+```bash
+# Check authentication status
+cocode github auth
+
+# Get repository information
+cocode github repo-info pipelex/cocode
+
+# Check if a branch exists
+cocode github check-branch pipelex/cocode feature-branch
+
+# List branches (with limit)
+cocode github list-branches pipelex/cocode --limit 20
+
+# Sync labels from JSON file
+cocode github sync-labels pipelex/cocode ./labels.json --dry-run
+cocode github sync-labels pipelex/cocode ./labels.json --delete-extra
+```
 
 ### Commands for Other Features
 
