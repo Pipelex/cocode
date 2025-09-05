@@ -340,7 +340,7 @@ cocode validate
 Display comprehensive help and examples.
 
 ```bash
-cocode help
+cocode --help
 ```
 
 ## Python Processing Rules
@@ -416,7 +416,7 @@ cocode github auth
 1. **Validate Setup**: Run `cocode validate` to ensure everything is configured correctly
 2. **Basic Analysis**: Try `cocode repox` to analyze your current directory
 3. **Explore Pipelines**: Use `cocode swe-from-repo --dry` to test SWE pipelines
-4. **Get Help**: Use `cocode help` for detailed examples and `<command> --help` for specific options
+4. **Get Help**: Use `cocode --help` for command overview and `<command> --help` for specific options
 
 ## Examples by Use Case
 

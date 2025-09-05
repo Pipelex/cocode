@@ -10,11 +10,15 @@ These rules apply when writing unit tests.
 
 - Name test files with `test_` prefix
 - Use descriptive names that match the functionality being tested
-- Place test files in the appropriate subdirectory of `tests/`:
-    - `tests/cogt/` for tests related to sub-package `pipelex.cogt`
-    - `tests/tools/` for tests related to sub-package `pipelex.tools`
-    - `tests/pipelex/` for tests related to `pipelex`and not its sub-packages
-- More precisely, for `pipelex` and `pipelex.cogt` place the tests inside subdirectories named either `asynch` for async test functions and `synchro` for normal non-async test functions
+- Place test files in the appropriate test category directory:
+    - `tests/unit/` - for unit tests that test individual functions/classes in isolation
+    - `tests/integration/` - for integration tests that test component interactions
+    - `tests/e2e/` - for end-to-end tests that test complete workflows
+    - `tests/test_pipelines/` - for test pipeline definitions (PLX files and their structuring python files)
+- Fixtures are defined in conftest.py modules at different levels of the hierarchy, their scope is handled by pytest
+- Test data is placed inside test_data.py at different levels of the hierarchy, they must be imported with package paths from the root like `tests.pipelex.test_data`. Their content is all constants, regrouped inside classes to keep things tidy.
+- Always put test inside Test classes.
+- The pipelex pipelines should be stored in `tests/test_pipelines` as well as the related structured Output classes that inherit from `StructuredContent`
 
 ## Markers
 
@@ -25,6 +29,10 @@ Apply the appropriate markers:
 - "gha_disabled: will not be able to run properly on GitHub Actions"
 
 Several markers may be applied. For instance, if the test uses an LLM, then it uses inference, so you must mark with both `inference`and `llm`.
+
+## Tips
+
+- Never use the unittest.mock. Use pytest-mock
 
 ## Test Class Structure
 
@@ -68,7 +76,7 @@ from cocode.pipelex_libraries.pipelines.base_library.retrieve import RetrievedEx
 from pipelex.config_pipelex import get_config
 
 from pipelex.core.pipe import PipeAbstract, update_job_metadata_for_pipe
-from pipelex.core.pipe_output import PipeOutput, PipeOutputType
+from pipelex.core.pipes.pipe_output import PipeOutput, PipeOutputType
 from pipelex.core.pipes.pipe_run_params import PipeRunParams
 from pipelex.core.pipes.pipe_run_params import PipeRunParams
 from pipelex.pipe_works.pipe_router_protocol import PipeRouterProtocol
@@ -98,12 +106,9 @@ working_memory = WorkingMemoryFactory.make_from_single_stuff(stuff=stuff)
 ```python
 pipe_output: PipeOutput = await pipe_router.run_pipe(
     pipe_code="pipe_name",
-    pipe_run_params=PipeRunParams(),
+    pipe_run_params=PipeRunParamsFactory.make_run_params(),
     working_memory=working_memory,
-    job_metadata=JobMetadata(
-        session_id=get_config().session_id,
-        top_job_id=cast(str, request.node.originalname),  # type: ignore
-    ),
+    job_metadata=JobMetadata(),
 )
 ```
 
