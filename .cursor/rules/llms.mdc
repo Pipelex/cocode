@@ -7,7 +7,7 @@ alwaysApply: false
 ## LLM Handles
 
 In order to use it in a pipe, an LLM is referenced by its llm_handle and possibly by an llm_preset.
-Both llm_handles and llm_presets are defined in this toml config file: [base_llm_deck.toml](mdc:pipelex/libraries/llm_deck/base_llm_deck.toml)
+Both llm_handles and llm_presets are defined in this toml config file: [base_llm_deck.toml](./cocode/pipelex_libraries/llm_deck/base_llm_deck.toml)
 
 ## LLM Handles
 

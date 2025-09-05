@@ -269,19 +269,6 @@ cocode github sync-labels [OPTIONS] REPO LABELS_FILE
 - `--dry-run` - Show what would be done without making changes
 - `--delete-extra` - Delete labels not in the standard set
 
-## show-pipe
-
-Show pipe definition from the pipe library.
-
-```bash
-cocode show-pipe PIPE_CODE
-```
-
-**Arguments:**
-- `PIPE_CODE` - Pipeline code to show definition for
-
-Displays the complete pipe definition including configuration, steps, and metadata from the pipe library.
-
 ## Other commands
 
 - `cocode validate` - Check setup
