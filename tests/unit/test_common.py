@@ -2,7 +2,6 @@
 Unit tests for common utilities.
 """
 
-
 import pytest
 import typer
 from pytest_mock import MockerFixture
