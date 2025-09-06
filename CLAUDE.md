@@ -118,6 +118,7 @@ Always fix any issues reported by these tools before proceeding.
 - **Pipelines**: `cocode/pipelex_libraries/pipelines/`
 - **Tests**: `tests/` directory
 - **Documentation**: `docs/` directory
+
 # Pipeline Guide
 
 - Always first write your "plan" in natural langage, then transcribe it in pipelex.

@@ -1,5 +1,27 @@
 # Changelog
 
+Here's a more concise and better explained changelog:
+
+## Unreleased
+
+### Changed
+- **Major CLI restructuring**: Reorganized flat command structure into logical command groups for better organization and maintainability
+  - `repox` → `repox convert` (repository processing commands)
+  - `swe-*` commands → `swe *` subcommands (e.g., `swe-from-repo` → `swe from-repo`)
+  - `validate` → `validation validate` (with additional `validation dry-run` and `validation check-config` options)
+- **Improved CLI architecture**: Extracted command implementations from main CLI module into co-located packages (`cocode/repox/repox_cli.py`, `cocode/swe/swe_cli.py`, etc.) for better code organization
+- **Updated documentation**: All examples and references updated to reflect new command structure
+
+### Added
+- Command group structure with `app.add_typer()` for better CLI organization
+- `cocode/common.py` module with shared utilities (`PipeCode` enum, `validate_repo_path()`, `get_output_dir()`)
+- Alternative command names for flexibility (e.g., `repox repo` alongside `repox convert`)
+
+### Deprecated
+- Direct `cocode validate` command (still works but shows deprecation notice; use `cocode validation validate` instead)
+
+**Migration**: Replace hyphens with spaces in SWE commands (e.g., `swe-from-repo` → `swe from-repo`) and use `repox convert` instead of `repox`. All old functionality remains available in the new structure.
+
 ## [v0.1.3] - 2025-09-06
 
 ### Added

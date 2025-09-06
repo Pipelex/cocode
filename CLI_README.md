@@ -8,66 +8,66 @@ Here are some common CoCode command examples to get you started:
 
 ```bash
 # Basic repository analysis
-cocode repox --output-filename cocode_test.txt
+cocode repox convert --output-filename cocode_test.txt
 
 # Analyze external project
-cocode repox ../pipelex-cookbook/ --output-filename pipelex-cookbook.txt
+cocode repox convert ../pipelex-cookbook/ --output-filename pipelex-cookbook.txt
 
 # Extract examples with specific Python rule
-cocode repox ../pipelex-cookbook/ --output-filename "pipelex-cookbook-examples.txt" \
+cocode repox convert ../pipelex-cookbook/ --output-filename "pipelex-cookbook-examples.txt" \
     --path-pattern "examples" --python-rule integral --include-pattern "*.py"
 
 # Extract Python imports from tools directory
-cocode repox ../pipelex/ --output-filename "pipelex-tools-imports.txt" \
+cocode repox convert ../pipelex/ --output-filename "pipelex-tools-imports.txt" \
     --path-pattern "tools" --python-rule imports --output-style import_list \
     --include-pattern "*.py"
 
 # Analyze test interfaces
-cocode repox ../pipelex/ --output-filename "pipelex-tests.txt" \
+cocode repox convert ../pipelex/ --output-filename "pipelex-tests.txt" \
     --path-pattern "tests" --python-rule interface --include-pattern "*.py"
 
 # Extract cursor rules
-cocode repox ../pipelex/ --output-filename "pipelex-cursor-rules.txt" \
+cocode repox convert ../pipelex/ --output-filename "pipelex-cursor-rules.txt" \
     --path-pattern ".cursor/rules" --include-pattern "*.mdc"
 
 # Extract documentation
-cocode repox ../pipelex/ --output-filename "pipelex-docs.txt" \
+cocode repox convert ../pipelex/ --output-filename "pipelex-docs.txt" \
     --path-pattern "docs" --include-pattern "*.md"
 
 # Tree structure only
-cocode repox ../pipelex/ --output-filename "pipelex-docs-tree.txt" \
+cocode repox convert ../pipelex/ --output-filename "pipelex-docs-tree.txt" \
     --path-pattern "docs" --include-pattern "*.md" --output-style tree
 
 # Flat documentation with exclusions
-cocode repox ../pipelex/ --output-filename "pipelex-docs.txt" \
+cocode repox convert ../pipelex/ --output-filename "pipelex-docs.txt" \
     --path-pattern "docs" --include-pattern "*.md" \
     --ignore-pattern "contributing.md" --ignore-pattern "CODE_OF_CONDUCT.md" \
     --ignore-pattern "changelog.md" --ignore-pattern "license.md" \
     --output-style flat
 
 # SWE analysis: Extract fundamentals
-cocode swe-from-repo extract_fundamentals ../pipelex/ \
+cocode swe from-repo extract_fundamentals ../pipelex/ \
     --path-pattern "docs" --include-pattern "*.md" \
     --output-filename "fundamentals.json"
 
 # SWE analysis: Extract onboarding documentation
-cocode swe-from-repo extract_onboarding_documentation ../pipelex/ \
+cocode swe from-repo extract_onboarding_documentation ../pipelex/ \
     --path-pattern "docs" --include-pattern "*.md" \
     --output-filename "docs-structured.json"
 
 # SWE analysis: Comprehensive documentation extraction
-cocode swe-from-repo extract_onboarding_documentation ../pipelex/ \
+cocode swe from-repo extract_onboarding_documentation ../pipelex/ \
     --include-pattern "*.md" --include-pattern "*.mdc" \
     --include-pattern "Makefile" --include-pattern "mkdocs.yml" \
     --include-pattern "pyproject.toml" --include-pattern ".env.example" \
     --output-filename "docs-structured.json"
 
 # SWE analysis: Extract features recap from file
-cocode swe-from-file extract_features_recap ./results/pipelex-docs.txt \
+cocode swe from-file extract_features_recap ./results/pipelex-docs.txt \
     --output-filename "pipelex-features-recap.md"
 
 # SWE analysis: Generate changelog from git diff
-cocode swe-from-repo-diff write_changelog v0.2.4 ../pipelex-cookbook/ \
+cocode swe from-repo-diff write_changelog v0.2.4 ../pipelex-cookbook/ \
     --output-filename "changelog.md"
 
 # GitHub operations
@@ -98,22 +98,22 @@ Convert repository structure and contents to text files for analysis.
 **Basic Usage:**
 ```bash
 # Analyze current directory
-cocode repox
+cocode repox convert
 
 # Specify output file
-cocode repox --output-filename my-repo.txt
+cocode repox convert --output-filename my-repo.txt
 
 # Analyze external repository
-cocode repox ../my-project/ --output-filename project-analysis.txt
+cocode repox convert ../my-project/ --output-filename project-analysis.txt
 ```
 
 **Advanced Filtering:**
 ```bash
 # Filter by file patterns
-cocode repox --include-pattern "*.py" --python-rule interface
+cocode repox convert --include-pattern "*.py" --python-rule interface
 
 # Extract Python imports from specific directory
-cocode repox ../pipelex/ \
+cocode repox convert ../pipelex/ \
     --output-filename "pipelex-tools-imports.txt" \
     --path-pattern "tools" \
     --python-rule imports \
@@ -121,7 +121,7 @@ cocode repox ../pipelex/ \
     --include-pattern "*.py"
 
 # Analyze documentation with filtering
-cocode repox ../project/ \
+cocode repox convert ../project/ \
     --output-filename "docs.txt" \
     --path-pattern "docs" \
     --include-pattern "*.md" \
@@ -139,19 +139,19 @@ cocode repox ../project/ \
 - `--python-rule, -p`: Python processing rule
 - `--output-style, -s`: Output format
 
-### `swe-from-repo` - SWE Analysis from Repository
+### `swe from-repo` - SWE Analysis from Repository
 
 Perform Software Engineering analysis on repositories using AI pipelines.
 
 ```bash
 # Extract fundamentals from documentation
-cocode swe-from-repo extract_fundamentals ../pipelex/ \
+cocode swe from-repo extract_fundamentals ../pipelex/ \
     --path-pattern "docs" \
     --include-pattern "*.md" \
     --output-filename "fundamentals.json"
 
 # Extract comprehensive documentation structure
-cocode swe-from-repo extract_onboarding_documentation ../pipelex/ \
+cocode swe from-repo extract_onboarding_documentation ../pipelex/ \
     --include-pattern "*.md" \
     --include-pattern "*.mdc" \
     --include-pattern "Makefile" \
@@ -161,69 +161,69 @@ cocode swe-from-repo extract_onboarding_documentation ../pipelex/ \
     --output-filename "docs-structured.json"
 
 # Dry run to test pipeline
-cocode swe-from-repo extract_fundamentals . --dry
+cocode swe from-repo extract_fundamentals . --dry
 ```
 
-### `swe-from-file` - SWE Analysis from File
+### `swe from-file` - SWE Analysis from File
 
 Process SWE analysis from existing text files.
 
 ```bash
 # Extract features recap from documentation
-cocode swe-from-file extract_features_recap ./results/docs.txt \
+cocode swe from-file extract_features_recap ./results/docs.txt \
     --output-filename "features-recap.md"
 ```
 
-### `swe-from-repo-diff` - SWE Analysis from Git Diff
+### `swe from-repo-diff` - SWE Analysis from Git Diff
 
 Analyze git diffs using AI pipelines.
 
 ```bash
 # Generate changelog from git diff
-cocode swe-from-repo-diff write_changelog v0.2.4 ../project/ \
+cocode swe from-repo-diff write_changelog v0.2.4 ../project/ \
     --output-filename "changelog.md"
 
 # With ignore patterns
-cocode swe-from-repo-diff write_changelog v1.0.0 . \
+cocode swe from-repo-diff write_changelog v1.0.0 . \
     --ignore-patterns "*.log" \
     --ignore-patterns "temp/" \
     --output-filename "CHANGELOG.md"
 ```
 
-### `swe-doc-update` - Documentation Update Suggestions
+### `swe doc-update` - Documentation Update Suggestions
 
 This command generates documentation update suggestions based on the differences detected in the git repository.
 
 **Usage**:
 ```bash
-cocode swe-doc-update
+cocode swe doc-update
 ```
 
 **Examples**:
 ```bash
-cocode swe-doc-update --help
+cocode swe doc-update --help
 ```
 
-### `swe-doc-proofread` - Documentation Proofreading
+### `swe doc-proofread` - Documentation Proofreading
 
 Systematically proofread documentation against actual codebase to find inconsistencies that could break user code or cause major confusion.
 
 **Usage**:
 ```bash
 # Proofread docs directory against current repository
-cocode swe-doc-proofread
+cocode swe doc-proofread
 
 # Specify custom documentation directory
-cocode swe-doc-proofread --doc-dir documentation
+cocode swe doc-proofread --doc-dir documentation
 
 # Proofread external project documentation
-cocode swe-doc-proofread ../my-project/ --doc-dir docs --output-filename my-project-issues
+cocode swe doc-proofread ../my-project/ --doc-dir docs --output-filename my-project-issues
 
 # Focus on specific file patterns in codebase analysis
-cocode swe-doc-proofread --include-pattern "*.py" --include-pattern "*.ts"
+cocode swe doc-proofread --include-pattern "*.py" --include-pattern "*.ts"
 
 # Exclude certain patterns from codebase analysis
-cocode swe-doc-proofread --ignore-pattern "test_*" --ignore-pattern "*.md"
+cocode swe doc-proofread --ignore-pattern "test_*" --ignore-pattern "*.md"
 ```
 
 **Options:**
@@ -327,11 +327,21 @@ cocode github sync-labels pipelex/cocode ./labels.json --delete-extra
 - `--delete-extra`: Remove labels not in the JSON file
 - `--limit`: Maximum number of items to display (for list commands)
 
-### `validate` - Configuration Validation
+### `validation` - Configuration Validation
 
 Validate setup and pipelines.
 
 ```bash
+# Validate configuration and pipelines
+cocode validation validate
+
+# Run dry validation without full setup
+cocode validation dry-run
+
+# Check configuration only
+cocode validation check-config
+
+# Backward compatibility (deprecated)
 cocode validate
 ```
 
