@@ -1,8 +1,27 @@
 # Changelog
 
-Here's a more concise and better explained changelog:
+All notable changes to this project will be documented in this file.
 
-## Unreleased
+## [v0.2.0] - 2025-09-06
+
+### Added
+- Command group structure with `app.add_typer()` for better CLI organization
+- `cocode/common.py` module with shared utilities (`PipeCode` enum, `validate_repo_path()`, `get_output_dir()`)
+- Alternative command names for flexibility (e.g., `repox repo` alongside `repox convert`)
+- GitHub repository support for analyzing both local and remote repositories
+- Smart caching system for GitHub repositories with local storage
+- GitHub authentication support via Personal Access Tokens (PAT) and GitHub CLI
+- Private repository access with proper authentication
+- Shallow cloning for faster repository analysis
+- Branch-specific repository analysis support
+- Multiple GitHub URL format support (short format, HTTPS, SSH, branch-specific)
+- Force refresh functionality for cached repositories
+- Temporary directory mode for GitHub repository cloning
+- Cache cleanup functionality for old repositories
+- Comprehensive GitHub repository manager with `GitHubRepoManager` class
+- Integration tests for GitHub functionality
+- Unit tests for GitHub repository manager
+- Enhanced CLI documentation with GitHub repository examples
 
 ### Changed
 - **Major CLI restructuring**: Reorganized flat command structure into logical command groups for better organization and maintainability
@@ -11,16 +30,20 @@ Here's a more concise and better explained changelog:
   - `validate` → `validation validate` (with additional `validation dry-run` and `validation check-config` options)
 - **Improved CLI architecture**: Extracted command implementations from main CLI module into co-located packages (`cocode/repox/repox_cli.py`, `cocode/swe/swe_cli.py`, etc.) for better code organization
 - **Updated documentation**: All examples and references updated to reflect new command structure
+- Repository path validation now supports both local paths and GitHub URLs
+- All SWE commands now support GitHub repository analysis in addition to local repositories
+- CLI help text updated to reflect GitHub repository support
+- Command descriptions enhanced with GitHub repository examples
 
-### Added
-- Command group structure with `app.add_typer()` for better CLI organization
-- `cocode/common.py` module with shared utilities (`PipeCode` enum, `validate_repo_path()`, `get_output_dir()`)
-- Alternative command names for flexibility (e.g., `repox repo` alongside `repox convert`)
+### Removed
+- Direct command implementations from main CLI module (moved to dedicated CLI modules)
 
 ### Deprecated
 - Direct `cocode validate` command (still works but shows deprecation notice; use `cocode validation validate` instead)
 
-**Migration**: Replace hyphens with spaces in SWE commands (e.g., `swe-from-repo` → `swe from-repo`) and use `repox convert` instead of `repox`. All old functionality remains available in the new structure.
+### Security
+- GitHub authentication support with secure token handling
+- Private repository access with proper credential management
 
 ## [v0.1.3] - 2025-09-06
 
