@@ -1,7 +1,8 @@
+import logging
+
 import pipelex.config
 import pipelex.pipelex
 import pytest
-from pipelex import pretty_print
 from pipelex.config import get_config
 from rich import print
 from rich.console import Console
@@ -20,7 +21,6 @@ def reset_pipelex_config_fixture():
         pipelex_instance = pipelex.pipelex.Pipelex.make(relative_config_folder_path="./cocode/pipelex_libraries", from_file=False)
         pipelex_instance.validate_libraries()
         config = get_config()
-        pretty_print(config, title="Test config")
         assert isinstance(config, pipelex.config.PipelexConfig)
         assert config.project_name == "cocode"
     except Exception as exc:
@@ -39,3 +39,28 @@ def pretty():
     yield
     # Code to run after each test
     print("\n")
+
+
+@pytest.fixture
+def suppress_error_logs():
+    """
+    Fixture to suppress error logs during tests that expect failures.
+
+    This prevents confusing error messages in test output when testing
+    expected failure scenarios (e.g., invalid repositories, network errors).
+
+    Usage:
+        def test_expected_failure(self, mocker, suppress_error_logs):
+            # Test code that expects errors without showing error logs
+    """
+    # Store original log level
+    logger = logging.getLogger("cocode")
+    original_level = logger.level
+
+    # Set to CRITICAL to suppress INFO and ERROR logs
+    logger.setLevel(logging.CRITICAL)
+
+    yield
+
+    # Restore original log level
+    logger.setLevel(original_level)

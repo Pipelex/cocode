@@ -110,3 +110,49 @@ class GithubWrapper:
                         existing_labels[label_name].delete()
 
         return created_labels, updated_labels, deleted_labels
+
+    def verify_repository_access(self, owner: str, repo: str) -> bool:
+        """
+        Verify that the repository exists and is accessible.
+
+        Args:
+            owner: Repository owner
+            repo: Repository name
+
+        Returns:
+            True if repository is accessible, False otherwise
+
+        Raises:
+            GithubWrapperError: If GitHub client not connected
+        """
+        if not self.github_client:
+            raise GithubWrapperError("GitHub client not connected. Call connect() first")
+
+        try:
+            self.github_client.get_repo(f"{owner}/{repo}")
+            return True
+        except github.GithubException:
+            return False
+
+    def get_default_branch(self, owner: str, repo: str) -> str:
+        """
+        Get the default branch name for a repository.
+
+        Args:
+            owner: Repository owner
+            repo: Repository name
+
+        Returns:
+            Default branch name (e.g., 'main', 'master')
+
+        Raises:
+            GithubWrapperError: If GitHub client not connected or repository not found
+        """
+        if not self.github_client:
+            raise GithubWrapperError("GitHub client not connected. Call connect() first")
+
+        try:
+            repo_obj = self.github_client.get_repo(f"{owner}/{repo}")
+            return repo_obj.default_branch
+        except github.GithubException as exc:
+            raise GithubWrapperError(f"Repository '{owner}/{repo}' not found") from exc

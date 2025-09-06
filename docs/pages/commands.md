@@ -4,12 +4,20 @@ title: Commands
 
 # Commands
 
+CoCode uses organized command groups for better structure:
+
+- **`repox`** - Repository processing commands
+- **`swe`** - Software Engineering analysis commands  
+- **`validation`** - Pipeline validation commands
+- **`github`** - GitHub repository management
+
 ## repox
 
 Convert repository to text format.
 
 ```bash
-cocode repox [OPTIONS] [REPO_PATH]
+cocode repox convert [OPTIONS] [REPO_PATH]
+cocode repox repo [OPTIONS] [REPO_PATH]  # Alternative command name
 ```
 
 **Options:**
@@ -22,12 +30,12 @@ cocode repox [OPTIONS] [REPO_PATH]
 - `-p, --python-rule` - Python processing: `interface`, `imports`, `integral`
 - `-s, --output-style` - Output format: `repo_map`, `flat`, `tree`, `import_list`
 
-## swe-from-repo
+## swe from-repo
 
 Analyze repository with AI pipelines.
 
 ```bash
-cocode swe-from-repo [OPTIONS] PIPE_CODE REPO_PATH
+cocode swe from-repo [OPTIONS] PIPE_CODE REPO_PATH
 ```
 
 **Pipelines:**
@@ -46,12 +54,12 @@ cocode swe-from-repo [OPTIONS] PIPE_CODE REPO_PATH
 - `--dry` - Dry run without API calls
 - Plus all filtering options from `repox`
 
-## swe-from-file
+## swe from-file
 
 Process text file with AI pipelines.
 
 ```bash
-cocode swe-from-file [OPTIONS] PIPE_CODE INPUT_FILE
+cocode swe from-file [OPTIONS] PIPE_CODE INPUT_FILE
 ```
 
 **Pipelines:**
@@ -60,12 +68,12 @@ cocode swe-from-file [OPTIONS] PIPE_CODE INPUT_FILE
 - `extract_fundamentals` - Extract project info
 - `extract_onboarding_documentation` - Structure docs
 
-## swe-from-repo-diff
+## swe from-repo-diff
 
 Analyze git diffs with AI.
 
 ```bash
-cocode swe-from-repo-diff [OPTIONS] PIPE_CODE GIT_REF REPO_PATH
+cocode swe from-repo-diff [OPTIONS] PIPE_CODE GIT_REF REPO_PATH
 ```
 
 **Main pipeline:**
@@ -79,12 +87,12 @@ cocode swe-from-repo-diff [OPTIONS] PIPE_CODE GIT_REF REPO_PATH
 - Ranges: `v1.0.0..v2.0.0`
 - Relative: `HEAD~10`
 
-## swe-doc-proofread
+## swe doc-proofread
 
 Proofread documentation against codebase to detect inconsistencies.
 
 ```bash
-cocode swe-doc-proofread [OPTIONS] REPO_PATH
+cocode swe doc-proofread [OPTIONS] REPO_PATH
 ```
 
 **Purpose:**
@@ -176,12 +184,12 @@ cocode github sync-labels [OPTIONS] REPO LABELS_FILE
 ]
 ```
 
-## swe-doc-update
+## swe doc-update
 
 Update documentation based on code changes.
 
 ```bash
-cocode swe-doc-update [OPTIONS] GIT_REF REPO_PATH
+cocode swe doc-update [OPTIONS] GIT_REF REPO_PATH
 ```
 
 **Purpose:**
