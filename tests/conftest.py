@@ -46,10 +46,10 @@ def pretty():
 def suppress_error_logs():
     """
     Fixture to suppress error logs during tests that expect failures.
-    
+
     This prevents confusing error messages in test output when testing
     expected failure scenarios (e.g., invalid repositories, network errors).
-    
+
     Usage:
         def test_expected_failure(self, mocker, suppress_error_logs):
             # Test code that expects errors without showing error logs
@@ -57,11 +57,11 @@ def suppress_error_logs():
     # Store original log level
     logger = logging.getLogger("cocode")
     original_level = logger.level
-    
+
     # Set to CRITICAL to suppress INFO and ERROR logs
     logger.setLevel(logging.CRITICAL)
-    
+
     yield
-    
+
     # Restore original log level
     logger.setLevel(original_level)

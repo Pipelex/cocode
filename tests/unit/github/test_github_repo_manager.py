@@ -9,6 +9,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
+from pytest_mock import MockerFixture
 
 from cocode.github.github_repo_manager import GitHubRepoManager, GitHubRepoManagerError
 
@@ -116,11 +117,11 @@ class TestGitHubRepoManager:
         """Test cache path generation."""
         with tempfile.TemporaryDirectory() as temp_dir:
             manager = GitHubRepoManager(cache_dir=temp_dir)
-            cache_path = manager._get_cache_path("owner", "repo")
+            cache_path = manager._get_cache_path("owner", "repo")  # pyright: ignore[reportPrivateUsage]
             expected_path = Path(temp_dir) / "owner_repo"
             assert cache_path == expected_path
 
-    def test_clone_repository_success(self, mocker):
+    def test_clone_repository_success(self, mocker: MockerFixture) -> None:
         """Test successful repository cloning."""
         mock_get_env = mocker.patch("cocode.github.github_repo_manager.get_optional_env")
         mock_get_env.return_value = "test_token"  # Mock token to avoid GitHub CLI call
@@ -131,7 +132,7 @@ class TestGitHubRepoManager:
             manager = GitHubRepoManager(cache_dir=temp_dir)
             cache_path = Path(temp_dir) / "test_repo"
 
-            manager._clone_repository("owner", "repo", None, cache_path)
+            manager._clone_repository("owner", "repo", None, cache_path)  # pyright: ignore[reportPrivateUsage]
 
             # Verify git clone command was called
             mock_run.assert_called_once()
@@ -140,7 +141,7 @@ class TestGitHubRepoManager:
             assert "clone" in args
             assert "--depth=1" in args
 
-    def test_clone_repository_failure(self, mocker, suppress_error_logs):
+    def test_clone_repository_failure(self, mocker: MockerFixture, suppress_error_logs: None) -> None:
         """Test repository cloning failure handling."""
         from subprocess import CalledProcessError
 
@@ -154,19 +155,19 @@ class TestGitHubRepoManager:
             cache_path = Path(temp_dir) / "test_repo"
 
             with pytest.raises(GitHubRepoManagerError):
-                manager._clone_repository("owner", "repo", None, cache_path)
+                manager._clone_repository("owner", "repo", None, cache_path)  # pyright: ignore[reportPrivateUsage]
 
-    def test_get_clone_url_with_token(self, mocker):
+    def test_get_clone_url_with_token(self, mocker: MockerFixture) -> None:
         """Test clone URL generation with authentication token."""
         mock_get_env = mocker.patch("cocode.github.github_repo_manager.get_optional_env")
         mock_get_env.return_value = "test_token"
 
         manager = GitHubRepoManager()
-        clone_url = manager._get_clone_url("owner", "repo")
+        clone_url = manager._get_clone_url("owner", "repo")  # pyright: ignore[reportPrivateUsage]  # pyright: ignore[reportPrivateUsage]
 
         assert clone_url == "https://test_token@github.com/owner/repo.git"
 
-    def test_get_clone_url_with_gh_cli(self, mocker):
+    def test_get_clone_url_with_gh_cli(self, mocker: MockerFixture) -> None:
         """Test clone URL generation using GitHub CLI."""
         mock_get_env = mocker.patch("cocode.github.github_repo_manager.get_optional_env")
         mock_get_env.return_value = None
@@ -174,11 +175,11 @@ class TestGitHubRepoManager:
         mock_run.return_value = mocker.MagicMock(stdout="cli_token\n", returncode=0)
 
         manager = GitHubRepoManager()
-        clone_url = manager._get_clone_url("owner", "repo")
+        clone_url = manager._get_clone_url("owner", "repo")  # pyright: ignore[reportPrivateUsage]
 
         assert clone_url == "https://cli_token@github.com/owner/repo.git"
 
-    def test_get_clone_url_no_auth(self, mocker):
+    def test_get_clone_url_no_auth(self, mocker: MockerFixture) -> None:
         """Test clone URL generation without authentication."""
         from subprocess import CalledProcessError
 
@@ -188,11 +189,11 @@ class TestGitHubRepoManager:
         mock_run.side_effect = CalledProcessError(1, "gh")
 
         manager = GitHubRepoManager()
-        clone_url = manager._get_clone_url("owner", "repo")
+        clone_url = manager._get_clone_url("owner", "repo")  # pyright: ignore[reportPrivateUsage]
 
         assert clone_url == "https://github.com/owner/repo.git"
 
-    def test_update_repository_success(self, mocker):
+    def test_update_repository_success(self, mocker: MockerFixture) -> None:
         """Test successful repository update."""
         mock_run = mocker.patch("subprocess.run")
         mock_run.return_value = mocker.MagicMock(returncode=0)
@@ -202,12 +203,12 @@ class TestGitHubRepoManager:
             cache_path = Path(temp_dir) / "test_repo"
             cache_path.mkdir()
 
-            manager._update_repository(cache_path)
+            manager._update_repository(cache_path)  # pyright: ignore[reportPrivateUsage]
 
             # Verify git commands were called
             assert mock_run.call_count == 2  # fetch and pull
 
-    def test_update_repository_failure(self, mocker, suppress_error_logs):
+    def test_update_repository_failure(self, mocker: MockerFixture, suppress_error_logs: None) -> None:
         """Test repository update failure handling."""
         from subprocess import CalledProcessError
 
@@ -220,7 +221,7 @@ class TestGitHubRepoManager:
             cache_path.mkdir()
 
             with pytest.raises(GitHubRepoManagerError):
-                manager._update_repository(cache_path)
+                manager._update_repository(cache_path)  # pyright: ignore[reportPrivateUsage]
 
     def test_list_cached_repos(self):
         """Test listing cached repositories."""
@@ -264,7 +265,7 @@ class TestGitHubRepoManager:
             assert not old_repo_dir.exists()
             assert new_repo_dir.exists()
 
-    def test_get_local_repo_path_temp_dir(self, mocker):
+    def test_get_local_repo_path_temp_dir(self, mocker: MockerFixture) -> None:
         """Test getting local repo path with temporary directory."""
         manager = GitHubRepoManager()
 
@@ -277,7 +278,7 @@ class TestGitHubRepoManager:
         assert result == "/tmp/test_temp_dir"
         mock_clone.assert_called_once()
 
-    def test_get_local_repo_path_cached(self, mocker):
+    def test_get_local_repo_path_cached(self, mocker: MockerFixture) -> None:
         """Test getting local repo path with existing cache."""
         mock_clone = mocker.patch("cocode.github.github_repo_manager.GitHubRepoManager._clone_repository")
         mock_update = mocker.patch("cocode.github.github_repo_manager.GitHubRepoManager._update_repository")
@@ -295,7 +296,7 @@ class TestGitHubRepoManager:
             mock_update.assert_called_once()
             mock_clone.assert_not_called()
 
-    def test_get_local_repo_path_fresh_clone(self, mocker):
+    def test_get_local_repo_path_fresh_clone(self, mocker: MockerFixture) -> None:
         """Test getting local repo path with fresh clone."""
         mock_clone = mocker.patch("cocode.github.github_repo_manager.GitHubRepoManager._clone_repository")
 
@@ -308,7 +309,7 @@ class TestGitHubRepoManager:
             assert result == expected_path
             mock_clone.assert_called_once()
 
-    def test_get_local_repo_path_force_refresh(self, mocker):
+    def test_get_local_repo_path_force_refresh(self, mocker: MockerFixture) -> None:
         """Test getting local repo path with force refresh."""
         mock_clone = mocker.patch("cocode.github.github_repo_manager.GitHubRepoManager._clone_repository")
         mock_update = mocker.patch("cocode.github.github_repo_manager.GitHubRepoManager._update_repository")

@@ -39,13 +39,13 @@ class TestGitHubIntegration:
             # Verify some expected files exist
             readme_path = Path(repo_path) / "README.md"
             assert readme_path.exists()
-            
+
             # Verify it's a Python project
             setup_py = Path(repo_path) / "setup.py"
             pyproject_toml = Path(repo_path) / "pyproject.toml"
             assert setup_py.exists() or pyproject_toml.exists()
 
-    def test_clone_nonexistent_repository(self, suppress_error_logs):
+    def test_clone_nonexistent_repository(self, suppress_error_logs: None) -> None:
         """Test cloning a non-existent repository."""
         with tempfile.TemporaryDirectory() as temp_dir:
             manager = GitHubRepoManager(cache_dir=temp_dir)
@@ -112,7 +112,9 @@ class TestGitHubIntegration:
 
             # First clone without branch to get the default branch
             default_repo_path = manager.get_local_repo_path("jazzband/pip-tools", shallow=True)
-            
+            assert os.path.exists(default_repo_path)
+            assert os.path.isdir(default_repo_path)
+
             # Now clone main branch specifically (most modern Python repos use main)
             repo_path = manager.get_local_repo_path("jazzband/pip-tools@main", shallow=True, force_refresh=True)
 
