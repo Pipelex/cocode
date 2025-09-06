@@ -5,7 +5,6 @@ These tests require network access and may use GitHub API.
 Mark as slow or skip in CI if needed.
 """
 
-import logging
 import os
 import tempfile
 from pathlib import Path

@@ -2,7 +2,6 @@
 Unit tests for common utilities.
 """
 
-import logging
 
 import pytest
 import typer

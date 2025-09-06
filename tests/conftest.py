@@ -3,7 +3,6 @@ import logging
 import pipelex.config
 import pipelex.pipelex
 import pytest
-from pipelex import pretty_print
 from pipelex.config import get_config
 from rich import print
 from rich.console import Console

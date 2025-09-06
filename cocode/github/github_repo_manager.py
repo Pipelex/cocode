@@ -2,7 +2,6 @@
 GitHub repository manager for cloning and caching repositories.
 """
 
-import os
 import re
 import shutil
 import subprocess
@@ -14,7 +13,7 @@ from urllib.parse import urlparse
 from pipelex import log
 from pipelex.tools.environment import get_optional_env
 
-from .github_wrapper import GithubWrapper, GithubWrapperError
+from .github_wrapper import GithubWrapper
 
 
 class GitHubRepoManagerError(Exception):

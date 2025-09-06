@@ -2,9 +2,7 @@
 Unit tests for GitHub repository manager functionality.
 """
 
-import logging
 import os
-import shutil
 import tempfile
 from pathlib import Path
 
