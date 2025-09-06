@@ -40,16 +40,16 @@ Some complex pipelines require GCP credentials (See [GCP credentials](https://do
 ### Automatic Documentation & Release Features
 ```bash
 # Update documentation based on code changes
-cocode swe-doc-update v1.0.0 path/to/your/local/repository
+cocode swe doc-update v1.0.0 path/to/your/local/repository
 
 # Proofread documentation against codebase
-cocode swe-doc-proofread --doc-dir docs path/to/your/local/repository # Requires GCP credentials for Gemini
+cocode swe doc-proofread --doc-dir docs path/to/your/local/repository # Requires GCP credentials for Gemini
 
 # Generate changelog from version diff
-cocode swe-from-repo-diff write_changelog v1.0.0 path/to/your/local/repository # Requires Anthropic API key for claude
+cocode swe from-repo-diff write_changelog v1.0.0 path/to/your/local/repository # Requires Anthropic API key for claude
 
 # Update AI instructions (AGENTS.md, CLAUDE.md, cursor rules) based on code changes
-cocode swe-ai-instruction-update v1.0.0 path/to/your/local/repository
+cocode swe ai-instruction-update v1.0.0 path/to/your/local/repository
 
 # GitHub operations
 cocode github auth  # Check GitHub authentication status
@@ -133,28 +133,28 @@ If you run into issues or have suggestions, please check our [GitHub Issues](htt
 #### Basic Repository Analysis
 ```bash
 # Converts repositories into AI-readable text formats
-cocode repox
+cocode repox convert
 
 # Analyze specific project
-cocode repox path/to/project --output-filename project-analysis.txt
+cocode repox convert path/to/project --output-filename project-analysis.txt
 ```
 
 #### Smart Code Extraction
 ```bash
 # Extract Python interfaces only
-cocode repox --python-rule interface
+cocode repox convert --python-rule interface
 
 # Analyze import dependencies
-cocode repox --python-rule imports --output-style import_list
+cocode repox convert --python-rule imports --output-style import_list
 ```
 
 #### AI-Powered Analysis
 ```bash
 # Extract project fundamentals
-cocode swe-from-repo extract_fundamentals . --output-filename overview.json
+cocode swe from-repo extract_fundamentals . --output-filename overview.json
 
 # Generate feature documentation
-cocode swe-from-file extract_features_recap ./analysis.txt --output-filename features.md
+cocode swe from-file extract_features_recap ./analysis.txt --output-filename features.md
 ```
 
 ## 🔧 Configuration
