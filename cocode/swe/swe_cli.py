@@ -38,7 +38,7 @@ def swe_from_repo_cmd(
     ] = PipeCode.EXTRACT_ONBOARDING_DOCUMENTATION,
     repo_path: Annotated[
         str,
-        typer.Argument(help="Input directory path", exists=True, file_okay=False, dir_okay=True, resolve_path=True),
+        typer.Argument(help="Repository path (local directory) or GitHub URL/identifier (owner/repo or https://github.com/owner/repo)"),
     ] = ".",
     output_dir: Annotated[
         Optional[str],
@@ -75,7 +75,7 @@ def swe_from_repo_cmd(
         typer.Option("--dry", help="Run pipeline in dry mode (no actual execution)"),
     ] = False,
 ) -> None:
-    """Convert repository structure and contents to a text file with SWE analysis."""
+    """Convert repository structure and contents to a text file with SWE analysis. Supports both local repositories and GitHub repositories."""
     repo_path = validate_repo_path(repo_path)
     output_dir = get_output_dir(output_dir)
     to_stdout = output_dir == "stdout"
@@ -150,7 +150,7 @@ def swe_from_repo_diff_cmd(
     ],
     repo_path: Annotated[
         str,
-        typer.Argument(help="Input directory path", exists=True, file_okay=False, dir_okay=True, resolve_path=True),
+        typer.Argument(help="Repository path (local directory) or GitHub URL/identifier (owner/repo or https://github.com/owner/repo)"),
     ] = ".",
     output_dir: Annotated[
         Optional[str],
@@ -171,7 +171,7 @@ def swe_from_repo_diff_cmd(
         ),
     ] = None,
 ) -> None:
-    """Process SWE analysis from git diff comparing current version to specified version."""
+    """Process SWE analysis from git diff comparing current version to specified version. Supports both local repositories and GitHub repositories."""
     repo_path = validate_repo_path(repo_path)
     output_dir = get_output_dir(output_dir)
     to_stdout = output_dir == "stdout"
@@ -200,7 +200,7 @@ def swe_doc_update_cmd(
     ],
     repo_path: Annotated[
         str,
-        typer.Argument(help="Input directory path", exists=True, file_okay=False, dir_okay=True, resolve_path=True),
+        typer.Argument(help="Repository path (local directory) or GitHub URL/identifier (owner/repo or https://github.com/owner/repo)"),
     ] = ".",
     output_dir: Annotated[
         str,
@@ -221,7 +221,10 @@ def swe_doc_update_cmd(
         typer.Option("--doc-dir", "-d", help="Directory containing documentation files (e.g., 'docs', 'documentation')"),
     ] = None,
 ) -> None:
-    """Generate documentation update suggestions for docs/ directory based on git diff analysis."""
+    """
+    Generate documentation update suggestions for docs/ directory based on git diff analysis.
+    Supports both local repositories and GitHub repositories.
+    """
     repo_path = validate_repo_path(repo_path)
 
     asyncio.run(
@@ -245,7 +248,7 @@ def swe_ai_instruction_update_cmd(
     ],
     repo_path: Annotated[
         str,
-        typer.Argument(help="Input directory path", exists=True, file_okay=False, dir_okay=True, resolve_path=True),
+        typer.Argument(help="Repository path (local directory) or GitHub URL/identifier (owner/repo or https://github.com/owner/repo)"),
     ] = ".",
     output_dir: Annotated[
         str,
@@ -262,7 +265,10 @@ def swe_ai_instruction_update_cmd(
         ),
     ] = None,
 ) -> None:
-    """Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, and cursor rules based on git diff analysis."""
+    """
+    Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, and cursor rules based on git diff analysis.
+    Supports both local repositories and GitHub repositories.
+    """
     repo_path = validate_repo_path(repo_path)
 
     asyncio.run(
@@ -282,7 +288,7 @@ def swe_ai_instruction_update_cmd(
 def swe_doc_proofread_cmd(
     repo_path: Annotated[
         str,
-        typer.Argument(help="Input directory path", exists=True, file_okay=False, dir_okay=True, resolve_path=True),
+        typer.Argument(help="Repository path (local directory) or GitHub URL/identifier (owner/repo or https://github.com/owner/repo)"),
     ] = ".",
     output_dir: Annotated[
         str,
@@ -305,7 +311,10 @@ def swe_doc_proofread_cmd(
         typer.Option("--ignore-pattern", "-i", help="Patterns to ignore in codebase analysis (gitignore format) - can be repeated"),
     ] = None,
 ) -> None:
-    """Systematically proofread documentation against actual codebase to find inconsistencies."""
+    """
+    Systematically proofread documentation against actual codebase to find inconsistencies.
+    Supports both local repositories and GitHub repositories.
+    """
     repo_path = validate_repo_path(repo_path)
 
     # Set default include patterns to focus on documentation and code

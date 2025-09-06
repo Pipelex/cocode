@@ -10,6 +10,7 @@ from pipelex import log
 from pipelex.tools.misc.file_utils import path_exists
 from pipelex.types import StrEnum
 
+from cocode.github.github_repo_manager import GitHubRepoManager
 from cocode.repox.repox_processor import RESULTS_DIR
 
 
@@ -68,7 +69,25 @@ def get_pipe_descriptions() -> str:
 
 
 def validate_repo_path(repo_path: str) -> str:
-    """Validate and convert repo_path to absolute path."""
+    """
+    Validate and convert repo_path to absolute path.
+
+    For GitHub URLs, this will clone the repository and return the local path.
+    For local paths, this validates the path exists.
+    """
+    # Check if it's a GitHub URL or identifier
+    if GitHubRepoManager.is_github_url(repo_path):
+        log.info(f"Detected GitHub repository: {repo_path}")
+        repo_manager = GitHubRepoManager()
+        try:
+            local_path = repo_manager.get_local_repo_path(repo_path, shallow=True)
+            log.info(f"GitHub repository cloned to: {local_path}")
+            return local_path
+        except Exception as exc:
+            log.error(f"[ERROR] Failed to clone GitHub repository '{repo_path}': {exc}")
+            raise typer.Exit(code=1) from exc
+
+    # Handle local path
     repo_path = str(Path(repo_path).resolve())
 
     if not path_exists(repo_path):

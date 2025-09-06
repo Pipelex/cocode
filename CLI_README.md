@@ -45,15 +45,25 @@ cocode repox convert ../pipelex/ --output-filename "pipelex-docs.txt" \
     --ignore-pattern "changelog.md" --ignore-pattern "license.md" \
     --output-style flat
 
-# SWE analysis: Extract fundamentals
+# SWE analysis: Extract fundamentals from local repo
 cocode swe from-repo extract_fundamentals ../pipelex/ \
     --path-pattern "docs" --include-pattern "*.md" \
     --output-filename "fundamentals.json"
 
-# SWE analysis: Extract onboarding documentation
+# SWE analysis: Extract fundamentals from GitHub repo
+cocode swe from-repo extract_fundamentals requests/requests \
+    --path-pattern "docs" --include-pattern "*.md" \
+    --output-filename "requests-fundamentals.json"
+
+# SWE analysis: Extract onboarding documentation from local repo
 cocode swe from-repo extract_onboarding_documentation ../pipelex/ \
     --path-pattern "docs" --include-pattern "*.md" \
     --output-filename "docs-structured.json"
+
+# SWE analysis: Extract onboarding documentation from GitHub repo with full URL
+cocode swe from-repo extract_onboarding_documentation https://github.com/psf/black \
+    --path-pattern "docs" --include-pattern "*.md" \
+    --output-filename "black-docs-structured.json"
 
 # SWE analysis: Comprehensive documentation extraction
 cocode swe from-repo extract_onboarding_documentation ../pipelex/ \
@@ -66,9 +76,13 @@ cocode swe from-repo extract_onboarding_documentation ../pipelex/ \
 cocode swe from-file extract_features_recap ./results/pipelex-docs.txt \
     --output-filename "pipelex-features-recap.md"
 
-# SWE analysis: Generate changelog from git diff
+# SWE analysis: Generate changelog from git diff (local repo)
 cocode swe from-repo-diff write_changelog v0.2.4 ../pipelex-cookbook/ \
     --output-filename "changelog.md"
+
+# SWE analysis: Generate changelog from GitHub repo
+cocode swe from-repo-diff write_changelog v2.0.0 requests/requests \
+    --output-filename "requests-changelog.md"
 
 # GitHub operations
 cocode github auth  # Check authentication status
@@ -81,6 +95,34 @@ cocode github sync-labels pipelex/cocode ./labels.json  # Sync labels
 ## Overview
 
 CoCode provides powerful tools for repository analysis and Software Engineering automation through a command-line interface. It can convert repository structures to text files and perform AI-powered analysis using configurable pipelines.
+
+### GitHub Repository Support
+
+CoCode supports analyzing both local repositories and GitHub repositories directly. You can specify GitHub repositories in several formats:
+
+- **Short format**: `owner/repo` (e.g., `microsoft/vscode`)
+- **Full HTTPS URL**: `https://github.com/owner/repo` 
+- **SSH URL**: `git@github.com:owner/repo.git`
+- **Branch-specific**: `owner/repo@branch` or full URLs with `/tree/branch`
+
+**Features:**
+- **Smart Caching**: Repositories are cached locally for faster subsequent analysis
+- **Authentication**: Supports GitHub Personal Access Tokens (PAT) and GitHub CLI authentication
+- **Private Repositories**: Access private repositories with proper authentication
+- **Shallow Cloning**: Fast cloning with minimal history for analysis purposes
+- **Branch Support**: Analyze specific branches or tags
+
+**Authentication Setup:**
+```bash
+# Option 1: Set environment variable
+export GITHUB_PAT=your_personal_access_token
+
+# Option 2: Use GitHub CLI (recommended)
+gh auth login
+
+# Verify authentication
+cocode github auth
+```
 
 ## Installation & Setup
 
@@ -141,8 +183,9 @@ cocode repox convert ../project/ \
 
 ### `swe from-repo` - SWE Analysis from Repository
 
-Perform Software Engineering analysis on repositories using AI pipelines.
+Perform Software Engineering analysis on repositories using AI pipelines. Supports both local repositories and GitHub repositories.
 
+**Local Repository Examples:**
 ```bash
 # Extract fundamentals from documentation
 cocode swe from-repo extract_fundamentals ../pipelex/ \
@@ -162,6 +205,26 @@ cocode swe from-repo extract_onboarding_documentation ../pipelex/ \
 
 # Dry run to test pipeline
 cocode swe from-repo extract_fundamentals . --dry
+```
+
+**GitHub Repository Examples:**
+```bash
+# Analyze public GitHub repository (short format)
+cocode swe from-repo extract_fundamentals requests/requests \
+    --output-filename "requests-fundamentals.txt"
+
+# Analyze with full GitHub URL
+cocode swe from-repo extract_onboarding_documentation https://github.com/psf/black \
+    --output-filename "black-onboarding.txt"
+
+# Analyze specific branch
+cocode swe from-repo extract_coding_standards pallets/click@main \
+    --output-filename "click-standards.txt"
+
+# Focus on documentation from GitHub repo
+cocode swe from-repo extract_fundamentals pytest-dev/pytest \
+    --path-pattern "doc" --include-pattern "*.rst" --include-pattern "*.md" \
+    --output-filename "pytest-docs-analysis.txt"
 ```
 
 ### `swe from-file` - SWE Analysis from File
