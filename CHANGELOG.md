@@ -1,6 +1,11 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+## [v0.2.1] - 2025-09-06
+
+### Changed
+
+- Bump `pipelex` to `v0.9.4`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+- Support BlackboxAI endpoints for inference
 
 ## [v0.2.0] - 2025-09-06
 
