@@ -19,14 +19,50 @@ inputs = { codebase = "CodebaseContent" }
 output = "HTMLReport"
 steps = [
     { pipe = "summarize_hackathon_project", result = "project_summary" },
+    { pipe = "analyze_aspects", result = "aspects" },
+    { pipe = "final_hackathon_analysis", result = "final_analysis" },
+    { pipe = "generate_hackathon_html_report", result = "html_report" }
+]
+
+[pipe.analyze_aspects]
+type = "PipeParallel"
+definition = "Analyze different apsects of the hackathon project"
+inputs = { codebase = "CodebaseContent" }
+output = "HackathonAspects"
+parallels = [
     { pipe = "analyze_hackathon_features", result = "feature_analysis" },
     { pipe = "analyze_hackathon_architecture", result = "architecture_analysis" },
     { pipe = "analyze_hackathon_code_quality", result = "code_quality_analysis" },
     { pipe = "analyze_hackathon_security", result = "security_analysis" },
     { pipe = "identify_hackathon_x_factors", result = "x_factor_analysis" },
-    { pipe = "compile_hackathon_analysis", result = "complete_analysis" },
-    { pipe = "generate_hackathon_html_report", result = "html_report" }
 ]
+combined_output = "HackathonAspects"
+
+[pipe.final_hackathon_analysis]
+type = "PipeLLM"
+definition = "Assess the overall score and final verdict"
+inputs = { project_summary = "ProjectSummary", aspects = "HackathonAspects" }
+output = "HackathonFinalAnalysis"
+llm = { llm_handle = "blackboxai/google/gemini-2.5-pro", temperature = 0.2 }
+system_prompt = "You are a hackathon judge who synthesizes multiple analysis reports into a final comprehensive assessment."
+prompt_template = """
+Synthesize the following project summary and detailed analyses into a final hackathon assessment.
+
+Project Summary:
+@project_summary
+
+Detailed Analyses:
+@aspects
+
+Provide an overall score (1-100) and final verdict considering all aspects. Weight the scoring as follows:
+- Features (30%): Real functionality vs mockups
+- Architecture (20%): Code organization and design
+- Code Quality (20%): Tests, documentation, best practices
+- Security (15%): Vulnerabilities and security practices
+- X-Factor (15%): Innovation and execution quality
+
+Base your final verdict on the weighted score and provide constructive feedback.
+"""
 
 [pipe.summarize_hackathon_project]
 type = "PipeLLM"
@@ -215,7 +251,7 @@ Provide an overall score (1-100) and final verdict considering all aspects. Weig
 [pipe.generate_hackathon_html_report]
 type = "PipeJinja2"
 definition = "Generate HTML report using Jinja2 template"
-inputs = { complete_analysis = "HackathonAnalysis" }
+inputs = { project_summary = "ProjectSummary", aspects = "HackathonAspects", final_analysis = "HackathonFinalAnalysis" }
 output = "HTMLReport"
 jinja2 = """
 <!DOCTYPE html>
@@ -223,7 +259,7 @@ jinja2 = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hackathon Analysis Report - {{ complete_analysis.project_summary.project_name }}</title>
+    <title>Hackathon Analysis Report - {{ project_summary.project_name }}</title>
     <style>
         * {
             margin: 0;
@@ -268,7 +304,7 @@ jinja2 = """
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: conic-gradient(#4CAF50 {{ complete_analysis.overall_score * 3.6 }}deg, #ddd 0deg);
+            background: conic-gradient(#4CAF50 {{ final_analysis.overall_score * 3.6 }}deg, #ddd 0deg);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -381,15 +417,15 @@ jinja2 = """
 <body>
     <div class="container">
         <div class="header">
-            <h1>{{ complete_analysis.project_summary.project_name }}</h1>
-            <p>{{ complete_analysis.project_summary.concept }}</p>
+            <h1>{{ project_summary.project_name }}</h1>
+            <p>{{ project_summary.concept }}</p>
 
             <div class="score-circle">
-                <div class="score-text">{{ complete_analysis.overall_score }}/100</div>
+                <div class="score-text">{{ final_analysis.overall_score }}/100</div>
             </div>
 
             <div class="tags">
-                {% for tech in complete_analysis.project_summary.technology_stack %}
+                {% for tech in project_summary.technology_stack %}
                 <span class="tag">{{ tech }}</span>
                 {% endfor %}
             </div>
@@ -397,11 +433,11 @@ jinja2 = """
 
         <div class="section">
             <h2>Executive Summary</h2>
-            <p><strong>Target Audience:</strong> {{ complete_analysis.project_summary.target_audience }}</p>
-            <p><strong>Value Proposition:</strong> {{ complete_analysis.project_summary.key_value_proposition }}</p>
+            <p><strong>Target Audience:</strong> {{ project_summary.target_audience }}</p>
+            <p><strong>Value Proposition:</strong> {{ project_summary.key_value_proposition }}</p>
             <div class="verdict">
                 <h3>Final Verdict</h3>
-                <p>{{ complete_analysis.final_verdict }}</p>
+                <p>{{ final_analysis.final_verdict }}</p>
             </div>
         </div>
 
@@ -411,27 +447,27 @@ jinja2 = """
                 <div class="metric">
                     <div class="metric-label">Feature Depth Score</div>
                     <div class="progress-bar">
-                        <div class="progress-fill {% if complete_analysis.feature_analysis.feature_depth_score >= 7 %}score-good{% elif complete_analysis.feature_analysis.feature_depth_score >= 4 %}score-medium{% else %}score-poor{% endif %}"
-                             style="width: {{ complete_analysis.feature_analysis.feature_depth_score * 10 }}%"></div>
+                        <div class="progress-fill {% if aspects.feature_analysis.feature_depth_score >= 7 %}score-good{% elif aspects.feature_analysis.feature_depth_score >= 4 %}score-medium{% else %}score-poor{% endif %}"
+                             style="width: {{ aspects.feature_analysis.feature_depth_score * 10 }}%"></div>
                     </div>
-                    <span>{{ complete_analysis.feature_analysis.feature_depth_score }}/10</span>
+                    <span>{{ aspects.feature_analysis.feature_depth_score }}/10</span>
                 </div>
 
                 <h4>Real Features:</h4>
                 <ul>
-                    {% for feature in complete_analysis.feature_analysis.real_features %}
+                    {% for feature in aspects.feature_analysis.real_features %}
                     <li>{{ feature }}</li>
                     {% endfor %}
                 </ul>
 
                 <h4>Fake/Mockup Features:</h4>
                 <ul>
-                    {% for feature in complete_analysis.feature_analysis.fake_features %}
+                    {% for feature in aspects.feature_analysis.fake_features %}
                     <li>{{ feature }}</li>
                     {% endfor %}
                 </ul>
 
-                <p><strong>Evidence:</strong> {{ complete_analysis.feature_analysis.evidence }}</p>
+                <p><strong>Evidence:</strong> {{ aspects.feature_analysis.evidence }}</p>
             </div>
 
             <div class="section">
@@ -439,18 +475,18 @@ jinja2 = """
                 <div class="metric">
                     <div class="metric-label">Modularity Score</div>
                     <div class="progress-bar">
-                        <div class="progress-fill {% if complete_analysis.architecture_analysis.modularity_score >= 7 %}score-good{% elif complete_analysis.architecture_analysis.modularity_score >= 4 %}score-medium{% else %}score-poor{% endif %}"
-                             style="width: {{ complete_analysis.architecture_analysis.modularity_score * 10 }}%"></div>
+                        <div class="progress-fill {% if aspects.architecture_analysis.modularity_score >= 7 %}score-good{% elif aspects.architecture_analysis.modularity_score >= 4 %}score-medium{% else %}score-poor{% endif %}"
+                             style="width: {{ aspects.architecture_analysis.modularity_score * 10 }}%"></div>
                     </div>
-                    <span>{{ complete_analysis.architecture_analysis.modularity_score }}/10</span>
+                    <span>{{ aspects.architecture_analysis.modularity_score }}/10</span>
                 </div>
 
-                <p><strong>Pattern:</strong> {{ complete_analysis.architecture_analysis.architecture_pattern }}</p>
-                <p><strong>Organization:</strong> {{ complete_analysis.architecture_analysis.code_organization }}</p>
-                <p><strong>Separation of Concerns:</strong> {{ complete_analysis.architecture_analysis.separation_of_concerns }}</p>
+                <p><strong>Pattern:</strong> {{ aspects.architecture_analysis.architecture_pattern }}</p>
+                <p><strong>Organization:</strong> {{ aspects.architecture_analysis.code_organization }}</p>
+                <p><strong>Separation of Concerns:</strong> {{ aspects.architecture_analysis.separation_of_concerns }}</p>
 
                 <div class="tags">
-                    {% for pattern in complete_analysis.architecture_analysis.design_patterns %}
+                    {% for pattern in aspects.architecture_analysis.design_patterns %}
                     <span class="tag">{{ pattern }}</span>
                     {% endfor %}
                 </div>
@@ -461,18 +497,18 @@ jinja2 = """
                 <div class="metric">
                     <div class="metric-label">Quality Score</div>
                     <div class="progress-bar">
-                        <div class="progress-fill {% if complete_analysis.code_quality_analysis.quality_score >= 7 %}score-good{% elif complete_analysis.code_quality_analysis.quality_score >= 4 %}score-medium{% else %}score-poor{% endif %}"
-                             style="width: {{ complete_analysis.code_quality_analysis.quality_score * 10 }}%"></div>
+                        <div class="progress-fill {% if aspects.code_quality_analysis.quality_score >= 7 %}score-good{% elif aspects.code_quality_analysis.quality_score >= 4 %}score-medium{% else %}score-poor{% endif %}"
+                             style="width: {{ aspects.code_quality_analysis.quality_score * 10 }}%"></div>
                     </div>
-                    <span>{{ complete_analysis.code_quality_analysis.quality_score }}/10</span>
+                    <span>{{ aspects.code_quality_analysis.quality_score }}/10</span>
                 </div>
 
-                <p><strong>Tests:</strong> {% if complete_analysis.code_quality_analysis.has_tests %}✅ Present{% else %}❌ Missing{% endif %}</p>
-                <p><strong>Type Hints:</strong> {% if complete_analysis.code_quality_analysis.has_typing %}✅ Present{% else %}❌ Missing{% endif %}</p>
-                <p><strong>Linting:</strong> {% if complete_analysis.code_quality_analysis.has_linting %}✅ Configured{% else %}❌ Not configured{% endif %}</p>
-                <p><strong>CI/CD:</strong> {% if complete_analysis.code_quality_analysis.has_ci_cd %}✅ Set up{% else %}❌ Not set up{% endif %}</p>
-                <p><strong>Test Coverage:</strong> {{ complete_analysis.code_quality_analysis.test_coverage_estimate }}</p>
-                <p><strong>Documentation:</strong> {{ complete_analysis.code_quality_analysis.documentation_quality }}</p>
+                <p><strong>Tests:</strong> {% if aspects.code_quality_analysis.has_tests %}✅ Present{% else %}❌ Missing{% endif %}</p>
+                <p><strong>Type Hints:</strong> {% if aspects.code_quality_analysis.has_typing %}✅ Present{% else %}❌ Missing{% endif %}</p>
+                <p><strong>Linting:</strong> {% if aspects.code_quality_analysis.has_linting %}✅ Configured{% else %}❌ Not configured{% endif %}</p>
+                <p><strong>CI/CD:</strong> {% if aspects.code_quality_analysis.has_ci_cd %}✅ Set up{% else %}❌ Not set up{% endif %}</p>
+                <p><strong>Test Coverage:</strong> {{ aspects.code_quality_analysis.test_coverage_estimate }}</p>
+                <p><strong>Documentation:</strong> {{ aspects.code_quality_analysis.documentation_quality }}</p>
             </div>
 
             <div class="section">
@@ -480,34 +516,34 @@ jinja2 = """
                 <div class="metric">
                     <div class="metric-label">Security Score</div>
                     <div class="progress-bar">
-                        <div class="progress-fill {% if complete_analysis.security_analysis.security_score >= 7 %}score-good{% elif complete_analysis.security_analysis.security_score >= 4 %}score-medium{% else %}score-poor{% endif %}"
-                             style="width: {{ complete_analysis.security_analysis.security_score * 10 }}%"></div>
+                        <div class="progress-fill {% if aspects.security_analysis.security_score >= 7 %}score-good{% elif aspects.security_analysis.security_score >= 4 %}score-medium{% else %}score-poor{% endif %}"
+                             style="width: {{ aspects.security_analysis.security_score * 10 }}%"></div>
                     </div>
-                    <span>{{ complete_analysis.security_analysis.security_score }}/10</span>
+                    <span>{{ aspects.security_analysis.security_score }}/10</span>
                 </div>
 
-                {% if complete_analysis.security_analysis.vulnerabilities_found %}
+                {% if aspects.security_analysis.vulnerabilities_found %}
                 <h4>Vulnerabilities Found:</h4>
                 <ul>
-                    {% for vuln in complete_analysis.security_analysis.vulnerabilities_found %}
+                    {% for vuln in aspects.security_analysis.vulnerabilities_found %}
                     <li class="tag negative">{{ vuln }}</li>
                     {% endfor %}
                 </ul>
                 {% endif %}
 
-                {% if complete_analysis.security_analysis.security_best_practices %}
+                {% if aspects.security_analysis.security_best_practices %}
                 <h4>Security Practices:</h4>
                 <div class="tags">
-                    {% for practice in complete_analysis.security_analysis.security_best_practices %}
+                    {% for practice in aspects.security_analysis.security_best_practices %}
                     <span class="tag positive">{{ practice }}</span>
                     {% endfor %}
                 </div>
                 {% endif %}
 
-                {% if complete_analysis.security_analysis.recommendations %}
+                {% if aspects.security_analysis.recommendations %}
                 <h4>Recommendations:</h4>
                 <ul>
-                    {% for rec in complete_analysis.security_analysis.recommendations %}
+                    {% for rec in aspects.security_analysis.recommendations %}
                     <li>{{ rec }}</li>
                     {% endfor %}
                 </ul>
@@ -519,40 +555,40 @@ jinja2 = """
                 <div class="metric">
                     <div class="metric-label">Innovation Score</div>
                     <div class="progress-bar">
-                        <div class="progress-fill {% if complete_analysis.x_factor_analysis.innovation_score >= 7 %}score-good{% elif complete_analysis.x_factor_analysis.innovation_score >= 4 %}score-medium{% else %}score-poor{% endif %}"
-                             style="width: {{ complete_analysis.x_factor_analysis.innovation_score * 10 }}%"></div>
+                        <div class="progress-fill {% if aspects.x_factor_analysis.innovation_score >= 7 %}score-good{% elif aspects.x_factor_analysis.innovation_score >= 4 %}score-medium{% else %}score-poor{% endif %}"
+                             style="width: {{ aspects.x_factor_analysis.innovation_score * 10 }}%"></div>
                     </div>
-                    <span>{{ complete_analysis.x_factor_analysis.innovation_score }}/10</span>
+                    <span>{{ aspects.x_factor_analysis.innovation_score }}/10</span>
                 </div>
 
                 <div class="metric">
                     <div class="metric-label">Execution Quality</div>
                     <div class="progress-bar">
-                        <div class="progress-fill {% if complete_analysis.x_factor_analysis.execution_quality >= 7 %}score-good{% elif complete_analysis.x_factor_analysis.execution_quality >= 4 %}score-medium{% else %}score-poor{% endif %}"
-                             style="width: {{ complete_analysis.x_factor_analysis.execution_quality * 10 }}%"></div>
+                        <div class="progress-fill {% if aspects.x_factor_analysis.execution_quality >= 7 %}score-good{% elif aspects.x_factor_analysis.execution_quality >= 4 %}score-medium{% else %}score-poor{% endif %}"
+                             style="width: {{ aspects.x_factor_analysis.execution_quality * 10 }}%"></div>
                     </div>
-                    <span>{{ complete_analysis.x_factor_analysis.execution_quality }}/10</span>
+                    <span>{{ aspects.x_factor_analysis.execution_quality }}/10</span>
                 </div>
 
-                {% if complete_analysis.x_factor_analysis.positive_highlights %}
+                {% if aspects.x_factor_analysis.positive_highlights %}
                 <h4>Positive Highlights:</h4>
                 <div class="tags">
-                    {% for highlight in complete_analysis.x_factor_analysis.positive_highlights %}
+                    {% for highlight in aspects.x_factor_analysis.positive_highlights %}
                     <span class="tag positive">{{ highlight }}</span>
                     {% endfor %}
                 </div>
                 {% endif %}
 
-                {% if complete_analysis.x_factor_analysis.negative_highlights %}
+                {% if aspects.x_factor_analysis.negative_highlights %}
                 <h4>Areas for Improvement:</h4>
                 <div class="tags">
-                    {% for highlight in complete_analysis.x_factor_analysis.negative_highlights %}
+                    {% for highlight in aspects.x_factor_analysis.negative_highlights %}
                     <span class="tag negative">{{ highlight }}</span>
                     {% endfor %}
                 </div>
                 {% endif %}
 
-                <p><strong>Overall Impression:</strong> {{ complete_analysis.x_factor_analysis.overall_impression }}</p>
+                <p><strong>Overall Impression:</strong> {{ aspects.x_factor_analysis.overall_impression }}</p>
             </div>
         </div>
     </div>

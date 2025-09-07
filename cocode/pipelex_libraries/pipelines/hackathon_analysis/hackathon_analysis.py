@@ -71,6 +71,23 @@ class XFactorAnalysis(StructuredContent):
     overall_impression: str = Field(..., description="Overall impression of the project")
 
 
+class HackathonAspects(StructuredContent):
+    """Analysis of aspects of Hackathon codebase."""
+
+    feature_analysis: FeatureAnalysis = Field(..., description="Feature implementation analysis")
+    architecture_analysis: ArchitectureAnalysis = Field(..., description="Architecture and modularity analysis")
+    code_quality_analysis: CodeQualityAnalysis = Field(..., description="Code quality metrics")
+    security_analysis: SecurityAnalysis = Field(..., description="Security assessment")
+    x_factor_analysis: XFactorAnalysis = Field(..., description="Standout elements analysis")
+
+
+class HackathonFinalAnalysis(StructuredContent):
+    """Final hackathon codebase analysis."""
+
+    overall_score: int = Field(..., description="Overall project score 1-100")
+    final_verdict: str = Field(..., description="Final assessment and recommendation")
+
+
 class HackathonAnalysis(StructuredContent):
     """Complete hackathon codebase analysis result."""
 

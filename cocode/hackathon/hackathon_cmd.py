@@ -13,7 +13,12 @@ from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipeline.execute import execute_pipeline
 
 from cocode.github.github_repo_manager import GitHubRepoManager
-from cocode.pipelex_libraries.pipelines.hackathon_analysis.hackathon_analysis import HackathonAnalysis
+from cocode.pipelex_libraries.pipelines.hackathon_analysis.hackathon_analysis import (
+    HackathonAnalysis,
+    HackathonAspects,
+    HackathonFinalAnalysis,
+    ProjectSummary,
+)
 from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule
 from cocode.repox.repox_cmd import repox_command
@@ -113,20 +118,36 @@ async def hackathon_analyze_repo(
             f.write(html_report.text)
         log.info(f"HTML report saved to: {html_output_path}")
 
-        # Step 4: Extract and save the complete analysis as JSON
-        complete_analysis_stuff = pipe_output.working_memory.get_stuff("complete_analysis")
-        if complete_analysis_stuff:
-            complete_analysis = complete_analysis_stuff.content_as(content_type=HackathonAnalysis)
+        # Step 4: Assemble and save the complete analysis as JSON
+        # Extract components from working memory
+        project_summary_stuff = pipe_output.working_memory.get_stuff("project_summary")
+        aspects_stuff = pipe_output.working_memory.get_stuff("aspects")
+        final_analysis_stuff = pipe_output.working_memory.get_stuff("final_analysis")
 
-            # Save as JSON
-            json_filename = output_filename.replace(".html", ".json")
-            json_output_path = os.path.join(repo_output_dir, json_filename)
+        # Extract the content from each stuff
+        project_summary = project_summary_stuff.content_as(content_type=ProjectSummary)
+        aspects = aspects_stuff.content_as(content_type=HackathonAspects)
+        final_analysis = final_analysis_stuff.content_as(content_type=HackathonFinalAnalysis)
 
-            with open(json_output_path, "w", encoding="utf-8") as f:
-                json.dump(complete_analysis.model_dump(), f, indent=2, ensure_ascii=False)
-            log.info(f"Complete analysis JSON saved to: {json_output_path}")
-        else:
-            log.warning("complete_analysis not found in working memory")
+        # Assemble the complete analysis in Python
+        complete_analysis = HackathonAnalysis(
+            project_summary=project_summary,
+            feature_analysis=aspects.feature_analysis,
+            architecture_analysis=aspects.architecture_analysis,
+            code_quality_analysis=aspects.code_quality_analysis,
+            security_analysis=aspects.security_analysis,
+            x_factor_analysis=aspects.x_factor_analysis,
+            overall_score=final_analysis.overall_score,
+            final_verdict=final_analysis.final_verdict,
+        )
+
+        # Save as JSON
+        json_filename = output_filename.replace(".html", ".json")
+        json_output_path = os.path.join(repo_output_dir, json_filename)
+
+        with open(json_output_path, "w", encoding="utf-8") as f:
+            json.dump(complete_analysis.model_dump(), f, indent=2, ensure_ascii=False)
+        log.info(f"Complete analysis JSON saved to: {json_output_path}")
 
         log.info(f"Hackathon analysis complete! Files saved to: {repo_output_dir}")
 
