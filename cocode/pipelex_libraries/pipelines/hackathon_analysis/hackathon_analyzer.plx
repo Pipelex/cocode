@@ -9,6 +9,8 @@ ArchitectureAnalysis = "Analysis of code architecture and modularity"
 CodeQualityAnalysis = "Analysis of code quality metrics"
 SecurityAnalysis = "Analysis of security vulnerabilities and issues"
 XFactorAnalysis = "Analysis of standout positive or negative elements"
+HackathonAspects = "Analysis of multiple aspects of Hackathon codebase"
+HackathonFinalAnalysis = "Final analysis of the hackathon codebase"
 HackathonAnalysis = "Complete hackathon codebase analysis result"
 HTMLReport = "HTML formatted analysis report"
 
@@ -27,7 +29,7 @@ steps = [
 [pipe.analyze_aspects]
 type = "PipeParallel"
 definition = "Analyze different apsects of the hackathon project"
-inputs = { codebase = "CodebaseContent" }
+inputs = { codebase = "CodebaseContent", project_summary = "ProjectSummary" }
 output = "HackathonAspects"
 parallels = [
     { pipe = "analyze_hackathon_features", result = "feature_analysis" },
@@ -43,12 +45,11 @@ type = "PipeLLM"
 definition = "Assess the overall score and final verdict"
 inputs = { project_summary = "ProjectSummary", aspects = "HackathonAspects" }
 output = "HackathonFinalAnalysis"
-llm = { llm_handle = "blackboxai/google/gemini-2.5-pro", temperature = 0.2 }
+llm = "llm_for_hackathon_analyse"
 system_prompt = "You are a hackathon judge who synthesizes multiple analysis reports into a final comprehensive assessment."
 prompt_template = """
 Synthesize the following project summary and detailed analyses into a final hackathon assessment.
 
-Project Summary:
 @project_summary
 
 Detailed Analyses:
@@ -69,7 +70,7 @@ type = "PipeLLM"
 definition = "Analyze and summarize the project concept"
 inputs = { codebase = "CodebaseContent" }
 output = "ProjectSummary"
-llm = { llm_handle = "blackboxai/google/gemini-2.5-pro", temperature = 0.2 }
+llm = "llm_for_hackathon_analyse"
 system_prompt = "You are an expert at analyzing software projects and understanding their core concepts and purposes."
 prompt_template = """
 Analyze this hackathon codebase and provide a comprehensive project summary.
@@ -88,9 +89,9 @@ Provide a clear, concise summary of what this project is trying to achieve.
 [pipe.analyze_hackathon_features]
 type = "PipeLLM"
 definition = "Analyze whether features are real implementations or just UI mockups"
-inputs = { codebase = "CodebaseContent" }
+inputs = { codebase = "CodebaseContent", project_summary = "ProjectSummary" }
 output = "FeatureAnalysis"
-llm = { llm_handle = "blackboxai/google/gemini-2.5-pro", temperature = 0.1 }
+llm = "llm_for_hackathon_analyse"
 system_prompt = "You are an expert at distinguishing between real feature implementations and fake/mockup features in codebases."
 prompt_template = """
 Analyze this codebase to determine which features are actually implemented vs just UI mockups.
@@ -103,6 +104,8 @@ Look for:
 - Hardcoded data instead of dynamic content
 - Missing backend implementations
 
+@project_summary
+
 @codebase
 
 Categorize features as real, fake, or partially implemented. Provide evidence for your assessment.
@@ -111,9 +114,9 @@ Categorize features as real, fake, or partially implemented. Provide evidence fo
 [pipe.analyze_hackathon_architecture]
 type = "PipeLLM"
 definition = "Evaluate code architecture and modularity"
-inputs = { codebase = "CodebaseContent" }
+inputs = { codebase = "CodebaseContent", project_summary = "ProjectSummary" }
 output = "ArchitectureAnalysis"
-llm = { llm_handle = "blackboxai/google/gemini-2.5-pro", temperature = 0.2 }
+llm = "llm_for_hackathon_analyse"
 system_prompt = "You are a software architecture expert specializing in code organization and design patterns."
 prompt_template = """
 Analyze the architecture and modularity of this codebase.
@@ -126,6 +129,8 @@ Evaluate:
 - Design patterns used
 - Technical debt and code smells
 
+@project_summary
+
 @codebase
 
 Provide scores and detailed analysis of the architectural quality.
@@ -134,9 +139,9 @@ Provide scores and detailed analysis of the architectural quality.
 [pipe.analyze_hackathon_code_quality]
 type = "PipeLLM"
 definition = "Assess code quality metrics including tests, typing, documentation"
-inputs = { codebase = "CodebaseContent" }
+inputs = { codebase = "CodebaseContent", project_summary = "ProjectSummary" }
 output = "CodeQualityAnalysis"
-llm = { llm_handle = "blackboxai/google/gemini-2.5-pro", temperature = 0.1 }
+llm = "llm_for_hackathon_analyse"
 system_prompt = "You are a code quality expert who evaluates testing, documentation, and development practices."
 prompt_template = """
 Analyze the code quality of this hackathon project.
@@ -151,6 +156,8 @@ Check for:
 - Code style consistency
 - Error handling
 
+@project_summary
+
 @codebase
 
 Provide a comprehensive quality assessment with specific examples.
@@ -159,9 +166,9 @@ Provide a comprehensive quality assessment with specific examples.
 [pipe.analyze_hackathon_security]
 type = "PipeLLM"
 definition = "Identify security vulnerabilities and issues"
-inputs = { codebase = "CodebaseContent" }
+inputs = { codebase = "CodebaseContent", project_summary = "ProjectSummary" }
 output = "SecurityAnalysis"
-llm = { llm_handle = "blackboxai/google/gemini-2.5-pro", temperature = 0.1 }
+llm = "llm_for_hackathon_analyse_security"
 system_prompt = "You are a cybersecurity expert specializing in code security analysis and vulnerability assessment."
 prompt_template = """
 Perform a security analysis of this hackathon codebase.
@@ -175,6 +182,8 @@ Look for:
 - Missing input validation
 - Security best practices followed
 
+@project_summary
+
 @codebase
 
 Identify specific security issues and provide recommendations for improvement.
@@ -183,9 +192,9 @@ Identify specific security issues and provide recommendations for improvement.
 [pipe.identify_hackathon_x_factors]
 type = "PipeLLM"
 definition = "Identify standout positive or negative elements"
-inputs = { codebase = "CodebaseContent" }
+inputs = { codebase = "CodebaseContent", project_summary = "ProjectSummary" }
 output = "XFactorAnalysis"
-llm = { llm_handle = "blackboxai/google/gemini-2.5-pro", temperature = 0.3 }
+llm = "llm_for_hackathon_analyse_x_factors"
 system_prompt = "You are an expert judge at hackathons who can identify what makes projects stand out positively or negatively."
 prompt_template = """
 Analyze this hackathon project for X-factors - elements that make it stand out.
@@ -207,45 +216,11 @@ NEGATIVE:
 - Security vulnerabilities
 - Plagiarism or copied code
 
+@project_summary
+
 @codebase
 
 Identify what makes this project memorable (good or bad) and rate innovation and execution quality.
-"""
-
-[pipe.compile_hackathon_analysis]
-type = "PipeLLM"
-definition = "Compile all individual analyses into a comprehensive result"
-inputs = { project_summary = "ProjectSummary", feature_analysis = "FeatureAnalysis", architecture_analysis = "ArchitectureAnalysis", code_quality_analysis = "CodeQualityAnalysis", security_analysis = "SecurityAnalysis", x_factor_analysis = "XFactorAnalysis" }
-output = "HackathonAnalysis"
-llm = { llm_handle = "blackboxai/google/gemini-2.5-pro", temperature = 0.2 }
-system_prompt = "You are a hackathon judge who synthesizes multiple analysis reports into a final comprehensive assessment."
-prompt_template = """
-Compile the following individual analyses into a comprehensive hackathon project assessment.
-
-Project Summary:
-@project_summary
-
-Feature Analysis:
-@feature_analysis
-
-Architecture Analysis:
-@architecture_analysis
-
-Code Quality Analysis:
-@code_quality_analysis
-
-Security Analysis:
-@security_analysis
-
-X-Factor Analysis:
-@x_factor_analysis
-
-Provide an overall score (1-100) and final verdict considering all aspects. Weight the scoring as follows:
-- Features (30%): Real functionality vs mockups
-- Architecture (20%): Code organization and design
-- Code Quality (20%): Tests, documentation, best practices
-- Security (15%): Vulnerabilities and security practices
-- X-Factor (15%): Innovation and execution quality
 """
 
 [pipe.generate_hackathon_html_report]

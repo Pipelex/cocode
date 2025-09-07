@@ -17,5 +17,19 @@
             ],
             "console": "integratedTerminal"
         },
+        {
+            "name": "Debug cocode CLI",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/.venv/bin/pipelex",
+            "args": [
+                "validate",
+                "all",
+                "-c",
+                "cocode/pipelex_libraries",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
     ]
 }

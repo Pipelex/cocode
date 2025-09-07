@@ -11,6 +11,7 @@ from pipelex import log, pretty_print
 from pipelex.core.stuffs.stuff_content import TextContent
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipeline.execute import execute_pipeline
+from pipelex.tools.misc.file_utils import ensure_path, get_incremental_directory_path
 
 from cocode.github.github_repo_manager import GitHubRepoManager
 from cocode.pipelex_libraries.pipelines.hackathon_analysis.hackathon_analysis import (
@@ -59,7 +60,7 @@ async def hackathon_analyze_repo(
 
     # Create subdirectory based on repo name
     repo_name = _extract_repo_name(repo_path)
-    repo_output_dir = os.path.join(output_dir, repo_name)
+    repo_output_dir = get_incremental_directory_path(base_path=output_dir + "/hackathon", base_name=repo_name)
     os.makedirs(repo_output_dir, exist_ok=True)
     log.info(f"Created output directory: {repo_output_dir}")
 
@@ -152,7 +153,6 @@ async def hackathon_analyze_repo(
         log.info(f"Hackathon analysis complete! Files saved to: {repo_output_dir}")
 
         # Display results
-        pretty_print(pipe_output, title="Hackathon Analysis Results")
         get_report_delegate().generate_report()
         get_pipeline_tracker().output_flowchart()
 
