@@ -63,6 +63,8 @@ Provide an overall score (1-100) and final verdict considering all aspects. Weig
 - X-Factor (15%): Innovation and execution quality
 
 Base your final verdict on the weighted score and provide constructive feedback.
+
+Keep your response short and concise.
 """
 
 [pipe.summarize_hackathon_project]
@@ -83,7 +85,7 @@ Focus on:
 
 @codebase
 
-Provide a clear, concise summary of what this project is trying to achieve.
+Provide a clear, concise summary of what this project is trying to achieve. Keep your response short and concise.
 """
 
 [pipe.analyze_hackathon_features]
@@ -108,7 +110,7 @@ Look for:
 
 @codebase
 
-Categorize features as real, fake, or partially implemented. Provide evidence for your assessment.
+Categorize features as real, fake, or partially implemented. Provide evidence for your assessment. Keep your response short and concise.
 """
 
 [pipe.analyze_hackathon_architecture]
@@ -133,7 +135,7 @@ Evaluate:
 
 @codebase
 
-Provide scores and detailed analysis of the architectural quality.
+Provide scores and detailed analysis of the architectural quality. Keep your response short and concise.
 """
 
 [pipe.analyze_hackathon_code_quality]
@@ -160,7 +162,7 @@ Check for:
 
 @codebase
 
-Provide a comprehensive quality assessment with specific examples.
+Provide a comprehensive quality assessment with specific examples. Keep your response short and concise.
 """
 
 [pipe.analyze_hackathon_security]
@@ -186,7 +188,7 @@ Look for:
 
 @codebase
 
-Identify specific security issues and provide recommendations for improvement.
+Identify specific security issues and provide recommendations for improvement. Keep your response short and concise.
 """
 
 [pipe.identify_hackathon_x_factors]
@@ -220,7 +222,7 @@ NEGATIVE:
 
 @codebase
 
-Identify what makes this project memorable (good or bad) and rate innovation and execution quality.
+Identify what makes this project memorable (good or bad) and rate innovation and execution quality. Keep your response short and concise.
 """
 
 [pipe.generate_hackathon_html_report]

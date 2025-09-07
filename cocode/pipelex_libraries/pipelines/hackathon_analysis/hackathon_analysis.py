@@ -22,19 +22,19 @@ class FeatureAnalysis(StructuredContent):
     real_features: List[str] = Field(default_factory=list, description="Features with actual implementation")
     fake_features: List[str] = Field(default_factory=list, description="Features that are just UI mockups")
     partially_implemented: List[str] = Field(default_factory=list, description="Features with incomplete implementation")
-    feature_depth_score: int = Field(..., description="Score 1-10 for feature implementation depth")
     evidence: str = Field(..., description="Evidence supporting the analysis")
+    feature_depth_score: int = Field(..., description="Score 1-10 for feature implementation depth")
 
 
 class ArchitectureAnalysis(StructuredContent):
     """Analysis of code architecture and modularity."""
 
     architecture_pattern: str = Field(..., description="Main architectural pattern used")
-    modularity_score: int = Field(..., description="Score 1-10 for code modularity")
     separation_of_concerns: str = Field(..., description="How well concerns are separated")
     code_organization: str = Field(..., description="Assessment of file and folder structure")
     design_patterns: List[str] = Field(default_factory=list, description="Design patterns identified")
     technical_debt: str = Field(..., description="Assessment of technical debt")
+    modularity_score: int = Field(..., description="Score 1-10 for code modularity")
 
 
 class CodeQualityAnalysis(StructuredContent):
@@ -57,8 +57,8 @@ class SecurityAnalysis(StructuredContent):
     dependency_issues: List[str] = Field(default_factory=list, description="Dependency security issues")
     secrets_in_code: List[str] = Field(default_factory=list, description="Hardcoded secrets or credentials")
     security_best_practices: List[str] = Field(default_factory=list, description="Security practices followed")
-    security_score: int = Field(..., description="Security score 1-10")
     recommendations: List[str] = Field(default_factory=list, description="Security improvement recommendations")
+    security_score: int = Field(..., description="Security score 1-10")
 
 
 class XFactorAnalysis(StructuredContent):
@@ -84,8 +84,8 @@ class HackathonAspects(StructuredContent):
 class HackathonFinalAnalysis(StructuredContent):
     """Final hackathon codebase analysis."""
 
-    overall_score: int = Field(..., description="Overall project score 1-100")
     final_verdict: str = Field(..., description="Final assessment and recommendation")
+    overall_score: int = Field(..., description="Overall project score 1-100")
 
 
 class HackathonAnalysis(StructuredContent):

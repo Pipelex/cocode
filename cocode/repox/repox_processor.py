@@ -330,17 +330,17 @@ class RepoxProcessor:
         if os.path.basename(file_path).startswith("repo-to-text_"):
             log.debug(f"File '{relative_path}' is ignored because of repo-to-text_ prefix")
             return True
-        
+
         # Check if it's a broken symlink or non-existent file
         if os.path.islink(file_path) and not os.path.exists(file_path):
             log.debug(f"File '{relative_path}' is ignored because it is a broken symlink")
             return True
-        
+
         # Check if file exists before getting size
         if not os.path.exists(file_path):
             log.debug(f"File '{relative_path}' is ignored because it does not exist")
             return True
-            
+
         if should_ignore_empty_files and os.path.getsize(file_path) == 0:
             log.debug(f"File '{relative_path}' is ignored because it is empty")
             return True
