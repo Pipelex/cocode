@@ -33,6 +33,9 @@ class PipeCode(StrEnum):
     # SWE diff analysis
     WRITE_CHANGELOG = "write_changelog"
     WRITE_CHANGELOG_ENHANCED = "write_changelog_enhanced"
+    WRITE_SOCIAL_POSTS_TWITTER = "write_social_posts_twitter"
+    WRITE_SOCIAL_POSTS_LINKEDIN = "write_social_posts_linkedin"
+    WRITE_SOCIAL_POSTS_BOTH = "write_social_posts_both"
 
     # Text utilities
     GENERATE_SPLIT_IDENTIFIERS = "generate_split_identifiers"
@@ -57,6 +60,9 @@ def get_pipe_descriptions() -> str:
         "ai_instruction_update": "Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, cursor rules",
         "write_changelog": "Write a comprehensive changelog for a software project from git diff",
         "write_changelog_enhanced": "Write a comprehensive changelog with draft and polish steps from git diff",
+        "write_social_posts_twitter": "Generate Twitter-optimized social media posts from git diff changes",
+        "write_social_posts_linkedin": "Generate LinkedIn-optimized social media posts from git diff changes",
+        "write_social_posts_both": "Generate social media posts for both Twitter and LinkedIn from git diff changes",
         "generate_split_identifiers": "Analyze large text and generate optimal split identifiers",
         "check_doc_inconsistencies": "Identify inconsistencies in a set of software engineering documents",
     }

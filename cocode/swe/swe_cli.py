@@ -20,6 +20,7 @@ from .swe_cmd import (
     swe_from_file,
     swe_from_repo,
     swe_from_repo_diff,
+    swe_social_posts_from_repo_diff,
 )
 
 swe_app = typer.Typer(
@@ -179,6 +180,62 @@ def swe_from_repo_diff_cmd(
 
     asyncio.run(
         swe_from_repo_diff(
+            pipe_code=pipe_code,
+            repo_path=repo_path,
+            version=version,
+            output_filename=output_filename,
+            output_dir=output_dir,
+            to_stdout=to_stdout,
+            pipe_run_mode=pipe_run_mode,
+            ignore_patterns=ignore_patterns,
+        )
+    )
+    get_pipeline_tracker().output_flowchart()
+
+
+@swe_app.command("social-posts")
+def swe_social_posts_cmd(
+    pipe_code: Annotated[
+        str,
+        typer.Argument(
+            help="Pipeline code to execute for social media post generation (write_social_posts_twitter, write_social_posts_linkedin, write_social_posts_both)"
+        ),
+    ],
+    version: Annotated[
+        str,
+        typer.Argument(help="Git version/tag/commit to compare current version against"),
+    ],
+    repo_path: Annotated[
+        str,
+        typer.Argument(help="Repository path (local directory) or GitHub URL/identifier (owner/repo or https://github.com/owner/repo)"),
+    ] = ".",
+    output_dir: Annotated[
+        Optional[str],
+        typer.Option("--output-dir", "-o", help="Output directory path. Use 'stdout' to print to console. Defaults to config value if not provided"),
+    ] = None,
+    output_filename: Annotated[
+        str,
+        typer.Option("--output-filename", "-n", help="Output filename"),
+    ] = "social-posts.md",
+    dry_run: Annotated[
+        bool,
+        typer.Option("--dry", help="Run pipeline in dry mode (no actual execution)"),
+    ] = False,
+    ignore_patterns: Annotated[
+        Optional[List[str]],
+        typer.Option(
+            "--ignore-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
+        ),
+    ] = None,
+) -> None:
+    """Generate social media posts (Twitter/LinkedIn) from git diff comparing current version to specified version. Supports both local repositories and GitHub repositories."""
+    repo_path = validate_repo_path(repo_path)
+    output_dir = get_output_dir(output_dir)
+    to_stdout = output_dir == "stdout"
+    pipe_run_mode = PipeRunMode.DRY if dry_run else PipeRunMode.LIVE
+
+    asyncio.run(
+        swe_social_posts_from_repo_diff(
             pipe_code=pipe_code,
             repo_path=repo_path,
             version=version,

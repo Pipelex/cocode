@@ -87,6 +87,53 @@ cocode swe from-repo-diff [OPTIONS] PIPE_CODE GIT_REF REPO_PATH
 - Ranges: `v1.0.0..v2.0.0`
 - Relative: `HEAD~10`
 
+## swe social-posts
+
+Generate social media posts from git diffs.
+
+```bash
+cocode swe social-posts [OPTIONS] PIPE_CODE GIT_REF REPO_PATH
+```
+
+**Purpose:**
+Create engaging Twitter and LinkedIn posts from code changes and releases.
+
+**Pipelines:**
+
+- `write_social_posts_twitter` - Generate Twitter-optimized posts (280 chars, hashtags)
+- `write_social_posts_linkedin` - Generate LinkedIn-optimized posts (professional tone)
+- `write_social_posts_both` - Generate posts for both platforms
+
+**Git references:**
+
+- Tags: `v1.0.0`
+- Commits: `abc123`
+- Ranges: `v1.0.0..v2.0.0`
+- Relative: `HEAD~10`
+
+**Options:**
+
+- `-o, --output-dir` - Output directory (default: `./results/`)
+- `-n, --output-filename` - Output filename (default: `social-posts.md`)
+- `--dry` - Dry run without API calls
+- `-i, --ignore-pattern` - Patterns to exclude from git diff (repeatable)
+
+**Examples:**
+
+```bash
+# Generate posts for both platforms
+cocode swe social-posts write_social_posts_both v1.0.0 .
+
+# Generate Twitter-only posts
+cocode swe social-posts write_social_posts_twitter v1.0.0 .
+
+# Generate LinkedIn-only posts
+cocode swe social-posts write_social_posts_linkedin v1.0.0 .
+
+# Use with GitHub repository
+cocode swe social-posts write_social_posts_both v1.0.0 pipelex/cocode
+```
+
 ## swe doc-proofread
 
 Proofread documentation against codebase to detect inconsistencies.

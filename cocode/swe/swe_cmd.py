@@ -348,3 +348,45 @@ async def swe_doc_proofread(
     save_text_to_path(text=report, path=f"{output_dir}/{output_filename}.md")
 
     return pipe_output
+
+
+async def swe_social_posts_from_repo_diff(
+    pipe_code: str,
+    repo_path: str,
+    version: str,
+    output_filename: str,
+    output_dir: str,
+    to_stdout: bool,
+    pipe_run_mode: PipeRunMode,
+    ignore_patterns: Optional[List[str]] = None,
+) -> None:
+    """Generate social media posts from a git diff comparing current version to specified version."""
+    log.info(f"Generating social media posts from git diff: comparing current to '{version}' in '{repo_path}'")
+
+    # Generate git diff
+    try:
+        git_diff = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+    except NoDifferencesFound as exc:
+        log.info(f"Aborting: {exc}")
+        return
+    # Run the pipe
+    pipe_output = await execute_pipeline(
+        pipe_code=pipe_code,
+        pipe_run_mode=pipe_run_mode,
+        input_memory={
+            "git_diff": {
+                "concept": "swe_diff.GitDiff",
+                "content": git_diff,
+            }
+        },
+    )
+
+    get_report_delegate().generate_report()
+
+    # Process through SWE pipeline and handle output
+    await process_swe_pipeline_result(
+        pipe_output=pipe_output,
+        output_filename=output_filename,
+        output_dir=output_dir,
+        to_stdout=to_stdout,
+    )

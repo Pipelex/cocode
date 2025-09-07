@@ -16,6 +16,7 @@ Streamline your documentation workflow with AI-powered automation:
 - **Automatic Changelog Generation**: Generate comprehensive changelogs from git diffs and version comparisons
 - **Smart Documentation Updates**: Automatically update docs and README files based on releases and code changes
 - **Documentation Proofreading**: Detect critical inconsistencies between documentation and actual codebase that could break user code
+- **Social Media Post Generation**: Create engaging Twitter and LinkedIn posts from code changes and releases
 
 ## 📦 Installation
 
@@ -47,6 +48,11 @@ cocode swe doc-proofread --doc-dir docs path/to/your/local/repository # Requires
 
 # Generate changelog from version diff
 cocode swe from-repo-diff write_changelog v1.0.0 path/to/your/local/repository # Requires Anthropic API key for claude
+
+# Generate social media posts from version diff
+cocode swe social-posts write_social_posts_both v1.0.0 path/to/your/local/repository
+cocode swe social-posts write_social_posts_twitter v1.0.0 path/to/your/local/repository
+cocode swe social-posts write_social_posts_linkedin v1.0.0 path/to/your/local/repository
 
 # Update AI instructions (AGENTS.md, CLAUDE.md, cursor rules) based on code changes
 cocode swe ai-instruction-update v1.0.0 path/to/your/local/repository
