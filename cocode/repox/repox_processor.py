@@ -134,10 +134,12 @@ class RepoxProcessor:
         gitignore_spec: Optional[PathSpec] = None
         if IS_GITIGNORE_APPLIED:
             gitignore_path = os.path.join(repo_path, ".gitignore")
-            if os.path.exists(gitignore_path):
+            if os.path.exists(gitignore_path) and os.path.isfile(gitignore_path):
                 log.debug(f"Loading .gitignore from path: {gitignore_path}")
                 with open(gitignore_path, "r", encoding="utf-8") as f:
                     gitignore_spec = pathspec.PathSpec.from_lines("gitwildmatch", f)
+            elif os.path.exists(gitignore_path) and os.path.isdir(gitignore_path):
+                log.warning(f".gitignore exists as a directory instead of a file at: {gitignore_path}, skipping")
 
         return gitignore_spec, content_ignore_spec, tree_and_content_ignore_spec
 

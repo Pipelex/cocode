@@ -150,7 +150,17 @@ main() {
         echo_success "Successful analyses: $SUCCESSFUL"
         if [[ $FAILED -gt 0 ]]; then
             echo_error "Failed analyses: $FAILED"
-            echo_info "Check failed jobs: grep -v '^1' '$LOG_DIR/parallel_jobs.log' | awk '\$7!=0 {print \$9}'"
+            
+            # Extract and display failed repository names
+            FAILED_REPOS=$(awk 'NR>1 && $7!=0 {print $9}' "$LOG_DIR/parallel_jobs.log")
+            if [[ -n "$FAILED_REPOS" ]]; then
+                echo_error "Failed repositories:"
+                while IFS= read -r repo; do
+                    echo_error "  - $repo"
+                done <<< "$FAILED_REPOS"
+            fi
+            
+            echo_info "Check detailed logs: grep -v '^1' '$LOG_DIR/parallel_jobs.log' | awk '\$7!=0 {print \$9}'"
         fi
     fi
     
