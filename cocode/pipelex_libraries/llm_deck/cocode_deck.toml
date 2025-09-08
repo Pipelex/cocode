@@ -2,4 +2,7 @@
 llm_for_large_text = { llm_handle = "gemini-2.5-pro", temperature = 0.1 }
 # llm_for_swe = { llm_handle = "gpt-4o", temperature = 0.1 }
 llm_for_swe = { llm_handle = "claude-4-sonnet", temperature = 0.1 }
+llm_for_hackathon_analyse = { llm_handle = "blackboxai/google/gemini-2.5-pro", temperature = 0.2 }
+llm_for_hackathon_analyse_security = { llm_handle = "blackboxai/google/gemini-2.5-pro", temperature = 0.1 }
+llm_for_hackathon_analyse_x_factors = { llm_handle = "blackboxai/google/gemini-2.5-pro", temperature = 0.3 }
 

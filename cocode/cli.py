@@ -12,6 +12,7 @@ from typer.core import TyperGroup
 from typing_extensions import override
 
 from cocode.github.github_cli import github_app
+from cocode.hackathon.hackathon_cli import hackathon_app
 from cocode.repox.repox_cli import repox_app
 from cocode.swe.swe_cli import swe_app
 from cocode.validation_cli import validation_app
@@ -48,6 +49,7 @@ app = typer.Typer(
 # Add command groups
 app.add_typer(repox_app, name="repox", help="Repository processing and analysis commands")
 app.add_typer(swe_app, name="swe", help="Software Engineering analysis and automation commands")
+app.add_typer(hackathon_app, name="hackathon", help="Hackathon codebase analysis and evaluation commands")
 app.add_typer(validation_app, name="validation", help="Pipeline validation and setup commands")
 app.add_typer(github_app, name="github", help="GitHub-related operations and utilities")
 
