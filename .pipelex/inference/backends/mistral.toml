@@ -78,3 +78,25 @@ inputs = ["text", "images"]
 outputs = ["text", "structured"]
 costs = { input = 2.0, output = 6.0 }
 
+[mistral-medium]
+model_id = "mistral-medium-latest"
+max_tokens = 128000
+inputs = ["text", "images"]
+outputs = ["text", "structured"]
+costs = { input = 0.4, output = 2.0 }
+
+[mistral-medium-2508]
+model_id = "mistral-medium-2508"
+max_tokens = 128000
+inputs = ["text", "images"]
+outputs = ["text", "structured"]
+costs = { input = 0.4, output = 2.0 }
+
+[mistral-ocr]
+model_type = "text_extractor"
+model_id = "mistral-ocr-latest"
+max_tokens = 131072
+inputs = ["pdf", "image"]
+outputs = ["pages"]
+costs = { input = 0.4, output = 2.0 }
+
