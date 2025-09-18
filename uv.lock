@@ -1920,8 +1920,8 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.10.2"
-source = { git = "https://github.com/Pipelex/pipelex.git?rev=fix%2FVertexAIFactory-without-credentials#4e36bd739320a101cfc15e92c7f02f2ac3c36e9b" }
+version = "0.10.3"
+source = { git = "https://github.com/Pipelex/pipelex.git?rev=fix%2FVertexAIFactory-without-credentials#c1893a1c56f54e8802c4ac0fa7c6dca591962709" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
