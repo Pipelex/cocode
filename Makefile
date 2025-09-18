@@ -138,9 +138,8 @@ env: check-uv
 install: env
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
-	uv sync --all-extras && \
+	uv sync --all-extras --no-cache && \
 	echo "Installed dependencies in ${VIRTUAL_ENV}";
-
 install-latest: env
 	$(call PRINT_TITLE,"Installing dependencies with latest versions")
 	@. $(VIRTUAL_ENV)/bin/activate && \
