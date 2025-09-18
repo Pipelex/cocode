@@ -1,5 +1,25 @@
 # Changelog
 
+## [v0.2.2] - 2025-09-18
+
+### Highlights
+- Bump `pipelex` to `v0.10.2`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
+### Added
+- Comprehensive inference backend configuration system supporting Anthropic, Azure OpenAI, Bedrock, BlackboxAI, Mistral, Ollama, OpenAI, Perplexity, VertexAI, and XAI
+- New model deck system with routing profiles for model-to-backend management
+- Support for latest AI models: Claude 4 (sonnet, opus, 4.1-opus), GPT-5 (standard, mini, nano, chat), O3/O4, Grok-3, and Gemini 2.5
+- Model aliases system with cost tracking and input/output type specifications
+
+### Changed
+- Migrated from LLM deck to model deck system with backend-specific configurations
+- Restructured configuration from `cocode/pipelex_libraries` to `.pipelex` directory
+- Updated model naming conventions and pipeline configurations
+
+### Removed
+- Legacy LLM integrations and individual provider files (anthropic.toml, openai.toml, etc.)
+- Old configuration files: plugin_config.toml, preferred_platforms, ocr_handles, llm_external_handles
+
 ## [v0.2.1] - 2025-09-06
 
 ### Changed

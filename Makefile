@@ -140,7 +140,6 @@ install: env
 	@. $(VIRTUAL_ENV)/bin/activate && \
 	uv sync --all-extras && \
 	echo "Installed dependencies in ${VIRTUAL_ENV}";
-
 install-latest: env
 	$(call PRINT_TITLE,"Installing dependencies with latest versions")
 	@. $(VIRTUAL_ENV)/bin/activate && \
