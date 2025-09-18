@@ -553,7 +553,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
     { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], git = "https://github.com/Pipelex/pipelex.git?rev=dev" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], git = "https://github.com/Pipelex/pipelex.git?rev=fix%2FVertexAIFactory-without-credentials" },
     { name = "pygithub", specifier = "==2.4.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
@@ -1921,7 +1921,7 @@ wheels = [
 [[package]]
 name = "pipelex"
 version = "0.10.2"
-source = { git = "https://github.com/Pipelex/pipelex.git?rev=dev#d121b39ebf5b1a23b5651ec441223222f2d092b5" }
+source = { git = "https://github.com/Pipelex/pipelex.git?rev=fix%2FVertexAIFactory-without-credentials#4e36bd739320a101cfc15e92c7f02f2ac3c36e9b" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
