@@ -27,6 +27,7 @@ steps = [
     { pipe = "draft_changelog_from_git_diff", result = "draft_changelog" },
     { pipe = "polish_changelog", result = "structured_changelog" },
     { pipe = "format_changelog_as_markdown", result = "markdown_changelog" },
+    { pipe = "finalize_changelog" },
 ]
 
 [pipe.draft_changelog_from_git_diff]
@@ -136,5 +137,25 @@ jinja2 = """
  - {{ item }}
     {% endfor %}
 {% endif %}
+"""
+
+[pipe.finalize_changelog]
+type = "PipeLLM"
+definition = "Polish and improve the changelog"
+inputs = { structured_changelog = "StructuredChangelog" }
+output = "MarkdownChangelog"
+llm = "llm_for_swe"
+system_prompt = """
+You are an expert technical writer. Your task is to polish and improve a changelog to make it more clear, concise, and well-structured.
+"""
+prompt_template = """
+Review and polish the following changelog:
+
+@structured_changelog
+
+Remove redundancy: I don't want to see echos between "Changed" and "Fixed" or "Added".
+Remove trivial changes.
+Keep the markdown formatting and the standard structure of the changelog.
+It's OK to remove some sections if they are empty after removing redundancy and trivial changes.
 """
 
