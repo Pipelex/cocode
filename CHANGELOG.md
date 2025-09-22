@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.2.3] - 2025-09-22
+
+### Changed
+
+- Cleaned cli commands.
+
 ## [v0.2.2] - 2025-09-18
 
 ### Highlights

@@ -1,6 +1,6 @@
 [project]
 name = "cocode"
-version = "0.2.2"
+version = "0.2.3"
 description = "Cocode is the friend of your code"
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -47,7 +47,7 @@ dev = [
 ]
 
 [project.scripts]
-cocode = "cocode.cli:app"
+cocode = "cocode.cli.main:app"
 
 [build-system]
 requires = ["hatchling"]
