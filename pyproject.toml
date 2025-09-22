@@ -47,7 +47,7 @@ dev = [
 ]
 
 [project.scripts]
-cocode = "cocode.cli:app"
+cocode = "cocode.cli.main:app"
 
 [build-system]
 requires = ["hatchling"]
