@@ -12,6 +12,7 @@ from typer.core import TyperGroup
 from typing_extensions import override
 
 from cocode.cli.ai_instructions.ai_instructions_cli import ai_instructions_app
+from cocode.cli.analyze.analyze_cli import analyze_app
 from cocode.cli.changelog.changelog_cli import changelog_app
 from cocode.cli.doc.doc_cli import doc_app
 from cocode.cli.features.features_cli import features_app
@@ -50,6 +51,7 @@ app = typer.Typer(
 
 # Add command groups
 app.add_typer(doc_app, name="doc", help="Documentation management and automation commands")
+app.add_typer(analyze_app, name="analyze", help="Analyze generation and management commands")
 app.add_typer(changelog_app, name="changelog", help="Changelog generation and management commands")
 app.add_typer(ai_instructions_app, name="ai_instructions", help="AI instructions update and management commands")
 app.add_typer(repo_app, name="repo", help="Repository analysis and processing commands")
