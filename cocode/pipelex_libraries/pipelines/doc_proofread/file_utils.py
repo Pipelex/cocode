@@ -46,7 +46,7 @@ def create_documentation_files_from_paths(doc_file_paths: List[str], doc_dir: st
     return doc_files
 
 
-def read_file_content(working_memory: WorkingMemory) -> ListContent[CodebaseFileContent]:
+async def read_file_content(working_memory: WorkingMemory) -> ListContent[CodebaseFileContent]:
     """Read the content of related codebase files.
 
     Args:
