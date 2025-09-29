@@ -68,6 +68,7 @@ def read_file_content(working_memory: WorkingMemory) -> ListContent[CodebaseFile
             codebase_files.append(
                 CodebaseFileContent(file_path=file_path.path, file_content=f"# File not found or unreadable: {file_path.path}\n# Error: {str(e)}")
             )
+    print("codebase_files", codebase_files)
 
     return ListContent[CodebaseFileContent](items=codebase_files)
 
