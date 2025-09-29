@@ -4,11 +4,12 @@ from typing import Any, Callable, Dict, List, Optional, cast
 
 from pipelex import log, pretty_print
 from pipelex.core.memory.working_memory_factory import WorkingMemoryFactory
+from pipelex.core.pipes.pipe_output import PipeOutput
 from pipelex.core.pipes.pipe_run_params import PipeRunMode
 from pipelex.core.stuffs.stuff_content import ListContent
 from pipelex.core.stuffs.stuff_factory import StuffFactory
 from pipelex.hub import get_concept_provider, get_report_delegate
-from pipelex.pipeline.execute import PipeOutput, execute_pipeline
+from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.file_utils import ensure_path, failable_load_text_from_path, load_text_from_path, save_text_to_path
 
 from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import DocumentationFile, DocumentationInconsistency, RepositoryMap

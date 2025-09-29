@@ -88,7 +88,7 @@ Be sure to include changes to code but also complementary pipelines, scripts, do
 """
 
 [pipe.format_changelog_as_markdown]
-type = "PipeJinja2"
+type = "PipeCompose"
 definition = "Format the final changelog in markdown with proper structure"
 inputs = { structured_changelog = "StructuredChangelog" }
 output = "MarkdownChangelog"

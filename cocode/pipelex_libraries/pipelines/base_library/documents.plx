@@ -13,18 +13,18 @@ TextAndImagesContent = "A content that comprises text and images where the text 
 [pipe.ocr_page_contents_from_pdf]
 type = "PipeOcr"
 definition = "Extract page contents from a PDF document"
-inputs = { ocr_input = "PDF" }
+inputs = { document = "PDF" }
 output = "Page"
 page_images = true
 page_views = false
-ocr_model = "mistral-ocr"
+ocr = "mistral-ocr"
 
 [pipe.ocr_page_contents_and_views_from_pdf]
 type = "PipeOcr"
 definition = "Extract page contents from a PDF document as well as full page views"
-inputs = { ocr_input = "PDF" }
+inputs = { document = "PDF" }
 output = "Page"
 page_images = true
 page_views = true
-ocr_model = "mistral-ocr"
+ocr = "mistral-ocr"
 

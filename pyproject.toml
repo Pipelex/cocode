@@ -16,7 +16,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
-dependencies = ["pipelex[anthropic,google,google-genai,bedrock]==0.10.2", "PyGithub==2.4.0"]
+dependencies = ["pipelex[anthropic,google,google-genai,bedrock] @ git+https://github.com/Pipelex/pipelex.git@refactor/EPIC-2-PipeOcr-input-and-Agent-rules", "PyGithub==2.4.0"]
 
 [project.optional-dependencies]
 docs = [
