@@ -22,18 +22,11 @@ Streamline your documentation workflow with AI-powered automation:
 ```bash
 pip install cocode
 ```
-
-## ✅ Validation
-
-```bash
-# Verify setup and pipelines
-cocode validate
-```
-
 ### Set up environment variables
 
-Enter your API keys into your `.env` file. The `OPENAI_API_KEY` is enough to get you started, but some pipelines require models from other providers.
-Some complex pipelines require GCP credentials (See [GCP credentials](https://docs.pipelex.com/pages/build-reliable-ai-workflows-with-pipelex/ai-plugins-for-multi-llm-workflows/#4-google-vertex-ai-configuration) for more details), or Anthropic API keys `ANTHROPIC_API_KEY`.
+**Quick Start:** Join our [Discord](https://go.pipelex.com/discord) to get a FREE API key with $20 credit that works with all LLM providers - no setup required!
+
+**Using Your Own API Keys:** If you prefer to use your own API keys from OpenAI, Anthropic, Google, or other providers, follow our [API configuration tutorial](https://docs.pipelex.com/pages/quick-start/#option-2-use-your-own-api-keys).
 
 ## 🛠️ Quick Start
 
@@ -62,6 +55,12 @@ cocode github sync-labels owner/repo labels.json  # Sync labels from JSON file
 ### 📁 Output Location
 
 The results of these commands will be saved in a `results` (default behavior) folder at the root of your project.
+
+## ✅ Validation
+
+```bash
+cocode validate
+```
 
 ### IDE extension
 
