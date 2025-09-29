@@ -18,6 +18,8 @@ inputs = { doc_file = "DocumentationFile", repo_map = "RepositoryMap" }
 output = "FilePath"
 multiple_output = true
 llm = "llm_for_large_text"
+structuring_method = "preliminary_text"
+llm_to_structure = "cheap_llm_for_object"
 system_prompt = """
 Extract code elements mentioned in docs (classes, functions, commands) and find their actual implementations or usages in the codebase.
 """
