@@ -10,7 +10,7 @@ from pipelex.core.pipes.pipe_run_params import PipeRunMode
 from pipelex.hub import get_pipeline_tracker
 
 from cocode.common import get_output_dir, validate_repo_path
-from cocode.swe.swe_cmd import swe_from_repo_diff
+from cocode.swe.swe_cmd import swe_from_repo_diff_with_prompt
 
 analyze_app = typer.Typer(
     name="analyze",
@@ -21,8 +21,12 @@ analyze_app = typer.Typer(
 )
 
 
-@analyze_app.command("update")
-def analyze_update_cmd(
+@analyze_app.command("diff")
+def analyze_diff_cmd(
+    prompt: Annotated[
+        str,
+        typer.Option("--prompt", "-p", help="Prompt to analyze the git diff"),
+    ],
     version: Annotated[
         str,
         typer.Argument(help="Git version/tag/commit to compare current version against"),
@@ -38,7 +42,7 @@ def analyze_update_cmd(
     output_filename: Annotated[
         str,
         typer.Option("--output-filename", "-n", help="Output filename"),
-    ] = "analyze-update.md",
+    ] = "analyze-diff.md",
     dry_run: Annotated[
         bool,
         typer.Option("--dry", help="Run pipeline in dry mode (no actual execution)"),
@@ -57,8 +61,9 @@ def analyze_update_cmd(
     pipe_run_mode = PipeRunMode.DRY if dry_run else PipeRunMode.LIVE
 
     asyncio.run(
-        swe_from_repo_diff(
-            pipe_code="write_changelog",
+        swe_from_repo_diff_with_prompt(
+            pipe_code="analyze_git_diff",
+            prompt=prompt,
             repo_path=repo_path,
             version=version,
             output_filename=output_filename,
