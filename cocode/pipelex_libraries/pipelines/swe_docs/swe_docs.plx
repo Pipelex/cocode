@@ -1,5 +1,5 @@
 domain = "swe"
-definition = "Pipelines for software engineering tasks."
+description = "Pipelines for software engineering tasks."
 
 [concept]
 SoftwareDoc = "Documentation related to software engineering projects or codebases."
@@ -16,7 +16,7 @@ OnboardingDocumentation = "Complete set of documentation needed for onboarding n
 [pipe]
 [pipe.check_doc_inconsistencies]
 type = "PipeLLM"
-definition = "Identify inconsistencies in a set of software engineering documents."
+description = "Identify inconsistencies in a set of software engineering documents."
 inputs = { repo_text = "SoftwareDoc" }
 output = "InconsistencyReport"
 llm = "llm_for_swe"
@@ -37,7 +37,7 @@ If you find no inconsistencies, reply exactly: "No inconsistencies detected.".
 
 [pipe.extract_onboarding_documentation]
 type = "PipeParallel"
-definition = "Extract comprehensive onboarding documentation from software project docs"
+description = "Extract comprehensive onboarding documentation from software project docs"
 inputs = { repo_text = "SoftwareDoc" }
 output = "OnboardingDocumentation"
 parallels = [
@@ -51,7 +51,7 @@ combined_output = "swe.OnboardingDocumentation"
 
 [pipe.extract_fundamentals]
 type = "PipeLLM"
-definition = "Extract fundamental project information from documentation"
+description = "Extract fundamental project information from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "FundamentalsDoc"
 llm = "llm_for_swe"
@@ -74,7 +74,7 @@ Return the information in a structured format. If any category is not found in t
 
 [pipe.extract_environment_build]
 type = "PipeLLM"
-definition = "Extract environment setup and build information from documentation"
+description = "Extract environment setup and build information from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "EnvironmentBuildDoc"
 llm = "llm_for_swe"
@@ -99,7 +99,7 @@ Return the information in a structured format. If any category is not found, omi
 
 [pipe.extract_coding_standards]
 type = "PipeLLM"
-definition = "Extract code quality and style information from documentation"
+description = "Extract code quality and style information from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "CodingStandardsDoc"
 llm = "llm_for_swe"
@@ -125,7 +125,7 @@ Return the information in a structured format. If any category is not found, omi
 
 [pipe.extract_test_strategy]
 type = "PipeLLM"
-definition = "Extract testing strategy and procedures from documentation"
+description = "Extract testing strategy and procedures from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "TestStrategyDoc"
 llm = "llm_for_swe"
@@ -150,7 +150,7 @@ Return the information in a structured format. If any category is not found, omi
 
 [pipe.extract_contextual_guidelines]
 type = "PipeLLM"
-definition = "Extract contextual development guidelines from documentation"
+description = "Extract contextual development guidelines from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "ContextualGuidelinesDoc"
 llm = "llm_for_swe"
@@ -173,7 +173,7 @@ Return the information in a structured format. If any category is not found, omi
 
 [pipe.extract_collaboration]
 type = "PipeLLM"
-definition = "Extract collaboration and workflow information from documentation"
+description = "Extract collaboration and workflow information from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "CollaborationDoc"
 llm = "llm_for_swe"
@@ -198,7 +198,7 @@ Return the information in a structured format. If any category is not found, omi
 
 [pipe.extract_features_recap]
 type = "PipeLLM"
-definition = "Extract and analyze software features from documentation to create a comprehensive feature overview"
+description = "Extract and analyze software features from documentation to create a comprehensive feature overview"
 inputs = { repo_text = "SoftwareDoc" }
 output = "SoftwareFeaturesRecap"
 llm = "llm_for_swe"

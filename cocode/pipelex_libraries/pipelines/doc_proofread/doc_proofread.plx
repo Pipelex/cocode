@@ -1,5 +1,5 @@
 domain = "doc_proofread"
-definition = "Systematically proofread documentation against actual codebase to find inconsistencies using chunking"
+description = "Systematically proofread documentation against actual codebase to find inconsistencies using chunking"
 
 [concept]
 DocumentationFile = "A documentation file that needs to be proofread against the codebase"
@@ -13,11 +13,11 @@ MarkdownReport = "A markdown report containing documentation inconsistencies for
 
 [pipe.find_related_code_files]
 type = "PipeLLM"
-definition = "Find code files that implement or use elements mentioned in docs"
+description = "Find code files that implement or use elements mentioned in docs"
 inputs = { doc_file = "DocumentationFile", repo_map = "RepositoryMap" }
 output = "FilePath"
 multiple_output = true
-llm = "llm_for_large_text"
+llm = { llm_handle = "llm_for_large_codebase", temperature = 0.1 }
 structuring_method = "preliminary_text"
 llm_to_structure = "cheap_llm_for_object"
 system_prompt = """
@@ -36,7 +36,7 @@ Only include files with actual code evidence, not just similar names or concepts
 
 [pipe.proofread_single_doc]
 type = "PipeLLM"
-definition = "Find major inconsistencies between docs and code"
+description = "Find major inconsistencies between docs and code"
 inputs = { doc_file = "DocumentationFile", related_files = "CodebaseFileContent" }
 output = "DocumentationInconsistency"
 multiple_output = true
@@ -65,7 +65,7 @@ Skip anything that's not a showstopper. If it would just be confusing but still 
 
 [pipe.proofread_doc_sequence]
 type = "PipeSequence"
-definition = "Process a single documentation file to find inconsistencies"
+description = "Process a single documentation file to find inconsistencies"
 inputs = { doc_file = "DocumentationFile", repo_map = "RepositoryMap" }
 output = "DocumentationInconsistency"
 steps = [
@@ -76,7 +76,7 @@ steps = [
 
 [pipe.create_cursor_report]
 type = "PipeLLM"
-definition = "Create a markdown report with inconsistencies formatted as a Cursor prompt"
+description = "Create a markdown report with inconsistencies formatted as a Cursor prompt"
 inputs = { all_inconsistencies = "DocumentationInconsistency" }
 output = "MarkdownReport"
 llm = "llm_for_swe"
@@ -108,7 +108,7 @@ Make it concise and focused on the most critical issues only.
 
 [pipe.doc_proofread]
 type = "PipeSequence"
-definition = "Complete documentation proofreading pipeline for CLI usage"
+description = "Complete documentation proofreading pipeline for CLI usage"
 inputs = { repo_map = "RepositoryMap", doc_files = "DocumentationFile" }
 output = "MarkdownReport"
 steps = [
@@ -118,7 +118,7 @@ steps = [
 
 [pipe.read_doc_file]
 type = "PipeFunc"
-definition = "Read the content of related codebase files"
+description = "Read the content of related codebase files"
 inputs = { related_file_paths = "FilePath" }
 output = "CodebaseFileContent"
 function_name = "read_file_content"

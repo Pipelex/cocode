@@ -1,5 +1,5 @@
 domain = "doc_update"
-definition = "Pipeline for updating documentation in docs/ directory based on git diff"
+description = "Pipeline for updating documentation in docs/ directory based on git diff"
 
 [concept]
 GitDiffCitation = "A citation from the git diff that supports a documentation change"
@@ -13,7 +13,7 @@ DocumentationSuggestions = "Final suggestions for updating documentation"
 
 [pipe.extract_git_citations]
 type = "PipeLLM"
-definition = "Extract relevant git diff citations for documentation changes with old/new code patterns"
+description = "Extract relevant git diff citations for documentation changes with old/new code patterns"
 inputs = { git_diff = "swe_diff.GitDiff" }
 output = "GitDiffCitation"
 multiple_output = true
@@ -60,7 +60,7 @@ For each citation, identify what the CURRENT code does (+ lines) vs what the OLD
 
 [pipe.identify_doc_changes]
 type = "PipeLLM"
-definition = "Identify changes that affect documentation with specific patterns"
+description = "Identify changes that affect documentation with specific patterns"
 inputs = { git_diff = "swe_diff.GitDiff", git_citations = "GitDiffCitation" }
 output = "DocumentationItem"
 multiple_output = true
@@ -101,7 +101,7 @@ For each change, include relevant git citations that show what the CURRENT versi
 
 [pipe.analyze_doc_change]
 type = "PipeLLM"
-definition = "Analyze a single change for specific documentation impact with exact patterns"
+description = "Analyze a single change for specific documentation impact with exact patterns"
 inputs = { change_item = "DocumentationItem" }
 output = "DocumentationAnalysis"
 system_prompt = """
@@ -128,7 +128,7 @@ Be very specific about the exact text patterns that need to be updated in the do
 
 [pipe.create_structured_changes]
 type = "PipeLLM"
-definition = "Create structured documentation changes with exact old/new patterns"
+description = "Create structured documentation changes with exact old/new patterns"
 inputs = { doc_analyses = "DocumentationAnalysis" }
 output = "DocumentationChangeItem"
 multiple_output = true
@@ -167,7 +167,7 @@ Make each change as specific and actionable as possible, ensuring documentation 
 
 [pipe.format_final_output]
 type = "PipeLLM"
-definition = "Format the final documentation update output with clean structure"
+description = "Format the final documentation update output with clean structure"
 inputs = { structured_changes = "DocumentationChangeItem" }
 output = "Text"
 system_prompt = """
@@ -227,7 +227,7 @@ Keep it simple, clear, and actionable. Focus on updating documentation to accura
 
 [pipe.doc_update]
 type = "PipeSequence"
-definition = "Documentation update analysis with clean output formatting"
+description = "Documentation update analysis with clean output formatting"
 inputs = { git_diff = "swe_diff.GitDiff" }
 output = "Text"
 steps = [

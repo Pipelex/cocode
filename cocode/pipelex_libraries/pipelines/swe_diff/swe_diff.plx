@@ -1,5 +1,5 @@
 domain = "swe_diff"
-definition = "Pipelines for analyzing differences between two versions of a codebase."
+description = "Pipelines for analyzing differences between two versions of a codebase."
 
 [concept]
 GitDiff = "A git diff output showing changes between two versions of a codebase"
@@ -10,7 +10,7 @@ MarkdownChangelog = "A text report in markdown format that summarizes the change
 [pipe]
 [pipe.write_changelog]
 type = "PipeSequence"
-definition = "Write a comprehensive changelog for a software project"
+description = "Write a comprehensive changelog for a software project"
 inputs = { git_diff = "GitDiff" }
 output = "MarkdownChangelog"
 steps = [
@@ -20,7 +20,7 @@ steps = [
 
 [pipe.write_changelog_enhanced]
 type = "PipeSequence"
-definition = "Write a comprehensive changelog for a software project"
+description = "Write a comprehensive changelog for a software project"
 inputs = { git_diff = "GitDiff" }
 output = "MarkdownChangelog"
 steps = [
@@ -32,7 +32,7 @@ steps = [
 
 [pipe.draft_changelog_from_git_diff]
 type = "PipeLLM"
-definition = "Write a changelog for a software project."
+description = "Write a changelog for a software project."
 inputs = { git_diff = "GitDiff" }
 output = "DraftChangelog"
 llm = "llm_for_swe"
@@ -50,7 +50,7 @@ Be sure to include changes to code but also complementary pipelines, scripts, do
 
 [pipe.polish_changelog]
 type = "PipeLLM"
-definition = "Polish and improve the draft changelog"
+description = "Polish and improve the draft changelog"
 inputs = { git_diff = "GitDiff", draft_changelog = "DraftChangelog" }
 output = "StructuredChangelog"
 llm = "llm_for_swe"
@@ -73,7 +73,7 @@ Use nice readable markdown formatting.
 
 [pipe.write_changelog_from_git_diff]
 type = "PipeLLM"
-definition = "Write a changelog for a software project."
+description = "Write a changelog for a software project."
 inputs = { git_diff = "GitDiff" }
 output = "StructuredChangelog"
 llm = "llm_for_swe"
@@ -88,8 +88,8 @@ Be sure to include changes to code but also complementary pipelines, scripts, do
 """
 
 [pipe.format_changelog_as_markdown]
-type = "PipeJinja2"
-definition = "Format the final changelog in markdown with proper structure"
+type = "PipeCompose"
+description = "Format the final changelog in markdown with proper structure"
 inputs = { structured_changelog = "StructuredChangelog" }
 output = "MarkdownChangelog"
 template_category = "markdown"
@@ -141,7 +141,7 @@ jinja2 = """
 
 [pipe.finalize_changelog]
 type = "PipeLLM"
-definition = "Polish and improve the changelog"
+description = "Polish and improve the changelog"
 inputs = { structured_changelog = "StructuredChangelog" }
 output = "MarkdownChangelog"
 llm = "llm_for_swe"

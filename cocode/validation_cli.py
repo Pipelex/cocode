@@ -6,7 +6,7 @@ import asyncio
 
 import typer
 from pipelex import log
-from pipelex.hub import get_pipe_provider
+from pipelex.hub import get_pipes
 from pipelex.pipe_works.pipe_dry import dry_run_pipes
 from pipelex.pipelex import Pipelex
 
@@ -22,14 +22,14 @@ validation_app = typer.Typer(
 def validate() -> None:
     """Run the setup sequence and validate all pipelines."""
     Pipelex.get_instance().validate_libraries()
-    asyncio.run(dry_run_pipes(get_pipe_provider().get_pipes()))
+    asyncio.run(dry_run_pipes(get_pipes()))
     log.info("Setup sequence passed OK, config and pipelines are validated.")
 
 
 @validation_app.command("dry-run")
 def dry_run() -> None:
     """Run dry validation of all pipelines without full setup."""
-    asyncio.run(dry_run_pipes(get_pipe_provider().get_pipes()))
+    asyncio.run(dry_run_pipes(get_pipes()))
     log.info("Dry run completed successfully.")
 
 
