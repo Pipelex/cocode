@@ -87,6 +87,23 @@ Be sure to include changes to code but also complementary pipelines, scripts, do
 @git_diff
 """
 
+[pipe.analyze_git_diff]
+type = "PipeLLM"
+definition = "Analyze the git diff based on a prompt."
+inputs = { git_diff = "GitDiff", prompt = "Text" }
+output = "Text"
+llm = "llm_for_large_text"
+system_prompt = """
+You are an expert technical writer and software architect. Your task is to carefully review and analyze the code diff.
+"""
+prompt_template = """
+Analyze the following code diff based on this prompt: $prompt
+
+@git_diff
+
+Answer in markdown format.
+"""
+
 [pipe.format_changelog_as_markdown]
 type = "PipeJinja2"
 definition = "Format the final changelog in markdown with proper structure"

@@ -124,6 +124,18 @@ cocode github sync-labels pipelex/cocode ./labels.json --delete-extra
 
 ### Commands for Other Features
 
+#### Code Analysis
+```bash
+# Analyze git diff with a specific prompt/query
+cocode analyze diff v1.0.0 --prompt "What are the main architectural changes in this update?"
+
+# Analyze security-related changes
+cocode analyze diff HEAD~10 --prompt "Identify any security vulnerabilities or improvements"
+
+# Analyze performance impacts
+cocode analyze diff main --prompt "What changes might affect application performance?"
+```
+
 ## ⚠️ Limitations
 
 This tool is in early development! There are many things to fix and improve. You may encounter bugs, incomplete features, or unexpected behavior. We're actively working on making Cocode more robust and user-friendly.

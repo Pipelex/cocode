@@ -20,6 +20,10 @@ from cocode.swe.swe_utils import get_repo_text_for_swe, process_swe_pipeline_res
 from cocode.utils import NoDifferencesFound, run_git_diff_command
 
 
+class SweFromRepoDiffWithPromptError(Exception):
+    pass
+
+
 async def swe_from_repo(
     pipe_code: str,
     repo_path: str,
@@ -131,6 +135,54 @@ async def swe_from_repo_diff(
                 "concept": "swe_diff.GitDiff",
                 "content": git_diff,
             }
+        },
+    )
+
+    get_report_delegate().generate_report()
+
+    # Process through SWE pipeline and handle output
+    await process_swe_pipeline_result(
+        pipe_output=pipe_output,
+        output_filename=output_filename,
+        output_dir=output_dir,
+        to_stdout=to_stdout,
+    )
+
+
+async def swe_from_repo_diff_with_prompt(
+    pipe_code: str,
+    prompt: str,
+    repo_path: str,
+    version: str,
+    output_filename: str,
+    output_dir: str,
+    to_stdout: bool,
+    pipe_run_mode: PipeRunMode,
+    ignore_patterns: Optional[List[str]] = None,
+) -> None:
+    """Process SWE analysis from a git diff comparing current version to specified version."""
+    log.info(f"Processing SWE from git diff: comparing current to '{version}' in '{repo_path}'")
+
+    if not prompt:
+        raise SweFromRepoDiffWithPromptError("Prompt is required")
+
+    # Generate git diff
+    try:
+        git_diff = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+    except NoDifferencesFound as exc:
+        log.info(f"Aborting: {exc}")
+        return
+
+    # Run the pipe
+    pipe_output = await execute_pipeline(
+        pipe_code=pipe_code,
+        pipe_run_mode=pipe_run_mode,
+        input_memory={
+            "git_diff": {
+                "concept": "swe_diff.GitDiff",
+                "content": git_diff,
+            },
+            "prompt": prompt,
         },
     )
 

@@ -1,0 +1,1 @@
+"""Analyze management module."""
