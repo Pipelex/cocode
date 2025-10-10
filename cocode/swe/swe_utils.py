@@ -1,6 +1,6 @@
 from pipelex import log, pretty_print
 from pipelex.core.pipes.pipe_output import PipeOutput
-from pipelex.core.stuffs.stuff_content import TextContent
+from pipelex.core.stuffs.text_content import TextContent
 from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
 
 from cocode.repox.repox_processor import RepoxException, RepoxProcessor

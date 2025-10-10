@@ -2,7 +2,9 @@ import re
 from typing import Dict, List, Set
 
 from pipelex.core.memory.working_memory import WorkingMemory
-from pipelex.core.stuffs.stuff_content import ListContent, StructuredContent, TextContent
+from pipelex.core.stuffs.list_content import ListContent
+from pipelex.core.stuffs.structured_content import StructuredContent
+from pipelex.core.stuffs.text_content import TextContent
 from pipelex.tools.func_registry import func_registry
 from pydantic import Field
 

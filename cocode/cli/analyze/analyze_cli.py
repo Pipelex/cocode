@@ -6,8 +6,8 @@ import asyncio
 from typing import Annotated, List, Optional
 
 import typer
-from pipelex.core.pipes.pipe_run_params import PipeRunMode
 from pipelex.hub import get_pipeline_tracker
+from pipelex.pipe_run.pipe_run_params import PipeRunMode
 
 from cocode.common import get_output_dir, validate_repo_path
 from cocode.swe.swe_cmd import swe_from_repo_diff_with_prompt

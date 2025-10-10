@@ -7,7 +7,7 @@ import asyncio
 import typer
 from pipelex import log
 from pipelex.hub import get_pipes
-from pipelex.pipe_works.pipe_dry import dry_run_pipes
+from pipelex.pipe_run.dry_run import dry_run_pipes
 from pipelex.pipelex import Pipelex
 
 validation_app = typer.Typer(

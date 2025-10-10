@@ -11,11 +11,11 @@ from pipelex.core.concepts.concept_blueprint import (
     ConceptStructureBlueprintError,
     ConceptStructureBlueprintFieldType,
 )
-from pipelex.core.concepts.concept_native import NativeConceptManager
+from pipelex.core.concepts.concept_native import NativeConceptCode
 from pipelex.core.concepts.exceptions import ConceptCodeError, ConceptStringOrConceptCodeError
 from pipelex.core.domains.domain_blueprint import DomainBlueprint
 from pipelex.core.memory.working_memory import WorkingMemory
-from pipelex.core.stuffs.stuff_content import StructuredContent
+from pipelex.core.stuffs.structured_content import StructuredContent
 from pipelex.tools.misc.string_utils import is_pascal_case, normalize_to_ascii, snake_to_pascal_case
 from pipelex.types import Self, StrEnum
 
@@ -195,10 +195,9 @@ class ConceptSpec(StructuredContent):
     @classmethod
     def validate_refines(cls, refines: str | None = None) -> str | None:
         if refines is not None:
-            if not NativeConceptManager.is_native_concept(refines):
+            if not NativeConceptCode.get_validated_native_concept_string(concept_string_or_code=refines):
                 msg = f"Forbidden to refine a non-native concept: '{refines}'. Refining non-native concepts will come soon."
                 raise ConceptBlueprintError(msg)
-            cls.validate_concept_string_or_code(concept_string_or_code=refines)
         return refines
 
     @model_validator(mode="before")

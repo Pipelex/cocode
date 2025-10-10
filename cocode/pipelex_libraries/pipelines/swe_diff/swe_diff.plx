@@ -89,10 +89,10 @@ Be sure to include changes to code but also complementary pipelines, scripts, do
 
 [pipe.analyze_git_diff]
 type = "PipeLLM"
-definition = "Analyze the git diff based on a prompt."
+description = "Analyze the git diff based on a prompt."
 inputs = { git_diff = "GitDiff", prompt = "Text" }
 output = "Text"
-llm = "llm_for_large_text"
+llm = "llm_for_git_diff"
 system_prompt = """
 You are an expert technical writer and software architect. Your task is to carefully review and analyze the code diff.
 """

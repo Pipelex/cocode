@@ -1,7 +1,7 @@
 import asyncio
 
 from pipelex.hub import get_pipes, get_required_concept
-from pipelex.pipe_works.pipe_dry import dry_run_pipes
+from pipelex.pipe_run.dry_run import dry_run_pipes
 
 
 def test_boot():

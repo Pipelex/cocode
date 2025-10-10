@@ -12,21 +12,23 @@ from pipelex.tools.typing.validation_utils import has_more_than_one_among_attrib
 from pipelex.types import Self, StrEnum
 
 if TYPE_CHECKING:
-    from pipelex.cogt.llm.llm_setting import LLMChoice
+    from pipelex.cogt.llm.llm_setting import LLMModelChoice
 
 
 class AvailableLLM(StrEnum):
-    CLAUDE_4_SONNET = "claude-4-sonnet"
+    CLAUDE_4_SONNET = "claude-4.5-sonnet"
     CLAUDE_4_1_OPUS = "claude-4.1-opus"
     GPT_5 = "gpt-5"
     GEMINI_2_5_PRO = "gemini-2.5-pro"
     GEMINI_2_5_FLASH = "gemini-2.5-flash"
+    GEMINI_2_5_FLASH_LITE = "gemini-2.5-flash-lite"
 
 
 class LLMSkill(StrEnum):
     LLM_TO_RETRIEVE = "llm_to_retrieve"
     LLM_CHEAP_FOR_EASY_QUESTIONS = "llm_cheap_for_easy_questions"
     LLM_TO_ANSWER_HARD_QUESTIONS = "llm_to_answer_hard_questions"
+    LLM_CHEAP_FOR_VISION = "llm_cheap_for_vision"
     LLM_FOR_VISUAL_ANALYSIS = "llm_for_visual_analysis"
     LLM_FOR_VISUAL_DESIGN = "llm_for_visual_design"
     LLM_FOR_CREATIVE_WRITING = "llm_for_creative_writing"
@@ -45,6 +47,8 @@ class LLMSkill(StrEnum):
                 return AvailableLLM.CLAUDE_4_SONNET
             case LLMSkill.LLM_TO_ANSWER_HARD_QUESTIONS:
                 return AvailableLLM.GPT_5
+            case LLMSkill.LLM_CHEAP_FOR_VISION:
+                return AvailableLLM.GEMINI_2_5_FLASH_LITE
             case LLMSkill.LLM_FOR_VISUAL_ANALYSIS:
                 return AvailableLLM.GEMINI_2_5_FLASH
             case LLMSkill.LLM_FOR_VISUAL_DESIGN:
@@ -79,15 +83,16 @@ class PipeLLMSpec(PipeSpec):
 
     type: SkipJsonSchema[Literal["PipeLLM"]] = "PipeLLM"
     category: SkipJsonSchema[Literal["PipeOperator"]] = "PipeOperator"
-    llm: LLMSkill | str = Field(description="The required skill of the LLM according to the task to be performed.")
+    llm: LLMSkill | str = Field(description="Select the most adequate LLM model skill according to the task to be performed.")
     temperature: float | None = Field(default=None, ge=0, le=1)
-    system_prompt: str | None = Field(default=None, description="A system-level prompt to guide the LLM's behavior, style and skills.")
-    prompt_template: str | None = Field(
+    system_prompt: str | None = Field(default=None, description="A system prompt to guide the LLM's behavior, style and skills. Can be a template.")
+    prompt: str | None = Field(
         description=(
             "A template for the user prompt. Use `$` prefix for inline variables (e.g., `$topic`) and `@` prefix "
-            "to insert the content of an entire input (e.g., `@extracted_text`). "
-            "**Notes**: • Do not use `@` or `$` for image variables, declaring them as inputs is enough."
-            "• You can also use jinja2 syntax for conditional logic and for loops, but prefer `$` and `@` for simple variable insertions."
+            "to insert content as a block with delimiters (e.g., `@extracted_text` --> extracted_text: ```\n[the extracted_text goes here]\n```). "
+            "**Notes**: • Image variables must be inserted too. They can be simply added with the `$` prefix on a line, e.g. `$image_1`."
+            "Or you can mention them by their number in order in the inputs section, starting from 1. Example: "
+            "`Only analyze the colors from $image_1 and the shapes from $image_2."
         )
     )
 
@@ -126,7 +131,7 @@ class PipeLLMSpec(PipeSpec):
         base_blueprint = super().to_blueprint()
 
         # create llm choice as a str
-        llm_choice: LLMChoice
+        llm_choice: LLMModelChoice
         if isinstance(self.llm, LLMSkill):
             llm_choice = self.llm.llm_recommendation.value
         else:
@@ -134,7 +139,7 @@ class PipeLLMSpec(PipeSpec):
 
         # Make it a LLMSetting if temperature is provided
         if self.temperature:
-            llm_choice = LLMSetting(llm_handle=llm_choice, temperature=self.temperature)
+            llm_choice = LLMSetting(model=llm_choice, temperature=self.temperature)
 
         return PipeLLMBlueprint(
             type="PipeLLM",
@@ -143,8 +148,8 @@ class PipeLLMSpec(PipeSpec):
             inputs=base_blueprint.inputs,
             output=base_blueprint.output,
             system_prompt=self.system_prompt,
-            prompt_template=self.prompt_template,
-            llm=llm_choice,
+            prompt=self.prompt,
+            model=llm_choice,
             nb_output=self.nb_output,
             multiple_output=self.multiple_output,
         )

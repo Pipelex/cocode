@@ -1,6 +1,6 @@
 from pydantic import ConfigDict, Field
 
-from pipelex.core.stuffs.stuff_content import StructuredContent
+from pipelex.core.stuffs.structured_content import StructuredContent
 from pipelex.libraries.pipelines.builder.pipe.pipe_signature import PipeSignature
 from pipelex.pipe_controllers.batch.pipe_batch_blueprint import PipeBatchBlueprint
 from pipelex.pipe_controllers.condition.pipe_condition_blueprint import PipeConditionBlueprint
@@ -19,7 +19,7 @@ class Flow(StructuredContent):
     implementation details. It shows:
     - Domain and description
     - Pipe controllers (sequence, parallel, condition, batch) with their full structure
-    - Pipe operators (LLM, func, img_gen, compose, ocr) as signatures only
+    - Pipe operators (LLM, Func, ImgGgen, Compose, Extract) as signatures only
 
     This representation is useful for understanding the overall workflow and
     dependencies without getting into implementation specifics.
