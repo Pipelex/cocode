@@ -43,6 +43,14 @@ def changelog_update_cmd(
         bool,
         typer.Option("--dry", help="Run pipeline in dry mode (no actual execution)"),
     ] = False,
+    include_patterns: Annotated[
+        Optional[List[str]],
+        typer.Option(
+            "--include-pattern",
+            help="Patterns to include in git diff (e.g., '*.py', 'src/', 'docs/'). "
+            "Can be specified multiple times. If not provided, includes all files.",
+        ),
+    ] = None,
     ignore_patterns: Annotated[
         Optional[List[str]],
         typer.Option(
@@ -65,6 +73,7 @@ def changelog_update_cmd(
             output_dir=output_dir,
             to_stdout=to_stdout,
             pipe_run_mode=pipe_run_mode,
+            include_patterns=include_patterns,
             ignore_patterns=ignore_patterns,
         )
     )

@@ -115,6 +115,7 @@ async def swe_from_repo_diff(
     output_dir: str,
     to_stdout: bool,
     pipe_run_mode: PipeRunMode,
+    include_patterns: Optional[List[str]] = None,
     ignore_patterns: Optional[List[str]] = None,
 ) -> None:
     """Process SWE analysis from a git diff comparing current version to specified version."""
@@ -122,7 +123,7 @@ async def swe_from_repo_diff(
 
     # Generate git diff
     try:
-        git_diff = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+        git_diff = run_git_diff_command(repo_path=repo_path, version=version, include_patterns=include_patterns, ignore_patterns=ignore_patterns)
     except NoDifferencesFound as exc:
         log.info(f"Aborting: {exc}")
         return
@@ -159,6 +160,7 @@ async def swe_from_repo_diff_with_prompt(
     output_dir: str,
     to_stdout: bool,
     pipe_run_mode: PipeRunMode,
+    include_patterns: Optional[List[str]] = None,
     ignore_patterns: Optional[List[str]] = None,
 ) -> None:
     """Process SWE analysis from a git diff comparing current version to specified version."""
@@ -169,7 +171,7 @@ async def swe_from_repo_diff_with_prompt(
 
     # Generate git diff
     try:
-        git_diff = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+        git_diff = run_git_diff_command(repo_path=repo_path, version=version, include_patterns=include_patterns, ignore_patterns=ignore_patterns)
     except NoDifferencesFound as exc:
         log.info(f"Aborting: {exc}")
         return
@@ -203,13 +205,14 @@ async def swe_doc_update_from_diff(
     version: str,
     output_filename: str,
     output_dir: str,
+    include_patterns: Optional[List[str]] = None,
     ignore_patterns: Optional[List[str]] = None,
 ) -> None:
     """Generate documentation update suggestions for docs/ directory based on git diff analysis."""
     log.info(f"Generating documentation update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
 
     # Generate git diff
-    git_diff = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+    git_diff = run_git_diff_command(repo_path=repo_path, version=version, include_patterns=include_patterns, ignore_patterns=ignore_patterns)
 
     pipe_output = await execute_pipeline(
         pipe_code="doc_update",
@@ -235,12 +238,13 @@ async def swe_ai_instruction_update_from_diff(
     version: str,
     output_filename: str,
     output_dir: str,
+    include_patterns: Optional[List[str]] = None,
     ignore_patterns: Optional[List[str]] = None,
 ) -> None:
     """Generate AI instruction update suggestions for AGENTS.md, CLAUDE.md, and cursor rules based on git diff analysis."""
     log.info(f"Generating AI instruction update suggestions from git diff: comparing current to '{version}' in '{repo_path}'")
 
-    diff_text = run_git_diff_command(repo_path=repo_path, version=version, ignore_patterns=ignore_patterns)
+    diff_text = run_git_diff_command(repo_path=repo_path, version=version, include_patterns=include_patterns, ignore_patterns=ignore_patterns)
 
     # Read AGENTS.md content
     agents_md_path = os.path.join(repo_path, "AGENTS.md")

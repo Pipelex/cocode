@@ -194,8 +194,17 @@ def determine_text_file_type(file_path: str) -> FileType:
     return FileType(extension=extension, mime=mime)
 
 
-def run_git_diff_command(repo_path: str, version: str, ignore_patterns: Optional[List[str]] = None) -> str:
-    """Run git diff command comparing current version to specified version."""
+def run_git_diff_command(
+    repo_path: str, version: str, include_patterns: Optional[List[str]] = None, ignore_patterns: Optional[List[str]] = None
+) -> str:
+    """Run git diff command comparing current version to specified version.
+
+    Args:
+        repo_path: Path to the git repository
+        version: Git version/commit to compare against
+        include_patterns: Patterns to include in diff (if not provided, includes all files)
+        ignore_patterns: Patterns to exclude from diff (applied after include_patterns)
+    """
     if shutil.which("git") is None:
         raise RuntimeError(
             """The 'git' command is not available.
@@ -227,15 +236,22 @@ def run_git_diff_command(repo_path: str, version: str, ignore_patterns: Optional
         # Combine default patterns with user-provided patterns
         all_ignore_patterns = default_ignore_patterns + (ignore_patterns or [])
 
-        # Build git command with exclusions
+        # Build git command with inclusions and exclusions
         git_cmd = [
             "git",
             "diff",
             version,
             "--unified=0",
             "--",
-            ".",
         ]
+
+        # Add inclusion patterns first (if provided)
+        if include_patterns:
+            for pattern in include_patterns:
+                git_cmd.append(pattern)
+        else:
+            # If no include patterns, include all files
+            git_cmd.append(".")
 
         # Add exclusion patterns
         for pattern in all_ignore_patterns:
