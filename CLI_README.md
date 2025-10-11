@@ -41,8 +41,8 @@ cocode repox convert ../pipelex/ --output-filename "pipelex-docs-tree.txt" \
 # Flat documentation with exclusions
 cocode repox convert ../pipelex/ --output-filename "pipelex-docs.txt" \
     --path-pattern "docs" --include-pattern "*.md" \
-    --ignore-pattern "contributing.md" --ignore-pattern "CODE_OF_CONDUCT.md" \
-    --ignore-pattern "changelog.md" --ignore-pattern "license.md" \
+    --exclude-pattern "contributing.md" --exclude-pattern "CODE_OF_CONDUCT.md" \
+    --exclude-pattern "changelog.md" --exclude-pattern "license.md" \
     --output-style flat
 
 # SWE analysis: Extract fundamentals from local repo
@@ -167,15 +167,15 @@ cocode repox convert ../project/ \
     --output-filename "docs.txt" \
     --path-pattern "docs" \
     --include-pattern "*.md" \
-    --ignore-pattern "contributing.md" \
-    --ignore-pattern "changelog.md" \
+    --exclude-pattern "contributing.md" \
+    --exclude-pattern "changelog.md" \
     --output-style flat
 ```
 
 **Options:**
 - `--output-dir, -o`: Output directory (use 'stdout' for console)
 - `--output-filename, -n`: Output filename
-- `--ignore-pattern, -i`: Patterns to ignore (gitignore format)
+- `--exclude-pattern, -i`: Patterns to ignore (gitignore format)
 - `--include-pattern, -r`: Patterns files must match (glob)
 - `--path-pattern, -pp`: Regex pattern for path filtering
 - `--python-rule, -p`: Python processing rule
@@ -248,8 +248,8 @@ cocode swe from-repo-diff write_changelog v0.2.4 ../project/ \
 
 # With ignore patterns
 cocode swe from-repo-diff write_changelog v1.0.0 . \
-    --ignore-patterns "*.log" \
-    --ignore-patterns "temp/" \
+    --exclude-patterns "*.log" \
+    --exclude-patterns "temp/" \
     --output-filename "CHANGELOG.md"
 ```
 
@@ -286,7 +286,7 @@ cocode swe doc-proofread ../my-project/ --doc-dir docs --output-filename my-proj
 cocode swe doc-proofread --include-pattern "*.py" --include-pattern "*.ts"
 
 # Exclude certain patterns from codebase analysis
-cocode swe doc-proofread --ignore-pattern "test_*" --ignore-pattern "*.md"
+cocode swe doc-proofread --exclude-pattern "test_*" --exclude-pattern "*.md"
 ```
 
 **Options:**
@@ -295,7 +295,7 @@ cocode swe doc-proofread --ignore-pattern "test_*" --ignore-pattern "*.md"
 - `--output-dir, -o`: Output directory (default: "results")
 - `--output-filename, -n`: Output filename (default: "doc-proofread-report")
 - `--include-pattern, -r`: Include patterns for codebase analysis (can be repeated)
-- `--ignore-pattern, -i`: Ignore patterns for codebase analysis (can be repeated)
+- `--exclude-pattern, -i`: Ignore patterns for codebase analysis (can be repeated)
 
 **Output Format:**
 The command generates a markdown report with the following structure for each inconsistency:

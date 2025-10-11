@@ -195,7 +195,7 @@ def determine_text_file_type(file_path: str) -> FileType:
 
 
 def run_git_diff_command(
-    repo_path: str, version: str, include_patterns: Optional[List[str]] = None, ignore_patterns: Optional[List[str]] = None
+    repo_path: str, version: str, include_patterns: Optional[List[str]] = None, exclude_patterns: Optional[List[str]] = None
 ) -> str:
     """Run git diff command comparing current version to specified version.
 
@@ -203,7 +203,7 @@ def run_git_diff_command(
         repo_path: Path to the git repository
         version: Git version/commit to compare against
         include_patterns: Patterns to include in diff (if not provided, includes all files)
-        ignore_patterns: Patterns to exclude from diff (applied after include_patterns)
+        exclude_patterns: Patterns to exclude from diff (applied after include_patterns)
     """
     if shutil.which("git") is None:
         raise RuntimeError(
@@ -214,7 +214,7 @@ def run_git_diff_command(
 
     try:
         # Default patterns to exclude from diff
-        default_ignore_patterns = [
+        default_exclude_patterns = [
             "uv.lock",
             "poetry.lock",
             "node_modules",
@@ -234,7 +234,7 @@ def run_git_diff_command(
         ]
 
         # Combine default patterns with user-provided patterns
-        all_ignore_patterns = default_ignore_patterns + (ignore_patterns or [])
+        all_exclude_patterns = default_exclude_patterns + (exclude_patterns or [])
 
         # Build git command with inclusions and exclusions
         git_cmd = [
@@ -254,7 +254,7 @@ def run_git_diff_command(
             git_cmd.append(".")
 
         # Add exclusion patterns
-        for pattern in all_ignore_patterns:
+        for pattern in all_exclude_patterns:
             git_cmd.append(f":(exclude){pattern}")
 
         # Change to the repository directory and run git diff

@@ -24,7 +24,7 @@ cocode repox repo [OPTIONS] [REPO_PATH]  # Alternative command name
 
 - `-o, --output-dir` - Output directory (default: `./results/`, use `stdout` for console)
 - `-n, --output-filename` - Output filename
-- `-i, --ignore-pattern` - Gitignore patterns to exclude (repeatable)
+- `-i, --exclude-pattern` - Gitignore patterns to exclude (repeatable)
 - `-r, --include-pattern` - Glob patterns to include (repeatable)
 - `-pp, --path-pattern` - Regex for path filtering
 - `-p, --python-rule` - Python processing: `interface`, `imports`, `integral`

@@ -10,7 +10,7 @@ from cocode.repox.repox_processor import RepoxException, RepoxProcessor
 
 def repox_command(
     repo_path: str,
-    ignore_patterns: Optional[List[str]],
+    exclude_patterns: Optional[List[str]],
     include_patterns: Optional[List[str]],
     path_pattern: Optional[str],
     python_processing_rule: PythonProcessingRule,
@@ -31,7 +31,7 @@ def repox_command(
     log.info(f"generate_repox processing: '{repo_path}' with output style: '{output_style}'")
     processor = RepoxProcessor(
         repo_path=repo_path,
-        ignore_patterns=ignore_patterns,
+        exclude_patterns=exclude_patterns,
         include_patterns=include_patterns,
         path_pattern=path_pattern,
         text_processing_funcs=text_processing_funcs,

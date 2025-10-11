@@ -51,10 +51,10 @@ def changelog_update_cmd(
             "Can be specified multiple times. If not provided, includes all files.",
         ),
     ] = None,
-    ignore_patterns: Annotated[
+    exclude_patterns: Annotated[
         Optional[List[str]],
         typer.Option(
-            "--ignore-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
+            "--exclude-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
         ),
     ] = None,
 ) -> None:
@@ -74,7 +74,7 @@ def changelog_update_cmd(
             to_stdout=to_stdout,
             pipe_run_mode=pipe_run_mode,
             include_patterns=include_patterns,
-            ignore_patterns=ignore_patterns,
+            exclude_patterns=exclude_patterns,
         )
     )
     get_pipeline_tracker().output_flowchart()

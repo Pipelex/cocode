@@ -72,7 +72,7 @@ class RepoxProcessor:
     def __init__(
         self,
         repo_path: str,
-        ignore_patterns: Optional[List[str]] = None,
+        exclude_patterns: Optional[List[str]] = None,
         include_patterns: Optional[List[str]] = None,
         path_pattern: Optional[str] = None,
         text_processing_funcs: Optional[Dict[str, Callable[[str], str]]] = None,
@@ -82,7 +82,7 @@ class RepoxProcessor:
 
         Args:
             repo_path: Base directory path
-            ignore_patterns: List of patterns from command line to ignore
+            exclude_patterns: List of patterns from command line to ignore
             include_patterns: Optional list of patterns that files must match
             path_pattern: Optional regex pattern to match against file paths
             text_processing_funcs: Optional dict of text processing functions by MIME type
@@ -93,25 +93,25 @@ class RepoxProcessor:
         self.output_style = output_style
         self.include_patterns = include_patterns
         self.path_pattern = path_pattern
-        self.cli_ignore_patterns = ignore_patterns or []
+        self.cli_exclude_patterns = exclude_patterns or []
         self.gitignore_spec: Optional[PathSpec]
         self.content_ignore_spec: PathSpec
         self.tree_and_content_ignore_spec: PathSpec
         self.gitignore_spec, self.content_ignore_spec, self.tree_and_content_ignore_spec = self._ignore_specs(
             repo_path=repo_path,
-            cli_ignore_patterns=ignore_patterns,
+            cli_exclude_patterns=exclude_patterns,
         )
 
     def _ignore_specs(
         self,
         repo_path: str,
-        cli_ignore_patterns: Optional[List[str]] = None,
+        cli_exclude_patterns: Optional[List[str]] = None,
     ) -> Tuple[Optional[PathSpec], PathSpec, PathSpec]:
         """Load ignore specifications from various sources.
 
         Args:
             repo_path: Base directory path
-            cli_ignore_patterns: List of patterns from command line
+            cli_exclude_patterns: List of patterns from command line
 
         Returns:
             Tuple[Optional[PathSpec], PathSpec, PathSpec]: Tuple of gitignore_spec,
@@ -120,9 +120,9 @@ class RepoxProcessor:
         content_ignore_spec = pathspec.PathSpec.from_lines("gitwildmatch", IGNORE_CONTENT)
 
         tree_and_content_ignore_list = IGNORE_TREE_AND_CONTENT.copy()
-        if cli_ignore_patterns:
-            log.debug(f"Adding CLI ignore patterns: {cli_ignore_patterns}")
-            tree_and_content_ignore_list.extend(cli_ignore_patterns)
+        if cli_exclude_patterns:
+            log.debug(f"Adding CLI ignore patterns: {cli_exclude_patterns}")
+            tree_and_content_ignore_list.extend(cli_exclude_patterns)
         tree_and_content_ignore_spec = pathspec.PathSpec.from_lines("gitwildmatch", tree_and_content_ignore_list)
 
         gitignore_spec: Optional[PathSpec] = None
@@ -144,15 +144,15 @@ class RepoxProcessor:
         log.debug(f"Generating tree structure for path: {self.repo_path}")
 
         # Collect all ignore patterns for the tree command
-        tree_ignore_patterns = REPOX_IGNORED_PATHS.copy()
+        tree_exclude_patterns = REPOX_IGNORED_PATHS.copy()
 
         # Add CLI ignore patterns if available and we're doing tree-based output
-        if self.output_style in (OutputStyle.TREE, OutputStyle.REPO_MAP) and self.cli_ignore_patterns:
-            log.debug(f"Adding CLI ignore patterns to tree command: {self.cli_ignore_patterns}")
-            tree_ignore_patterns.extend(self.cli_ignore_patterns)
+        if self.output_style in (OutputStyle.TREE, OutputStyle.REPO_MAP) and self.cli_exclude_patterns:
+            log.debug(f"Adding CLI ignore patterns to tree command: {self.cli_exclude_patterns}")
+            tree_exclude_patterns.extend(self.cli_exclude_patterns)
         tree_output = run_tree_command(
             path=self.repo_path,
-            ignored_patterns=tree_ignore_patterns,
+            ignored_patterns=tree_exclude_patterns,
             required_pattern=self.include_patterns[0] if self.include_patterns else None,
             gitignore=True,
             path_pattern=self.path_pattern,

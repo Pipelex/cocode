@@ -159,10 +159,10 @@ cocode swe-from-repo-diff write_changelog origin/main..HEAD . \
 # Exclude common noise
 cocode repox \
   --include-pattern "*.py" \
-  --ignore-pattern "__pycache__" \
-  --ignore-pattern "*.pyc" \
-  --ignore-pattern ".git" \
-  --ignore-pattern "test_*" \
+  --exclude-pattern "__pycache__" \
+  --exclude-pattern "*.pyc" \
+  --exclude-pattern ".git" \
+  --exclude-pattern "test_*" \
   --python-rule interface \
   --output-filename clean-api.txt
 ``` 

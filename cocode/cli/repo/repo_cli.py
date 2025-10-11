@@ -36,9 +36,9 @@ def repo_extract_fundamentals_cmd(
         str,
         typer.Option("--output-filename", "-n", help="Output filename"),
     ] = "fundamentals.json",
-    ignore_patterns: Annotated[
+    exclude_patterns: Annotated[
         Optional[List[str]],
-        typer.Option("--ignore-pattern", "-i", help="List of patterns to ignore (in gitignore format)"),
+        typer.Option("--exclude-pattern", "-i", help="List of patterns to ignore (in gitignore format)"),
     ] = None,
     python_processing_rule: Annotated[
         PythonProcessingRule,
@@ -73,7 +73,7 @@ def repo_extract_fundamentals_cmd(
         swe_from_repo(
             pipe_code=PipeCode.EXTRACT_FUNDAMENTALS,
             repo_path=repo_path,
-            ignore_patterns=ignore_patterns,
+            exclude_patterns=exclude_patterns,
             include_patterns=include_patterns,
             path_pattern=path_pattern,
             python_processing_rule=python_processing_rule,
