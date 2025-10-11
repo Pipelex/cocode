@@ -1,7 +1,5 @@
 from typing import Any, Literal
 
-from pydantic import Field, field_validator
-
 from pipelex import log
 from pipelex.core.pipes.exceptions import PipeBlueprintError
 from pipelex.core.pipes.input_requirement_blueprint import InputRequirementBlueprint
@@ -9,6 +7,7 @@ from pipelex.core.pipes.pipe_blueprint import AllowedPipeCategories, AllowedPipe
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pipelex.libraries.pipelines.builder.concept.concept_spec import ConceptSpec
 from pipelex.tools.misc.string_utils import is_snake_case, normalize_to_ascii
+from pydantic import Field, field_validator
 
 
 class PipeSignature(StructuredContent):
@@ -18,8 +17,8 @@ class PipeSignature(StructuredContent):
     """
 
     code: str = Field(description="Pipe code identifying the pipe. Must be snake_case.")
-    category: Literal["PipeSignature"] = "PipeSignature"
     type: AllowedPipeTypes = Field(description="Pipe type.")
+    pipe_category: Literal["PipeSignature"] = "PipeSignature"
     description: str = Field(description="What the pipe does")
     inputs: dict[str, str] = Field(
         description="Pipe inputs: keys are the input variable_names in snake_case, values are the ConceptCodes in PascalCase."
@@ -39,7 +38,7 @@ class PipeSpec(StructuredContent):
 
     pipe_code: str = Field(description="Pipe code. Must be snake_case.")
     type: Any = Field(description=f"Pipe type. It is defined with type `Any` but validated at runtime and it must be one of: {AllowedPipeTypes}")
-    category: Any = Field(
+    pipe_category: Any = Field(
         description=f"Pipe category. It is defined with type `Any` but validated at runtime and it must be one of: {AllowedPipeCategories}"
     )
     description: str | None = Field(description="Natural language description of what the pipe does.")
@@ -106,5 +105,5 @@ class PipeSpec(StructuredContent):
             inputs=converted_inputs,
             output=self.output,
             type=self.type,
-            category=self.category,
+            pipe_category=self.pipe_category,
         )

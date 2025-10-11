@@ -1,12 +1,11 @@
 from typing import Literal
 
-from pydantic import Field
-from pydantic.json_schema import SkipJsonSchema
-from typing_extensions import override
-
 from pipelex.libraries.pipelines.builder.pipe.pipe_signature import PipeSpec
 from pipelex.libraries.pipelines.builder.pipe.sub_pipe_spec import SubPipeSpec
 from pipelex.pipe_controllers.sequence.pipe_sequence_blueprint import PipeSequenceBlueprint
+from pydantic import Field
+from pydantic.json_schema import SkipJsonSchema
+from typing_extensions import override
 
 
 class PipeSequenceSpec(PipeSpec):
@@ -16,7 +15,7 @@ class PipeSequenceSpec(PipeSpec):
     """
 
     type: SkipJsonSchema[Literal["PipeSequence"]] = "PipeSequence"
-    category: SkipJsonSchema[Literal["PipeController"]] = "PipeController"
+    pipe_category: SkipJsonSchema[Literal["PipeController"]] = "PipeController"
     steps: list[SubPipeSpec] = Field(
         description=("List of SubPipeSpec instances to execute sequentially. Each step runs after the previous one completes.")
     )
@@ -30,6 +29,6 @@ class PipeSequenceSpec(PipeSpec):
             inputs=base_blueprint.inputs,
             output=base_blueprint.output,
             type=self.type,
-            category=self.category,
+            pipe_category=self.pipe_category,
             steps=core_steps,
         )

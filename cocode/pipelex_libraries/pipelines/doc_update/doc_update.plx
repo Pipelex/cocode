@@ -23,7 +23,7 @@ IMPORTANT: The git diff shows changes from CURRENT version to an OLD version, so
 - Lines with "+" are what was ADDED in the current version (what documentation should reflect)
 - Lines with "-" are what was REMOVED from the old version (what documentation should no longer show)
 """
-prompt_template = """
+prompt = """
 Analyze this git diff and extract citations for changes that affect user-facing documentation:
 
 @git_diff
@@ -69,7 +69,7 @@ You are a documentation analyst. Identify changes that affect documentation in t
 IMPORTANT: The git diff shows CURRENT → OLD, so focus on what the CURRENT version does that documentation should reflect.
 Use the provided git citations to support your analysis and identify exact patterns that changed.
 """
-prompt_template = """
+prompt = """
 Analyze this git diff to identify changes that need docs/ directory updates:
 
 @git_diff
@@ -109,7 +109,7 @@ You are a documentation expert. Analyze code changes to determine what specific 
 Focus on docs/ directory files only. Provide exact patterns that need to be changed in documentation.
 IMPORTANT: The changes show CURRENT → OLD, so ensure documentation reflects the CURRENT state.
 """
-prompt_template = """
+prompt = """
 Analyze this change for specific documentation impact:
 
 @change_item
@@ -137,7 +137,7 @@ You are a documentation coordinator. Convert documentation analyses into structu
 Each change should include specific file paths, locations, exact old patterns to find, and exact new patterns to replace with.
 IMPORTANT: Ensure the new patterns reflect the CURRENT state of the code.
 """
-prompt_template = """
+prompt = """
 Convert these documentation analyses into structured changes with exact patterns:
 
 @doc_analyses
@@ -175,7 +175,7 @@ You are a documentation formatter. Create a clean, well-structured output for do
 Focus on clarity and actionability without unnecessary formatting complexity.
 IMPORTANT: Ensure all suggestions reflect updating documentation to match the CURRENT code state.
 """
-prompt_template = """
+prompt = """
 Format these documentation changes into a clean, actionable output:
 
 @structured_changes

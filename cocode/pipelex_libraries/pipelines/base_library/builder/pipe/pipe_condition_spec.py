@@ -1,12 +1,11 @@
 from typing import Literal
 
-from pydantic import Field
-from pydantic.json_schema import SkipJsonSchema
-from typing_extensions import override
-
 from pipelex.libraries.pipelines.builder.pipe.pipe_signature import PipeSpec
 from pipelex.pipe_controllers.condition.pipe_condition_blueprint import PipeConditionBlueprint
 from pipelex.pipe_controllers.condition.special_outcome import SpecialOutcome
+from pydantic import Field
+from pydantic.json_schema import SkipJsonSchema
+from typing_extensions import override
 
 
 class PipeConditionSpec(PipeSpec):
@@ -21,7 +20,7 @@ class PipeConditionSpec(PipeSpec):
     """
 
     type: SkipJsonSchema[Literal["PipeCondition"]] = "PipeCondition"
-    category: SkipJsonSchema[Literal["PipeController"]] = "PipeController"
+    pipe_category: SkipJsonSchema[Literal["PipeController"]] = "PipeController"
     jinja2_expression_template: str = Field(description="Jinja2 expression to evaluate.")
     outcomes: dict[str, str] = Field(..., description="Mapping `dict[str, str]` of condition to outcomes.")
     default_outcome: str | SpecialOutcome = Field(description="The fallback outcome if the expression result does not match any key in outcome map.")
@@ -34,7 +33,7 @@ class PipeConditionSpec(PipeSpec):
             inputs=base_blueprint.inputs,
             output=base_blueprint.output,
             type=self.type,
-            category=self.category,
+            pipe_category=self.pipe_category,
             expression_template=self.jinja2_expression_template,
             expression=None,
             outcomes=self.outcomes,

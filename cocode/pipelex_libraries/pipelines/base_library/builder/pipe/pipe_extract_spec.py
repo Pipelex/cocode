@@ -1,13 +1,12 @@
 from typing import TYPE_CHECKING, Literal
 
-from pydantic import Field, field_validator
-from pydantic.json_schema import SkipJsonSchema
-from typing_extensions import override
-
 from pipelex.exceptions import PipeDefinitionError
 from pipelex.libraries.pipelines.builder.pipe.pipe_signature import PipeSpec
 from pipelex.pipe_operators.extract.pipe_extract_blueprint import PipeExtractBlueprint
 from pipelex.types import StrEnum
+from pydantic import Field, field_validator
+from pydantic.json_schema import SkipJsonSchema
+from typing_extensions import override
 
 if TYPE_CHECKING:
     from pipelex.cogt.extract.extract_setting import ExtractModelChoice
@@ -44,7 +43,7 @@ class PipeExtractSpec(PipeSpec):
     """
 
     type: SkipJsonSchema[Literal["PipeExtract"]] = "PipeExtract"
-    category: SkipJsonSchema[Literal["PipeOperator"]] = "PipeOperator"
+    pipe_category: SkipJsonSchema[Literal["PipeOperator"]] = "PipeOperator"
     extract_skill: ExtractSkill | str = Field(description="Select the most adequate extraction model skill according to the task to be performed.")
     page_images: bool | None = Field(default=None, description="Whether to include detected images in the Extract output.")
     page_image_captions: bool | None = Field(default=None, description="Whether to generate captions for detected images using AI.")
@@ -83,7 +82,7 @@ class PipeExtractSpec(PipeSpec):
             inputs=base_blueprint.inputs,
             output=base_blueprint.output,
             type=self.type,
-            category=self.category,
+            pipe_category=self.pipe_category,
             model=extract_model_choice,
             page_images=self.page_images,
             page_image_captions=self.page_image_captions,

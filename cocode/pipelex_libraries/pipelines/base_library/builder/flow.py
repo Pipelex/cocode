@@ -1,11 +1,10 @@
-from pydantic import ConfigDict, Field
-
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pipelex.libraries.pipelines.builder.pipe.pipe_signature import PipeSignature
 from pipelex.pipe_controllers.batch.pipe_batch_blueprint import PipeBatchBlueprint
 from pipelex.pipe_controllers.condition.pipe_condition_blueprint import PipeConditionBlueprint
 from pipelex.pipe_controllers.parallel.pipe_parallel_blueprint import PipeParallelBlueprint
 from pipelex.pipe_controllers.sequence.pipe_sequence_blueprint import PipeSequenceBlueprint
+from pydantic import ConfigDict, Field
 
 # Union of possible pipe representations in flow view
 # Controllers keep their full blueprint, operators are converted to signatures

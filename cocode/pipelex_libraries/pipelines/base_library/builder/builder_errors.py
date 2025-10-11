@@ -1,7 +1,5 @@
 """Error classes and their structured content representations for the builder domain."""
 
-from pydantic import Field
-
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pipelex.exceptions import (
     PipelexException,
@@ -18,6 +16,7 @@ from pipelex.libraries.pipelines.builder.pipe.pipe_llm_spec import PipeLLMSpec
 from pipelex.libraries.pipelines.builder.pipe.pipe_parallel_spec import PipeParallelSpec
 from pipelex.libraries.pipelines.builder.pipe.pipe_sequence_spec import PipeSequenceSpec
 from pipelex.types import Self
+from pydantic import Field
 
 # Type alias for pipe spec union
 PipeSpecUnion = (

@@ -35,11 +35,11 @@ type = "PipeLLM"
 description = "Write a changelog for a software project."
 inputs = { git_diff = "GitDiff" }
 output = "DraftChangelog"
-llm = "llm_for_swe"
+model = "llm_for_swe"
 system_prompt = """
 You are an expert technical writer and software architect. Your task is to carefully review the code diff and write a draft changelog.
 """
-prompt_template = """
+prompt = """
 Analyze the following code diff and write a draft changelog that summarizes the changes made to the codebase between two versions.
 Focus on identifying the key changes, improvements, bug fixes, and new features.
 Write in a clear, concise style that would be useful for developers and users.
@@ -53,12 +53,12 @@ type = "PipeLLM"
 description = "Polish and improve the draft changelog"
 inputs = { git_diff = "GitDiff", draft_changelog = "DraftChangelog" }
 output = "StructuredChangelog"
-llm = "llm_for_swe"
+model = "llm_for_swe"
 structuring_method = "preliminary_text"
 system_prompt = """
 You are an expert technical writer. Your task is to polish and improve a draft changelog to make it more clear, concise, and well-structured.
 """
-prompt_template = """
+prompt = """
 Review and polish the following draft changelog that was generated from a git diff.
 
 @git_diff
@@ -76,11 +76,11 @@ type = "PipeLLM"
 description = "Write a changelog for a software project."
 inputs = { git_diff = "GitDiff" }
 output = "StructuredChangelog"
-llm = "llm_for_swe"
+model = "llm_for_swe"
 system_prompt = """
 You are an expert technical writer and software architect. Your task is to carefully review the code diff and write a structured changelog.
 """
-prompt_template = """
+prompt = """
 Analyze the following code diff. Write a structured changelog that summarizes the changes made to the codebase between two versions.
 Be sure to include changes to code but also complementary pipelines, scripts, docs.
 
@@ -92,11 +92,11 @@ type = "PipeLLM"
 description = "Analyze the git diff based on a prompt."
 inputs = { git_diff = "GitDiff", prompt = "Text" }
 output = "Text"
-llm = "llm_for_git_diff"
+model = "llm_for_git_diff"
 system_prompt = """
 You are an expert technical writer and software architect. Your task is to carefully review and analyze the code diff.
 """
-prompt_template = """
+prompt = """
 Analyze the following code diff based on this prompt: $prompt
 
 @git_diff
@@ -109,8 +109,10 @@ type = "PipeCompose"
 description = "Format the final changelog in markdown with proper structure"
 inputs = { structured_changelog = "StructuredChangelog" }
 output = "MarkdownChangelog"
-template_category = "markdown"
-jinja2 = """
+
+[pipe.format_changelog_as_markdown.template]
+category = "markdown"
+template = """
 ## Unreleased
 
 {% if structured_changelog.added %}
@@ -161,11 +163,11 @@ type = "PipeLLM"
 description = "Polish and improve the changelog"
 inputs = { structured_changelog = "StructuredChangelog" }
 output = "MarkdownChangelog"
-llm = "llm_for_swe"
+model = "llm_for_swe"
 system_prompt = """
 You are an expert technical writer. Your task is to polish and improve a changelog to make it more clear, concise, and well-structured.
 """
-prompt_template = """
+prompt = """
 Review and polish the following changelog:
 
 @structured_changelog

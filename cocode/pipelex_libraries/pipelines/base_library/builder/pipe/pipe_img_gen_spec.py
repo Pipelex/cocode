@@ -1,11 +1,10 @@
 from typing import Literal
 
-from pydantic import Field, field_validator
-from typing_extensions import override
-
 from pipelex.libraries.pipelines.builder.pipe.pipe_signature import PipeSpec
 from pipelex.pipe_operators.img_gen.pipe_img_gen_blueprint import PipeImgGenBlueprint
 from pipelex.types import StrEnum
+from pydantic import Field, field_validator
+from typing_extensions import override
 
 
 class AvailableImgGen(StrEnum):
@@ -39,7 +38,7 @@ class PipeImgGenSpec(PipeSpec):
     """
 
     type: Literal["PipeImgGen"] = "PipeImgGen"
-    category: Literal["PipeOperator"] = "PipeOperator"
+    pipe_category: Literal["PipeOperator"] = "PipeOperator"
     img_gen_skill: ImgGenSkill | None = None
     nb_output: int | None = Field(default=None, ge=1)
 
@@ -60,7 +59,7 @@ class PipeImgGenSpec(PipeSpec):
             inputs=base_blueprint.inputs,
             output=base_blueprint.output,
             type=self.type,
-            category=self.category,
+            pipe_category=self.pipe_category,
             img_gen_prompt=None,
             img_gen_prompt_var_name=None,
             model=self.img_gen_skill.model_recommendation if self.img_gen_skill else None,

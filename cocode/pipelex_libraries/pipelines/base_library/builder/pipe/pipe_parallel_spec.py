@@ -1,14 +1,13 @@
 from typing import Literal
 
-from pydantic import Field, field_validator, model_validator
-from typing_extensions import override
-
 from pipelex.exceptions import PipeDefinitionError
 from pipelex.libraries.pipelines.builder.concept.concept_spec import ConceptSpec
 from pipelex.libraries.pipelines.builder.pipe.pipe_signature import PipeSpec
 from pipelex.libraries.pipelines.builder.pipe.sub_pipe_spec import SubPipeSpec
 from pipelex.pipe_controllers.parallel.pipe_parallel_blueprint import PipeParallelBlueprint
 from pipelex.types import Self
+from pydantic import Field, field_validator, model_validator
+from typing_extensions import override
 
 
 class PipeParallelSpec(PipeSpec):
@@ -27,7 +26,7 @@ class PipeParallelSpec(PipeSpec):
     """
 
     type: Literal["PipeParallel"] = "PipeParallel"
-    category: Literal["PipeController"] = "PipeController"
+    pipe_category: Literal["PipeController"] = "PipeController"
     parallels: list[SubPipeSpec] = Field(description="List of SubPipeSpec instances to execute concurrently.")
     add_each_output: bool = Field(description="Whether to include individual pipe outputs in the combined result.")
     combined_output: str | None = Field(default=None, description="Optional ConceptCode in PascalCasefor the combined output structure.")
@@ -62,7 +61,7 @@ class PipeParallelSpec(PipeSpec):
             inputs=base_blueprint.inputs,
             output=base_blueprint.output,
             type=self.type,
-            category=self.category,
+            pipe_category=self.pipe_category,
             parallels=core_parallels,
             add_each_output=self.add_each_output,
             combined_output=self.combined_output,

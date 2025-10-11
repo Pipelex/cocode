@@ -1,10 +1,9 @@
 from typing import Literal
 
-from pydantic import Field
-from typing_extensions import override
-
 from pipelex.libraries.pipelines.builder.pipe.pipe_signature import PipeSpec
 from pipelex.pipe_controllers.batch.pipe_batch_blueprint import PipeBatchBlueprint
+from pydantic import Field
+from typing_extensions import override
 
 
 class PipeBatchSpec(PipeSpec):
@@ -26,7 +25,7 @@ class PipeBatchSpec(PipeSpec):
     """
 
     type: Literal["PipeBatch"] = "PipeBatch"
-    category: Literal["PipeController"] = "PipeController"
+    pipe_category: Literal["PipeController"] = "PipeController"
     branch_pipe_code: str = Field(
         description="The pipe code to execute for each item in the input list. This pipe is instantiated once per item in parallel."
     )
@@ -44,7 +43,7 @@ class PipeBatchSpec(PipeSpec):
             inputs=base_blueprint.inputs,
             output=base_blueprint.output,
             type=self.type,
-            category=self.category,
+            pipe_category=self.pipe_category,
             branch_pipe_code=self.branch_pipe_code,
             input_list_name=self.input_list_name,
             input_item_name=self.input_item_name,

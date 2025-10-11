@@ -22,7 +22,7 @@ Focus on extracting CODING PRINCIPLES and identifying SPECIFIC UTILITY METHODS/P
 Recognize established utility functions and patterns that should be used consistently across the project.
 Filter out maintenance updates, version changes, and configuration tweaks that don't improve coding skills.
 """
-prompt_template = """
+prompt = """
 Analyze changes needed for AGENTS.md based on git diff and current file content.
 
 CRITICAL FOCUS: Extract coding principles AND identify specific utility methods/patterns that are established in the codebase.
@@ -74,7 +74,7 @@ Focus on extracting CODE GENERATION PRINCIPLES and identifying SPECIFIC UTILITY 
 Recognize established utility functions and patterns that should be used consistently across the project.
 Filter out maintenance updates, version changes, and configuration tweaks that don't improve code quality.
 """
-prompt_template = """
+prompt = """
 Analyze changes needed for CLAUDE.md based on git diff and current file content.
 
 CRITICAL FOCUS: Extract code generation principles AND identify specific utility methods/patterns that are established in the codebase.
@@ -127,7 +127,7 @@ Focus on extracting CODING PRINCIPLES and identifying SPECIFIC UTILITY METHODS/P
 Recognize established utility functions and patterns that should be used consistently across the project.
 Filter out maintenance updates, version changes, and configuration tweaks that don't improve code quality.
 """
-prompt_template = """
+prompt = """
 Analyze changes needed for cursor rules based on git diff and current file content.
 
 CRITICAL FOCUS: Extract coding principles AND identify specific utility methods/patterns that are established in the codebase.
@@ -177,7 +177,7 @@ system_prompt = """
 You are an AI instruction coordinator. Combine individual file analyses into comprehensive, actionable suggestions.
 Generate clear, structured output that separates each file's requirements.
 """
-prompt_template = """
+prompt = """
 Combine these AI instruction file analyses into comprehensive suggestions:
 
 @parallel_analyses
@@ -202,7 +202,7 @@ Be HIGHLY SELECTIVE - only document changes that represent significant coding pr
 When a change IS important, write PRECISE, ACTIONABLE RULES - no explanations, no fluff, just direct commands.
 Write rules as imperative statements that developers can immediately follow.
 """
-prompt_template = """
+prompt = """
 Format these AI instruction update suggestions into a clear, well-structured text output:
 
 @combined_suggestions

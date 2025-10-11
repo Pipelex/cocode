@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING, Annotated, cast
 
-from pydantic import ConfigDict, Field, ValidationError, field_validator
-
 from pipelex.core.bundles.pipe_sorter import sort_pipes_by_dependencies
 from pipelex.core.bundles.pipelex_bundle_blueprint import PipeBlueprintUnion, PipelexBundleBlueprint
 from pipelex.core.concepts.concept_blueprint import ConceptBlueprint
@@ -43,6 +41,7 @@ from pipelex.libraries.pipelines.builder.pipe.pipe_sequence_spec import PipeSequ
 from pipelex.libraries.pipelines.builder.pipe.pipe_signature import PipeSpec
 from pipelex.pipe_run.dry_run import dry_run_pipes
 from pipelex.tools.typing.pydantic_utils import format_pydantic_validation_error
+from pydantic import ConfigDict, Field, ValidationError, field_validator
 
 if TYPE_CHECKING:
     from pipelex.core.stuffs.list_content import ListContent

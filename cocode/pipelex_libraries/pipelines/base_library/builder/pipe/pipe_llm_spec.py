@@ -1,15 +1,14 @@
 from typing import TYPE_CHECKING, Literal
 
-from pydantic import Field, field_validator, model_validator
-from pydantic.json_schema import SkipJsonSchema
-from typing_extensions import override
-
 from pipelex.cogt.llm.llm_setting import LLMSetting
 from pipelex.exceptions import PipeDefinitionError
 from pipelex.libraries.pipelines.builder.pipe.pipe_signature import PipeSpec
 from pipelex.pipe_operators.llm.pipe_llm_blueprint import PipeLLMBlueprint
 from pipelex.tools.typing.validation_utils import has_more_than_one_among_attributes_from_list
 from pipelex.types import Self, StrEnum
+from pydantic import Field, field_validator, model_validator
+from pydantic.json_schema import SkipJsonSchema
+from typing_extensions import override
 
 if TYPE_CHECKING:
     from pipelex.cogt.llm.llm_setting import LLMModelChoice
@@ -82,7 +81,7 @@ class PipeLLMSpec(PipeSpec):
     """
 
     type: SkipJsonSchema[Literal["PipeLLM"]] = "PipeLLM"
-    category: SkipJsonSchema[Literal["PipeOperator"]] = "PipeOperator"
+    pipe_category: SkipJsonSchema[Literal["PipeOperator"]] = "PipeOperator"
     llm: LLMSkill | str = Field(description="Select the most adequate LLM model skill according to the task to be performed.")
     temperature: float | None = Field(default=None, ge=0, le=1)
     system_prompt: str | None = Field(default=None, description="A system prompt to guide the LLM's behavior, style and skills. Can be a template.")
@@ -143,7 +142,7 @@ class PipeLLMSpec(PipeSpec):
 
         return PipeLLMBlueprint(
             type="PipeLLM",
-            category="PipeOperator",
+            pipe_category="PipeOperator",
             description=base_blueprint.description,
             inputs=base_blueprint.inputs,
             output=base_blueprint.output,

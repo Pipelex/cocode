@@ -17,13 +17,13 @@ description = "Find code files that implement or use elements mentioned in docs"
 inputs = { doc_file = "DocumentationFile", repo_map = "RepositoryMap" }
 output = "FilePath"
 multiple_output = true
-llm = { llm_handle = "llm_for_large_codebase", temperature = 0.1 }
+model = { model = "llm_for_large_codebase", temperature = 0.1 }
+model_to_structure = "cheap_llm_for_object"
 structuring_method = "preliminary_text"
-llm_to_structure = "cheap_llm_for_object"
 system_prompt = """
 Extract code elements mentioned in docs (classes, functions, commands) and find their actual implementations or usages in the codebase.
 """
-prompt_template = """
+prompt = """
 Find files that implement or use code elements from this documentation:
 
 @doc_file
@@ -40,12 +40,12 @@ description = "Find major inconsistencies between docs and code"
 inputs = { doc_file = "DocumentationFile", related_files = "CodebaseFileContent" }
 output = "DocumentationInconsistency"
 multiple_output = true
-llm = "llm_for_swe"
+model = "llm_for_swe"
 system_prompt = """
 Find MAJOR inconsistencies between documentation and code that would cause user code to fail.
 Only report issues that would completely break functionality or lead users down the wrong path.
 """
-prompt_template = """
+prompt = """
 Find critical problems between these docs and code:
 
 @doc_file.doc_content
@@ -79,12 +79,12 @@ type = "PipeLLM"
 description = "Create a markdown report with inconsistencies formatted as a Cursor prompt"
 inputs = { all_inconsistencies = "DocumentationInconsistency" }
 output = "MarkdownReport"
-llm = "llm_for_swe"
+model = "llm_for_swe"
 system_prompt = """
 Create a concise markdown report for Cursor AI with specific, actionable fixes for documentation inconsistencies.
 Focus only on critical issues that would break user code or cause major confusion.
 """
-prompt_template = """
+prompt = """
 Create a markdown report for an AI agent to fix these documentation inconsistencies:
 
 @all_inconsistencies

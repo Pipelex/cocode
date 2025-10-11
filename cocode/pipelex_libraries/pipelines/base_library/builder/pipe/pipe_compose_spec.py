@@ -1,15 +1,14 @@
 from typing import Literal
 
-from pydantic import Field, field_validator
-from pydantic.json_schema import SkipJsonSchema
-from typing_extensions import override
-
 from pipelex.cogt.templating.template_blueprint import TemplateBlueprint
 from pipelex.cogt.templating.template_category import TemplateCategory
 from pipelex.cogt.templating.templating_style import TagStyle, TemplatingStyle, TextFormat
 from pipelex.libraries.pipelines.builder.pipe.pipe_signature import PipeSpec
 from pipelex.pipe_operators.compose.pipe_compose_blueprint import PipeComposeBlueprint
 from pipelex.types import StrEnum
+from pydantic import Field, field_validator
+from pydantic.json_schema import SkipJsonSchema
+from typing_extensions import override
 
 
 class TargetFormat(StrEnum):
@@ -77,7 +76,7 @@ class PipeComposeSpec(PipeSpec):
     """PipeComposeSpec defines a templating operation based on a Jinja2 template."""
 
     type: SkipJsonSchema[Literal["PipeCompose"]] = "PipeCompose"
-    category: SkipJsonSchema[Literal["PipeOperator"]] = "PipeOperator"
+    pipe_category: SkipJsonSchema[Literal["PipeOperator"]] = "PipeOperator"
     template: str = Field(description="Jinja2 template string")
     target_format: TargetFormat | str = Field(description="Target format for the output")
 
@@ -95,7 +94,7 @@ class PipeComposeSpec(PipeSpec):
         category = target_format.category
 
         template_blueprint = TemplateBlueprint(
-            source=self.template,
+            template=self.template,
             templating_style=templating_style,
             category=category,
             extra_context=None,
@@ -106,6 +105,6 @@ class PipeComposeSpec(PipeSpec):
             inputs=base_blueprint.inputs,
             output=base_blueprint.output,
             type=self.type,
-            category=self.category,
+            pipe_category=self.pipe_category,
             template=template_blueprint,
         )
