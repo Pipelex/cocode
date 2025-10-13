@@ -17,7 +17,7 @@ VENV_MKDOCS := $(VIRTUAL_ENV)/bin/mkdocs
 
 UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
 
-USUAL_PYTEST_MARKERS := "(dry_runnable or not (inference or llm or imgg or ocr)) and not (needs_output or pipelex_api)"
+USUAL_PYTEST_MARKERS := "(dry_runnable or not (inference or llm or imgg or extract)) and not (needs_output or pipelex_api)"
 
 define PRINT_TITLE
     $(eval PROJECT_PART := [$(PROJECT_NAME)])
@@ -158,7 +158,7 @@ update: env
 
 validate: env
 	$(call PRINT_TITLE,"Running setup sequence")
-	$(VENV_PIPELEX) validate all -c cocode/pipelex_libraries
+	$(VENV_PIPELEX) validate all
 
 init: env
 	$(call PRINT_TITLE,"Running pipelex init-libraries and init-config")

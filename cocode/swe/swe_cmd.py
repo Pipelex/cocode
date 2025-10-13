@@ -12,8 +12,8 @@ from pipelex.pipe_run.pipe_run_params import PipeRunMode
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.file_utils import ensure_path, failable_load_text_from_path, load_text_from_path, save_text_to_path
 
-from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import DocumentationFile, DocumentationInconsistency, RepositoryMap
-from cocode.pipelex_libraries.pipelines.doc_proofread.file_utils import create_documentation_files_from_paths
+from cocode.pipelines.doc_proofread.doc_proofread_models import DocumentationFile, DocumentationInconsistency, RepositoryMap
+from cocode.pipelines.doc_proofread.file_utils import create_documentation_files_from_paths
 from cocode.repox.models import OutputStyle
 from cocode.repox.process_python import PythonProcessingRule, python_imports_list, python_integral, python_interface
 from cocode.repox.repox_processor import RepoxProcessor

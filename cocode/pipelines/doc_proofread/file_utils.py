@@ -3,9 +3,9 @@ from typing import List
 
 from pipelex.core.memory.working_memory import WorkingMemory
 from pipelex.core.stuffs.list_content import ListContent
-from pipelex.tools.func_registry import func_registry
+from pipelex.tools.func_registry import func_registry, pipe_func
 
-from cocode.pipelex_libraries.pipelines.doc_proofread.doc_proofread_models import CodebaseFileContent, DocumentationFile, FilePath
+from cocode.pipelines.doc_proofread.doc_proofread_models import CodebaseFileContent, DocumentationFile, FilePath
 
 
 def create_documentation_files_from_paths(doc_file_paths: List[str], doc_dir: str = "docs/") -> List[DocumentationFile]:
@@ -46,6 +46,7 @@ def create_documentation_files_from_paths(doc_file_paths: List[str], doc_dir: st
     return doc_files
 
 
+@pipe_func()
 def read_file_content(working_memory: WorkingMemory) -> ListContent[CodebaseFileContent]:
     """Read the content of related codebase files.
 

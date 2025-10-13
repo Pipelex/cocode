@@ -182,20 +182,21 @@ wheels = [
 
 [[package]]
 name = "anthropic"
-version = "0.57.1"
+version = "0.69.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
     { name = "distro" },
+    { name = "docstring-parser" },
     { name = "httpx" },
     { name = "jiter" },
     { name = "pydantic" },
     { name = "sniffio" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d7/75/6261a1a8d92aed47e27d2fcfb3a411af73b1435e6ae1186da02b760565d0/anthropic-0.57.1.tar.gz", hash = "sha256:7815dd92245a70d21f65f356f33fc80c5072eada87fb49437767ea2918b2c4b0", size = 423775, upload-time = "2025-07-03T16:57:35.932Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c8/9d/9ad1778b95f15c5b04e7d328c1b5f558f1e893857b7c33cd288c19c0057a/anthropic-0.69.0.tar.gz", hash = "sha256:c604d287f4d73640f40bd2c0f3265a2eb6ce034217ead0608f6b07a8bc5ae5f2", size = 480622, upload-time = "2025-09-29T16:53:45.282Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e5/cf/ca0ba77805aec6171629a8b665c7dc224dab374539c3d27005b5d8c100a0/anthropic-0.57.1-py3-none-any.whl", hash = "sha256:33afc1f395af207d07ff1bffc0a3d1caac53c371793792569c5d2f09283ea306", size = 292779, upload-time = "2025-07-03T16:57:34.636Z" },
+    { url = "https://files.pythonhosted.org/packages/9b/38/75129688de5637eb5b383e5f2b1570a5cc3aecafa4de422da8eea4b90a6c/anthropic-0.69.0-py3-none-any.whl", hash = "sha256:1f73193040f33f11e27c2cd6ec25f24fe7c3f193dc1c5cde6b7a08b18a16bcc5", size = 337265, upload-time = "2025-09-29T16:53:43.686Z" },
 ]
 
 [[package]]
@@ -1943,7 +1944,7 @@ google-genai = [
 requires-dist = [
     { name = "aioboto3", marker = "extra == 'bedrock'", specifier = ">=13.4.0" },
     { name = "aiofiles", specifier = ">=23.2.1" },
-    { name = "anthropic", marker = "extra == 'anthropic'", specifier = ">=0.49.0" },
+    { name = "anthropic", marker = "extra == 'anthropic'", specifier = ">=0.60.0" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'", specifier = ">=1.3.0" },
     { name = "boto3", marker = "extra == 'bedrock'", specifier = ">=1.34.131" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
