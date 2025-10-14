@@ -1,5 +1,5 @@
 domain = "swe"
-definition = "Pipelines for software engineering tasks."
+description = "Pipelines for software engineering tasks."
 
 [concept]
 SoftwareDoc = "Documentation related to software engineering projects or codebases."
@@ -16,14 +16,14 @@ OnboardingDocumentation = "Complete set of documentation needed for onboarding n
 [pipe]
 [pipe.check_doc_inconsistencies]
 type = "PipeLLM"
-definition = "Identify inconsistencies in a set of software engineering documents."
+description = "Identify inconsistencies in a set of software engineering documents."
 inputs = { repo_text = "SoftwareDoc" }
 output = "InconsistencyReport"
-llm = "llm_for_swe"
+model = "llm_for_swe"
 system_prompt = """
 You are an expert technical writer and software architect. Your task is to carefully review software documentation and point out any inconsistencies or contradictions.
 """
-prompt_template = """
+prompt = """
 Analyze the following documentation snippets. Highlight every occurrence where statements contradict each other, create ambiguity, or provide conflicting information.
 
 @repo_text
@@ -37,7 +37,7 @@ If you find no inconsistencies, reply exactly: "No inconsistencies detected.".
 
 [pipe.extract_onboarding_documentation]
 type = "PipeParallel"
-definition = "Extract comprehensive onboarding documentation from software project docs"
+description = "Extract comprehensive onboarding documentation from software project docs"
 inputs = { repo_text = "SoftwareDoc" }
 output = "OnboardingDocumentation"
 parallels = [
@@ -51,14 +51,14 @@ combined_output = "swe.OnboardingDocumentation"
 
 [pipe.extract_fundamentals]
 type = "PipeLLM"
-definition = "Extract fundamental project information from documentation"
+description = "Extract fundamental project information from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "FundamentalsDoc"
-llm = "llm_for_swe"
+model = "llm_for_swe"
 system_prompt = """
 You are an expert at extracting structured project information from software documentation. Focus on identifying core project context and foundational information.
 """
-prompt_template = """
+prompt = """
 Extract fundamental project information from the following documentation:
 
 @repo_text
@@ -74,14 +74,14 @@ Return the information in a structured format. If any category is not found in t
 
 [pipe.extract_environment_build]
 type = "PipeLLM"
-definition = "Extract environment setup and build information from documentation"
+description = "Extract environment setup and build information from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "EnvironmentBuildDoc"
-llm = "llm_for_swe"
+model = "llm_for_swe"
 system_prompt = """
 You are an expert at extracting development environment setup information from software documentation.
 """
-prompt_template = """
+prompt = """
 Extract environment and build setup information from the following documentation:
 
 @repo_text
@@ -99,14 +99,14 @@ Return the information in a structured format. If any category is not found, omi
 
 [pipe.extract_coding_standards]
 type = "PipeLLM"
-definition = "Extract code quality and style information from documentation"
+description = "Extract code quality and style information from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "CodingStandardsDoc"
-llm = "llm_for_swe"
+model = "llm_for_swe"
 system_prompt = """
 You are an expert at extracting code quality standards and tooling information from software documentation.
 """
-prompt_template = """
+prompt = """
 Extract code quality and style information from the following documentation:
 
 @repo_text
@@ -125,14 +125,14 @@ Return the information in a structured format. If any category is not found, omi
 
 [pipe.extract_test_strategy]
 type = "PipeLLM"
-definition = "Extract testing strategy and procedures from documentation"
+description = "Extract testing strategy and procedures from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "TestStrategyDoc"
-llm = "llm_for_swe"
+model = "llm_for_swe"
 system_prompt = """
 You are an expert at extracting testing strategies and procedures from software documentation.
 """
-prompt_template = """
+prompt = """
 Extract testing strategy information from the following documentation:
 
 @repo_text
@@ -150,14 +150,14 @@ Return the information in a structured format. If any category is not found, omi
 
 [pipe.extract_contextual_guidelines]
 type = "PipeLLM"
-definition = "Extract contextual development guidelines from documentation"
+description = "Extract contextual development guidelines from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "ContextualGuidelinesDoc"
-llm = "llm_for_swe"
+model = "llm_for_swe"
 system_prompt = """
 You are an expert at extracting contextual development guidelines and conventions from software documentation.
 """
-prompt_template = """
+prompt = """
 Extract contextual guidelines from the following documentation:
 
 @repo_text
@@ -173,14 +173,14 @@ Return the information in a structured format. If any category is not found, omi
 
 [pipe.extract_collaboration]
 type = "PipeLLM"
-definition = "Extract collaboration and workflow information from documentation"
+description = "Extract collaboration and workflow information from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "CollaborationDoc"
-llm = "llm_for_swe"
+model = "llm_for_swe"
 system_prompt = """
 You are an expert at extracting collaboration processes and workflow information from software documentation.
 """
-prompt_template = """
+prompt = """
 Extract collaboration and workflow information from the following documentation:
 
 @repo_text
@@ -198,14 +198,14 @@ Return the information in a structured format. If any category is not found, omi
 
 [pipe.extract_features_recap]
 type = "PipeLLM"
-definition = "Extract and analyze software features from documentation to create a comprehensive feature overview"
+description = "Extract and analyze software features from documentation to create a comprehensive feature overview"
 inputs = { repo_text = "SoftwareDoc" }
 output = "SoftwareFeaturesRecap"
-llm = "llm_for_swe"
+model = "llm_for_swe"
 system_prompt = """
 You are a product analyst and technical writer specializing in software feature analysis. Your task is to analyze software documentation and create compelling feature presentations that highlight capabilities, strengths, and potential limitations.
 """
-prompt_template = """
+prompt = """
 Analyze the following software documentation and create a comprehensive features recap:
 
 @repo_text

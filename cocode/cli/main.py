@@ -64,7 +64,7 @@ app.add_typer(github_app, name="github", help="GitHub-related operations and uti
 @app.callback(invoke_without_command=True)
 def main(ctx: TyperContext) -> None:
     """Initialize Pipelex system before any command runs."""
-    Pipelex.make(relative_config_folder_path="../pipelex_libraries")
+    Pipelex.make()
 
     if ctx.invoked_subcommand is None:
         print(ctx.get_help())

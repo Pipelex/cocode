@@ -1,7 +1,8 @@
 from enum import Enum
 from typing import List, Optional
 
-from pipelex.core.stuffs.stuff_content import StructuredContent
+from pipelex.core.stuffs.structured_content import StructuredContent
+from pipelex.tools.typing.pydantic_utils import empty_list_factory_of
 from pydantic import Field
 
 
@@ -52,7 +53,9 @@ class DocumentationItem(StructuredContent):
     description: str = Field(description="Brief description of what changed")
     reason_for_update: str = Field(description="Why documentation needs updating")
     affected_doc_files: List[str] = Field(description="Specific documentation files that need updates")
-    git_citations: List[GitDiffCitation] = Field(default_factory=list, description="Git diff citations supporting this change")
+    git_citations: List[GitDiffCitation] = Field(
+        default_factory=empty_list_factory_of(GitDiffCitation), description="Git diff citations supporting this change"
+    )
 
 
 class DocumentationAnalysis(StructuredContent):
@@ -64,7 +67,9 @@ class DocumentationAnalysis(StructuredContent):
     content_location: str = Field(description="Where in files to make changes")
     specific_content: str = Field(description="Exact text to add/modify/remove")
     impact_reasoning: str = Field(description="Why this change affects documentation")
-    git_citations: List[GitDiffCitation] = Field(default_factory=list, description="Git diff citations supporting this analysis")
+    git_citations: List[GitDiffCitation] = Field(
+        default_factory=empty_list_factory_of(GitDiffCitation), description="Git diff citations supporting this analysis"
+    )
 
 
 class DocumentationChangeItem(StructuredContent):
@@ -74,8 +79,12 @@ class DocumentationChangeItem(StructuredContent):
     location: str = Field(description="Specific location within the file (e.g., section, line number)")
     content_description: str = Field(description="Description of what content needs to be updated")
     change_reason: str = Field(description="Why this change is needed")
-    exact_changes: List[ExactChange] = Field(default_factory=list, description="Exact old/new patterns for specific changes")
-    git_citations: List[GitDiffCitation] = Field(default_factory=list, description="Git diff citations supporting this change")
+    exact_changes: List[ExactChange] = Field(
+        default_factory=empty_list_factory_of(ExactChange), description="Exact old/new patterns for specific changes"
+    )
+    git_citations: List[GitDiffCitation] = Field(
+        default_factory=empty_list_factory_of(GitDiffCitation), description="Git diff citations supporting this change"
+    )
 
 
 class AIInstructionFileAnalysis(StructuredContent):
@@ -112,5 +121,5 @@ class DocumentationSuggestions(StructuredContent):
 
     documentation_updates_prompt: str = Field(description="Complete prompt text for documentation updates")
     structured_changes: List[DocumentationChangeItem] = Field(
-        default_factory=list, description="Structured list of documentation changes with git citations"
+        default_factory=empty_list_factory_of(DocumentationChangeItem), description="Structured list of documentation changes with git citations"
     )

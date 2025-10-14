@@ -11,7 +11,7 @@ from typing import List, Optional, Tuple
 from urllib.parse import urlparse
 
 from pipelex import log
-from pipelex.tools.environment import get_optional_env
+from pipelex.system.environment import get_optional_env
 
 from .github_wrapper import GithubWrapper
 

@@ -6,7 +6,7 @@ import asyncio
 from typing import Annotated, List, Optional
 
 import typer
-from pipelex.core.pipes.pipe_run_params import PipeRunMode
+from pipelex.pipe_run.pipe_run_params import PipeRunMode
 
 from cocode.common import PipeCode, get_output_dir, validate_repo_path
 from cocode.repox.models import OutputStyle
@@ -36,9 +36,9 @@ def repo_extract_fundamentals_cmd(
         str,
         typer.Option("--output-filename", "-n", help="Output filename"),
     ] = "fundamentals.json",
-    ignore_patterns: Annotated[
+    exclude_patterns: Annotated[
         Optional[List[str]],
-        typer.Option("--ignore-pattern", "-i", help="List of patterns to ignore (in gitignore format)"),
+        typer.Option("--exclude-pattern", "-i", help="List of patterns to ignore (in gitignore format)"),
     ] = None,
     python_processing_rule: Annotated[
         PythonProcessingRule,
@@ -73,7 +73,7 @@ def repo_extract_fundamentals_cmd(
         swe_from_repo(
             pipe_code=PipeCode.EXTRACT_FUNDAMENTALS,
             repo_path=repo_path,
-            ignore_patterns=ignore_patterns,
+            exclude_patterns=exclude_patterns,
             include_patterns=include_patterns,
             path_pattern=path_pattern,
             python_processing_rule=python_processing_rule,

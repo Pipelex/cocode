@@ -2,7 +2,7 @@ import subprocess
 from typing import Dict, List, Tuple
 
 import github
-from pipelex.tools.environment import get_optional_env
+from pipelex.system.environment import get_optional_env
 
 
 class GithubWrapperError(Exception):

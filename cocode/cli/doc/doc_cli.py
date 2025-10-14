@@ -38,10 +38,10 @@ def doc_update_cmd(
         str,
         typer.Option("--output-filename", "-n", help="Output filename"),
     ] = "doc-update-suggestions.txt",
-    ignore_patterns: Annotated[
+    exclude_patterns: Annotated[
         Optional[List[str]],
         typer.Option(
-            "--ignore-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
+            "--exclude-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
         ),
     ] = None,
     doc_dir: Annotated[
@@ -61,7 +61,7 @@ def doc_update_cmd(
             version=version,
             output_filename=output_filename,
             output_dir=output_dir,
-            ignore_patterns=ignore_patterns,
+            exclude_patterns=exclude_patterns,
         )
     )
 
@@ -90,9 +90,9 @@ def doc_proofread_cmd(
         Optional[List[str]],
         typer.Option("--include-pattern", "-r", help="Patterns to include in codebase analysis (glob pattern) - can be repeated"),
     ] = None,
-    ignore_patterns: Annotated[
+    exclude_patterns: Annotated[
         Optional[List[str]],
-        typer.Option("--ignore-pattern", "-i", help="Patterns to ignore in codebase analysis (gitignore format) - can be repeated"),
+        typer.Option("--exclude-pattern", "-i", help="Patterns to ignore in codebase analysis (gitignore format) - can be repeated"),
     ] = None,
 ) -> None:
     """
@@ -106,8 +106,8 @@ def doc_proofread_cmd(
         include_patterns = ["*.md", "*.py", "*.toml", "*.yaml", "*.yml", "*.json", "*.sh", "*.js", "*.ts"]
 
     # Set default ignore patterns to exclude noise
-    if ignore_patterns is None:
-        ignore_patterns = [
+    if exclude_patterns is None:
+        exclude_patterns = [
             "__pycache__/",
             "*.pyc",
             ".git/",
@@ -127,7 +127,7 @@ def doc_proofread_cmd(
             output_filename=output_filename,
             output_dir=output_dir,
             include_patterns=include_patterns,
-            ignore_patterns=ignore_patterns,
+            exclude_patterns=exclude_patterns,
         )
     )
 

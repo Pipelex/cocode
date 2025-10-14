@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 from pipelex import log
-from pipelex.tools.exceptions import RootException
+from pipelex.system.exceptions import RootException
 from pipelex.tools.misc.file_utils import load_text_from_path
 from pipelex.tools.misc.filetype_utils import FileType, detect_file_type_from_path
 
@@ -194,8 +194,17 @@ def determine_text_file_type(file_path: str) -> FileType:
     return FileType(extension=extension, mime=mime)
 
 
-def run_git_diff_command(repo_path: str, version: str, ignore_patterns: Optional[List[str]] = None) -> str:
-    """Run git diff command comparing current version to specified version."""
+def run_git_diff_command(
+    repo_path: str, version: str, include_patterns: Optional[List[str]] = None, exclude_patterns: Optional[List[str]] = None
+) -> str:
+    """Run git diff command comparing current version to specified version.
+
+    Args:
+        repo_path: Path to the git repository
+        version: Git version/commit to compare against
+        include_patterns: Patterns to include in diff (if not provided, includes all files)
+        exclude_patterns: Patterns to exclude from diff (applied after include_patterns)
+    """
     if shutil.which("git") is None:
         raise RuntimeError(
             """The 'git' command is not available.
@@ -205,7 +214,7 @@ def run_git_diff_command(repo_path: str, version: str, ignore_patterns: Optional
 
     try:
         # Default patterns to exclude from diff
-        default_ignore_patterns = [
+        default_exclude_patterns = [
             "uv.lock",
             "poetry.lock",
             "node_modules",
@@ -225,20 +234,27 @@ def run_git_diff_command(repo_path: str, version: str, ignore_patterns: Optional
         ]
 
         # Combine default patterns with user-provided patterns
-        all_ignore_patterns = default_ignore_patterns + (ignore_patterns or [])
+        all_exclude_patterns = default_exclude_patterns + (exclude_patterns or [])
 
-        # Build git command with exclusions
+        # Build git command with inclusions and exclusions
         git_cmd = [
             "git",
             "diff",
             version,
             "--unified=0",
             "--",
-            ".",
         ]
 
+        # Add inclusion patterns first (if provided)
+        if include_patterns:
+            for pattern in include_patterns:
+                git_cmd.append(pattern)
+        else:
+            # If no include patterns, include all files
+            git_cmd.append(".")
+
         # Add exclusion patterns
-        for pattern in all_ignore_patterns:
+        for pattern in all_exclude_patterns:
             git_cmd.append(f":(exclude){pattern}")
 
         # Change to the repository directory and run git diff

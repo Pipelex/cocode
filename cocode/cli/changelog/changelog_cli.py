@@ -6,8 +6,8 @@ import asyncio
 from typing import Annotated, List, Optional
 
 import typer
-from pipelex.core.pipes.pipe_run_params import PipeRunMode
 from pipelex.hub import get_pipeline_tracker
+from pipelex.pipe_run.pipe_run_params import PipeRunMode
 
 from cocode.common import get_output_dir, validate_repo_path
 from cocode.swe.swe_cmd import swe_from_repo_diff
@@ -43,10 +43,18 @@ def changelog_update_cmd(
         bool,
         typer.Option("--dry", help="Run pipeline in dry mode (no actual execution)"),
     ] = False,
-    ignore_patterns: Annotated[
+    include_patterns: Annotated[
         Optional[List[str]],
         typer.Option(
-            "--ignore-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
+            "--include-pattern",
+            help="Patterns to include in git diff (e.g., '*.py', 'src/', 'docs/'). "
+            "Can be specified multiple times. If not provided, includes all files.",
+        ),
+    ] = None,
+    exclude_patterns: Annotated[
+        Optional[List[str]],
+        typer.Option(
+            "--exclude-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
         ),
     ] = None,
 ) -> None:
@@ -65,7 +73,8 @@ def changelog_update_cmd(
             output_dir=output_dir,
             to_stdout=to_stdout,
             pipe_run_mode=pipe_run_mode,
-            ignore_patterns=ignore_patterns,
+            include_patterns=include_patterns,
+            exclude_patterns=exclude_patterns,
         )
     )
     get_pipeline_tracker().output_flowchart()

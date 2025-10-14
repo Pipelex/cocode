@@ -38,10 +38,10 @@ def ai_instructions_update_cmd(
         str,
         typer.Option("--output-filename", "-n", help="Output filename"),
     ] = "ai-instruction-update-suggestions.txt",
-    ignore_patterns: Annotated[
+    exclude_patterns: Annotated[
         Optional[List[str]],
         typer.Option(
-            "--ignore-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
+            "--exclude-pattern", "-i", help="Patterns to exclude from git diff (e.g., '*.log', 'temp/', 'build/'). Can be specified multiple times."
         ),
     ] = None,
 ) -> None:
@@ -57,7 +57,7 @@ def ai_instructions_update_cmd(
             version=version,
             output_filename=output_filename,
             output_dir=output_dir,
-            ignore_patterns=ignore_patterns,
+            exclude_patterns=exclude_patterns,
         )
     )
 

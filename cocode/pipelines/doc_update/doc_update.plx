@@ -1,5 +1,5 @@
 domain = "doc_update"
-definition = "Pipeline for updating documentation in docs/ directory based on git diff"
+description = "Pipeline for updating documentation in docs/ directory based on git diff"
 
 [concept]
 GitDiffCitation = "A citation from the git diff that supports a documentation change"
@@ -13,7 +13,7 @@ DocumentationSuggestions = "Final suggestions for updating documentation"
 
 [pipe.extract_git_citations]
 type = "PipeLLM"
-definition = "Extract relevant git diff citations for documentation changes with old/new code patterns"
+description = "Extract relevant git diff citations for documentation changes with old/new code patterns"
 inputs = { git_diff = "swe_diff.GitDiff" }
 output = "GitDiffCitation"
 multiple_output = true
@@ -23,7 +23,7 @@ IMPORTANT: The git diff shows changes from CURRENT version to an OLD version, so
 - Lines with "+" are what was ADDED in the current version (what documentation should reflect)
 - Lines with "-" are what was REMOVED from the old version (what documentation should no longer show)
 """
-prompt_template = """
+prompt = """
 Analyze this git diff and extract citations for changes that affect user-facing documentation:
 
 @git_diff
@@ -60,7 +60,7 @@ For each citation, identify what the CURRENT code does (+ lines) vs what the OLD
 
 [pipe.identify_doc_changes]
 type = "PipeLLM"
-definition = "Identify changes that affect documentation with specific patterns"
+description = "Identify changes that affect documentation with specific patterns"
 inputs = { git_diff = "swe_diff.GitDiff", git_citations = "GitDiffCitation" }
 output = "DocumentationItem"
 multiple_output = true
@@ -69,7 +69,7 @@ You are a documentation analyst. Identify changes that affect documentation in t
 IMPORTANT: The git diff shows CURRENT → OLD, so focus on what the CURRENT version does that documentation should reflect.
 Use the provided git citations to support your analysis and identify exact patterns that changed.
 """
-prompt_template = """
+prompt = """
 Analyze this git diff to identify changes that need docs/ directory updates:
 
 @git_diff
@@ -101,7 +101,7 @@ For each change, include relevant git citations that show what the CURRENT versi
 
 [pipe.analyze_doc_change]
 type = "PipeLLM"
-definition = "Analyze a single change for specific documentation impact with exact patterns"
+description = "Analyze a single change for specific documentation impact with exact patterns"
 inputs = { change_item = "DocumentationItem" }
 output = "DocumentationAnalysis"
 system_prompt = """
@@ -109,7 +109,7 @@ You are a documentation expert. Analyze code changes to determine what specific 
 Focus on docs/ directory files only. Provide exact patterns that need to be changed in documentation.
 IMPORTANT: The changes show CURRENT → OLD, so ensure documentation reflects the CURRENT state.
 """
-prompt_template = """
+prompt = """
 Analyze this change for specific documentation impact:
 
 @change_item
@@ -128,7 +128,7 @@ Be very specific about the exact text patterns that need to be updated in the do
 
 [pipe.create_structured_changes]
 type = "PipeLLM"
-definition = "Create structured documentation changes with exact old/new patterns"
+description = "Create structured documentation changes with exact old/new patterns"
 inputs = { doc_analyses = "DocumentationAnalysis" }
 output = "DocumentationChangeItem"
 multiple_output = true
@@ -137,7 +137,7 @@ You are a documentation coordinator. Convert documentation analyses into structu
 Each change should include specific file paths, locations, exact old patterns to find, and exact new patterns to replace with.
 IMPORTANT: Ensure the new patterns reflect the CURRENT state of the code.
 """
-prompt_template = """
+prompt = """
 Convert these documentation analyses into structured changes with exact patterns:
 
 @doc_analyses
@@ -167,7 +167,7 @@ Make each change as specific and actionable as possible, ensuring documentation 
 
 [pipe.format_final_output]
 type = "PipeLLM"
-definition = "Format the final documentation update output with clean structure"
+description = "Format the final documentation update output with clean structure"
 inputs = { structured_changes = "DocumentationChangeItem" }
 output = "Text"
 system_prompt = """
@@ -175,7 +175,7 @@ You are a documentation formatter. Create a clean, well-structured output for do
 Focus on clarity and actionability without unnecessary formatting complexity.
 IMPORTANT: Ensure all suggestions reflect updating documentation to match the CURRENT code state.
 """
-prompt_template = """
+prompt = """
 Format these documentation changes into a clean, actionable output:
 
 @structured_changes
@@ -227,7 +227,7 @@ Keep it simple, clear, and actionable. Focus on updating documentation to accura
 
 [pipe.doc_update]
 type = "PipeSequence"
-definition = "Documentation update analysis with clean output formatting"
+description = "Documentation update analysis with clean output formatting"
 inputs = { git_diff = "swe_diff.GitDiff" }
 output = "Text"
 steps = [

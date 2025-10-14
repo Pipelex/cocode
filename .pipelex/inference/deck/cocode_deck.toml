@@ -1,9 +1,8 @@
-
-
 ####################################################################################################
-# LLM Deck overrides
+# LLM Presets
 ####################################################################################################
 
-[llm.choice_overrides]
-for_text = "disabled"
-for_object = "disabled"
+[llm.presets]
+
+llm_for_swe = { model = "smart_llm", temperature = 0.1 }
+llm_for_git_diff = { model = "llm_for_large_codebase", temperature = 0.1 }
