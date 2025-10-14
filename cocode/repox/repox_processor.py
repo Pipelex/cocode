@@ -16,7 +16,7 @@ from typing import Callable, Dict, List, Optional, Set, Tuple
 import pathspec
 from pathspec import PathSpec
 from pipelex import log
-from pipelex.tools.exceptions import RootException
+from pipelex.system.exceptions import RootException
 from pipelex.tools.misc.filetype_utils import FileType, FileTypeException
 
 from cocode.repox.models import OutputStyle

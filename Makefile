@@ -45,7 +45,6 @@ make install                  - Create local virtualenv & install all dependenci
 make install-latest           - Install dependencies with latest versions (ignores lock file)
 make update                   - Upgrade dependencies via uv
 make validate                 - Run the setup sequence to validate the config and libraries
-make init                     - Run pipelex init-libraries and init-config
 
 make format                   - format with ruff format
 make lint                     - lint with ruff check
@@ -58,7 +57,6 @@ make cleanlibraries           - Remove pipelex_libraries
 make cleanresults             - Remove results directory
 make cr                       - Shorthand -> cleanresults
 make cleanall                 - Remove all -> cleanenv + cleanderived + cleanlibraries
-make reinitbaselibrary        - Remove pipelex_libraries and init libraries again
 make reinstall                - Reinstall dependencies
 
 make merge-check-ruff-lint    - Run ruff merge check without updating files
@@ -139,6 +137,7 @@ install: env
 	@. $(VIRTUAL_ENV)/bin/activate && \
 	uv sync --all-extras --no-cache && \
 	echo "Installed dependencies in ${VIRTUAL_ENV}";
+	
 install-latest: env
 	$(call PRINT_TITLE,"Installing dependencies with latest versions")
 	@. $(VIRTUAL_ENV)/bin/activate && \
@@ -159,11 +158,6 @@ update: env
 validate: env
 	$(call PRINT_TITLE,"Running setup sequence")
 	$(VENV_PIPELEX) validate all
-
-init: env
-	$(call PRINT_TITLE,"Running pipelex init-libraries and init-config")
-	$(VENV_PIPELEX) init-libraries
-	$(VENV_PIPELEX) init-config
 
 ##############################################################################################
 ############################      Cleaning                        ############################
@@ -206,12 +200,6 @@ cleanresults:
 
 cr: cleanresults
 	@echo "> done: cr = cleanresults"
-
-reinitbaselibrary: cleanbaselibrary init
-	@echo "Reinitialized pipelex base library";
-
-rl: reinitbaselibrary
-	@echo "> done: rl = reinitlibraries"
 
 reinstall: cleanenv cleanlock install
 	@echo "Reinstalled dependencies";

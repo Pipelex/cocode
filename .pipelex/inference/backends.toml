@@ -13,7 +13,7 @@ enabled = false
 aws_region = "${AWS_REGION}"
 
 [google]
-enabled = false
+enabled = true
 api_key = "${GOOGLE_API_KEY}"
 
 [vertexai]
@@ -55,4 +55,3 @@ api_key = "${FAL_API_KEY}"
 
 [internal] # software-only backend, runs internally, without AI
 enabled = true
-

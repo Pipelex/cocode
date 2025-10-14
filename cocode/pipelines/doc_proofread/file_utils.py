@@ -3,7 +3,7 @@ from typing import List
 
 from pipelex.core.memory.working_memory import WorkingMemory
 from pipelex.core.stuffs.list_content import ListContent
-from pipelex.tools.func_registry import func_registry, pipe_func
+from pipelex.system.registries.func_registry import func_registry, pipe_func
 
 from cocode.pipelines.doc_proofread.doc_proofread_models import CodebaseFileContent, DocumentationFile, FilePath
 
