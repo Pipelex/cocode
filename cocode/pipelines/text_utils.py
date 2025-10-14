@@ -5,7 +5,7 @@ from pipelex.core.memory.working_memory import WorkingMemory
 from pipelex.core.stuffs.list_content import ListContent
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pipelex.core.stuffs.text_content import TextContent
-from pipelex.system.registries.func_registry import func_registry, pipe_func
+from pipelex.system.registries.func_registry import func_registry
 from pydantic import Field
 
 
