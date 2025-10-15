@@ -511,7 +511,7 @@ wheels = [
 
 [[package]]
 name = "cocode"
-version = "0.2.3"
+version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "pipelex", extra = ["anthropic", "bedrock", "google", "google-genai"] },
@@ -551,7 +551,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
     { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], git = "https://github.com/Pipelex/pipelex.git?rev=c5b202233bbdabe1b2beee537eeb80a976763d19" },
+    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], git = "https://github.com/Pipelex/pipelex.git" },
     { name = "pygithub", specifier = "==2.4.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
@@ -1822,8 +1822,8 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.11.0"
-source = { git = "https://github.com/Pipelex/pipelex.git?rev=c5b202233bbdabe1b2beee537eeb80a976763d19#c5b202233bbdabe1b2beee537eeb80a976763d19" }
+version = "0.12.0"
+source = { git = "https://github.com/Pipelex/pipelex.git#cc0ae6e4b30ff960544c5f2d4728d8b0df52fd46" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },

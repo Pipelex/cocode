@@ -17,7 +17,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "pipelex[anthropic,google,google-genai,bedrock] @ git+https://github.com/Pipelex/pipelex.git@c5b202233bbdabe1b2beee537eeb80a976763d19",
+    "pipelex[anthropic,google,google-genai,bedrock] @ git+https://github.com/Pipelex/pipelex.git",
     "PyGithub==2.4.0",
 ]
 
