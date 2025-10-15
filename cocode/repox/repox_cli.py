@@ -34,9 +34,9 @@ def repox_convert(
         str,
         typer.Option("--output-filename", "-n", help="Output filename"),
     ] = "repo-to-text.txt",
-    ignore_patterns: Annotated[
+    exclude_patterns: Annotated[
         Optional[List[str]],
-        typer.Option("--ignore-pattern", "-i", help="List of patterns to ignore (in gitignore format)"),
+        typer.Option("--exclude-pattern", "-i", help="List of patterns to ignore (in gitignore format)"),
     ] = None,
     python_processing_rule: Annotated[
         PythonProcessingRule,
@@ -64,7 +64,7 @@ def repox_convert(
 
     repox_command(
         repo_path=repo_path,
-        ignore_patterns=ignore_patterns,
+        exclude_patterns=exclude_patterns,
         include_patterns=include_patterns,
         path_pattern=path_pattern,
         python_processing_rule=python_processing_rule,
@@ -90,9 +90,9 @@ def repox_repo(
         str,
         typer.Option("--output-filename", "-n", help="Output filename"),
     ] = "repo-to-text.txt",
-    ignore_patterns: Annotated[
+    exclude_patterns: Annotated[
         Optional[List[str]],
-        typer.Option("--ignore-pattern", "-i", help="List of patterns to ignore (in gitignore format)"),
+        typer.Option("--exclude-pattern", "-i", help="List of patterns to ignore (in gitignore format)"),
     ] = None,
     python_processing_rule: Annotated[
         PythonProcessingRule,
@@ -118,7 +118,7 @@ def repox_repo(
         repo_path=repo_path,
         output_dir=output_dir,
         output_filename=output_filename,
-        ignore_patterns=ignore_patterns,
+        exclude_patterns=exclude_patterns,
         python_processing_rule=python_processing_rule,
         output_style=output_style,
         include_patterns=include_patterns,

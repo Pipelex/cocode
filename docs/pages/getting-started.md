@@ -50,7 +50,7 @@ cocode repox --output-filename my-analysis.txt
 cocode repox --include-pattern "*.py"
 
 # Exclude tests
-cocode repox --ignore-pattern "test_*"
+cocode repox --exclude-pattern "test_*"
 
 # Specific directory
 cocode repox --path-pattern "src"

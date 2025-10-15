@@ -17,7 +17,7 @@ VENV_MKDOCS := $(VIRTUAL_ENV)/bin/mkdocs
 
 UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
 
-USUAL_PYTEST_MARKERS := "(dry_runnable or not (inference or llm or imgg or ocr)) and not (needs_output or pipelex_api)"
+USUAL_PYTEST_MARKERS := "(dry_runnable or not (inference or llm or imgg or extract)) and not (needs_output or pipelex_api)"
 
 define PRINT_TITLE
     $(eval PROJECT_PART := [$(PROJECT_NAME)])
@@ -45,7 +45,6 @@ make install                  - Create local virtualenv & install all dependenci
 make install-latest           - Install dependencies with latest versions (ignores lock file)
 make update                   - Upgrade dependencies via uv
 make validate                 - Run the setup sequence to validate the config and libraries
-make init                     - Run pipelex init-libraries and init-config
 
 make format                   - format with ruff format
 make lint                     - lint with ruff check
@@ -58,7 +57,6 @@ make cleanlibraries           - Remove pipelex_libraries
 make cleanresults             - Remove results directory
 make cr                       - Shorthand -> cleanresults
 make cleanall                 - Remove all -> cleanenv + cleanderived + cleanlibraries
-make reinitbaselibrary        - Remove pipelex_libraries and init libraries again
 make reinstall                - Reinstall dependencies
 
 make merge-check-ruff-lint    - Run ruff merge check without updating files
@@ -75,10 +73,9 @@ make test                     - Run unit tests (no inference)
 make test-with-prints         - Run tests with prints (no inference)
 make t                        - Shorthand -> test-with-prints
 make tp                       - Shorthand -> test-with-prints
+make tb                       - Shorthand -> `make test-with-prints TEST=test_boot`
 make test-inference           - Run unit tests only for inference (with prints)
 make ti                       - Shorthand -> test-inference
-make test-imgg                - Run unit tests only for imgg (with prints)
-make test-g					  - Shorthand -> test-imgg
 
 make check-unused-imports     - Check for unused imports without fixing
 make fix-unused-imports       - Fix unused imports with ruff
@@ -138,8 +135,9 @@ env: check-uv
 install: env
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
-	uv sync --all-extras && \
+	uv sync --all-extras --no-cache && \
 	echo "Installed dependencies in ${VIRTUAL_ENV}";
+	
 install-latest: env
 	$(call PRINT_TITLE,"Installing dependencies with latest versions")
 	@. $(VIRTUAL_ENV)/bin/activate && \
@@ -159,12 +157,7 @@ update: env
 
 validate: env
 	$(call PRINT_TITLE,"Running setup sequence")
-	$(VENV_PIPELEX) validate all -c cocode/pipelex_libraries
-
-init: env
-	$(call PRINT_TITLE,"Running pipelex init-libraries and init-config")
-	$(VENV_PIPELEX) init-libraries
-	$(VENV_PIPELEX) init-config
+	$(VENV_PIPELEX) validate all
 
 ##############################################################################################
 ############################      Cleaning                        ############################
@@ -207,12 +200,6 @@ cleanresults:
 
 cr: cleanresults
 	@echo "> done: cr = cleanresults"
-
-reinitbaselibrary: cleanbaselibrary init
-	@echo "Reinitialized pipelex base library";
-
-rl: reinitbaselibrary
-	@echo "> done: rl = reinitlibraries"
 
 reinstall: cleanenv cleanlock install
 	@echo "Reinstalled dependencies";
@@ -288,6 +275,12 @@ t: test-with-prints
 tp: test-with-prints
 	@echo "> done: tp = test-with-prints"
 
+tb: env
+	$(call PRINT_TITLE,"Unit testing a simple boot")
+	@echo "• Running unit test test_boot"
+	$(VENV_PYTEST) -s -m $(USUAL_PYTEST_MARKERS) -k "test_boot" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,)));
+
+
 test-inference: env
 	$(call PRINT_TITLE,"Unit testing")
 	@if [ -n "$(TEST)" ]; then \
@@ -334,8 +327,7 @@ lint: env
 
 pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
-	$(VENV_PYRIGHT) --pythonpath $(VENV_PYTHON)  && \
-	echo "Done typechecking with pyright — disregard warning about latest version, it's giving us false positives"
+	$(VENV_PYRIGHT) --pythonpath $(VENV_PYTHON) --project pyproject.toml
 
 mypy: env
 	$(call PRINT_TITLE,"Typechecking with mypy")

@@ -40,16 +40,16 @@ Some complex pipelines require GCP credentials (See [GCP credentials](https://do
 ### Automatic Documentation & Release Features
 ```bash
 # Update documentation based on code changes
-cocode swe doc-update v1.0.0 path/to/your/local/repository
+cocode doc update v1.0.0 path/to/your/local/repository
 
 # Proofread documentation against codebase
-cocode swe doc-proofread --doc-dir docs path/to/your/local/repository # Requires GCP credentials for Gemini
+cocode doc proofread --doc-dir docs path/to/your/local/repository # Requires GCP credentials for Gemini
 
 # Generate changelog from version diff
-cocode swe from-repo-diff write_changelog v1.0.0 path/to/your/local/repository # Requires Anthropic API key for claude
+cocode changelog update v1.0.0 path/to/your/local/repository # Requires Anthropic API key for claude
 
 # Update AI instructions (AGENTS.md, CLAUDE.md, cursor rules) based on code changes
-cocode swe ai-instruction-update v1.0.0 path/to/your/local/repository
+cocode ai_instructions update v1.0.0 path/to/your/local/repository
 
 # GitHub operations
 cocode github auth  # Check GitHub authentication status
@@ -124,6 +124,18 @@ cocode github sync-labels pipelex/cocode ./labels.json --delete-extra
 
 ### Commands for Other Features
 
+#### Code Analysis
+```bash
+# Analyze git diff with a specific prompt/query
+cocode analyze diff v1.0.0 --prompt "What are the main architectural changes in this update?"
+
+# Analyze security-related changes
+cocode analyze diff HEAD~10 --prompt "Identify any security vulnerabilities or improvements"
+
+# Analyze performance impacts
+cocode analyze diff main --prompt "What changes might affect application performance?"
+```
+
 ## ⚠️ Limitations
 
 This tool is in early development! There are many things to fix and improve. You may encounter bugs, incomplete features, or unexpected behavior. We're actively working on making Cocode more robust and user-friendly.
@@ -151,10 +163,10 @@ cocode repox convert --python-rule imports --output-style import_list
 #### AI-Powered Analysis
 ```bash
 # Extract project fundamentals
-cocode swe from-repo extract_fundamentals . --output-filename overview.json
+cocode repo extract_fundamentals . --output-filename overview.json
 
 # Generate feature documentation
-cocode swe from-file extract_features_recap ./analysis.txt --output-filename features.md
+cocode features extract ./analysis.txt --output-filename features.md
 ```
 
 ## 🔧 Configuration

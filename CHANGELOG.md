@@ -1,5 +1,38 @@
 # Changelog
 
+## [v0.3.0] - 2025-10-15
+
+### Highlights
+- Bump `pipelex` to `v0.12.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+- Major overhaul of Pipelex language syntax and inference configuration system
+
+### Added
+- `analyze` command for analyzing git diffs with custom prompts
+- Migration guide for upgrading to v0.3.0
+- Granular documentation guides: `write_pipelex.mdc`, `python_standards.mdc`, `run_pipelex.mdc`
+- Inference backend configurations for `google`
+
+### Changed
+- **Breaking**: Overhauled Pipelex language syntax: `definition` → `description`, `llm` → `model`, `prompt_template` → `prompt`, `PipeOcr` → `PipeExtract`, `PipeJinja2` → `PipeCompose`
+- **Breaking**: Revamped inference configuration to structured backend system in `.pipelex/inference/`
+- **Breaking**: Renamed CLI flag `--ignore-pattern` → `--exclude-pattern`
+- Renamed `pipelex_libraries` directory → `pipelines`
+- Updated test markers: `ocr` → `extract`, `imgg` → `img_gen`
+- Default routing profile changed to `pipelex_first`
+
+### Removed
+- Monolithic rule files (replaced with specific guides)
+- Legacy `base_library` pipelines (functionality moved to core)
+- `init` and `reinitbaselibrary` Makefile commands
+- `base_templates.toml` (contents integrated into core)
+
+
+## [v0.2.3] - 2025-09-22
+
+### Changed
+
+- Cleaned cli commands.
+
 ## [v0.2.2] - 2025-09-18
 
 ### Highlights
