@@ -76,7 +76,7 @@ type = "PipeLLM"
 description = "Write a changelog for a software project."
 inputs = { git_diff = "GitDiff" }
 output = "StructuredChangelog"
-model = "llm_for_swe"
+model = "llm_for_git_diff"
 system_prompt = """
 You are an expert technical writer and software architect. Your task is to carefully review the code diff and write a structured changelog.
 """
