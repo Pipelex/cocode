@@ -475,7 +475,7 @@ These changes affect Python code that imports from or uses pipelex.
 ```python
 pipe_output = await execute_pipeline(
     pipe_code="ocr_page_contents_from_pdf",
-    input_memory={
+    inputs={
         "ocr_input": PDFContent(url=pdf_url),
     },
 )
@@ -485,7 +485,7 @@ pipe_output = await execute_pipeline(
 ```python
 pipe_output = await execute_pipeline(
     pipe_code="extract_page_contents_from_pdf",
-    input_memory={
+    inputs={
         "document": PDFContent(url=pdf_url),
     },
 )

@@ -62,7 +62,7 @@ async def swe_from_repo(
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
         pipe_run_mode=pipe_run_mode,
-        input_memory={"repo_text": repo_text},
+        inputs={"repo_text": repo_text},
     )
 
     get_report_delegate().generate_report()
@@ -93,7 +93,7 @@ async def swe_from_file(
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
         pipe_run_mode=pipe_run_mode,
-        input_memory={"text": text},
+        inputs={"text": text},
     )
 
     get_report_delegate().generate_report()
@@ -132,7 +132,7 @@ async def swe_from_repo_diff(
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
         pipe_run_mode=pipe_run_mode,
-        input_memory={
+        inputs={
             "git_diff": {
                 "concept": "swe_diff.GitDiff",
                 "content": git_diff,
@@ -180,7 +180,7 @@ async def swe_from_repo_diff_with_prompt(
     pipe_output = await execute_pipeline(
         pipe_code=pipe_code,
         pipe_run_mode=pipe_run_mode,
-        input_memory={
+        inputs={
             "git_diff": {
                 "concept": "swe_diff.GitDiff",
                 "content": git_diff,
@@ -216,7 +216,7 @@ async def swe_doc_update_from_diff(
 
     pipe_output = await execute_pipeline(
         pipe_code="doc_update",
-        input_memory={
+        inputs={
             "git_diff": {
                 "concept": "swe_diff.GitDiff",
                 "content": git_diff,
@@ -295,7 +295,7 @@ async def swe_ai_instruction_update_from_diff(
 
     pipe_output = await execute_pipeline(
         pipe_code="ai_instruction_update",
-        working_memory=working_memory,
+        inputs=working_memory,
     )
 
     pretty_print(pipe_output, title="AI Instruction Update Analysis")
@@ -369,7 +369,7 @@ async def swe_doc_proofread(
 
     pipe_output = await execute_pipeline(
         pipe_code="doc_proofread",
-        working_memory=working_memory,
+        inputs=working_memory,
     )
 
     main_stuff = pipe_output.working_memory.get_stuff("all_inconsistencies")

@@ -23,7 +23,7 @@ Streamline your documentation workflow with AI-powered automation:
 pip install cocode
 ```
 
-Important: the current version of Cocode only works when run from its own directory.
+Important: the current version of Cocode only works when run from the cocode directory.
 
 ## ✅ Validation
 
