@@ -15,8 +15,7 @@ MarkdownReport = "A markdown report containing documentation inconsistencies for
 type = "PipeLLM"
 description = "Find code files that implement or use elements mentioned in docs"
 inputs = { doc_file = "DocumentationFile", repo_map = "RepositoryMap" }
-output = "FilePath"
-multiple_output = true
+output = "FilePath[]"
 model = { model = "llm_for_large_codebase", temperature = 0.1 }
 model_to_structure = "cheap_llm_for_object"
 structuring_method = "preliminary_text"
@@ -38,8 +37,7 @@ Only include files with actual code evidence, not just similar names or concepts
 type = "PipeLLM"
 description = "Find major inconsistencies between docs and code"
 inputs = { doc_file = "DocumentationFile", related_files = "CodebaseFileContent" }
-output = "DocumentationInconsistency"
-multiple_output = true
+output = "DocumentationInconsistency[]"
 model = "llm_for_swe"
 system_prompt = """
 Find MAJOR inconsistencies between documentation and code that would cause user code to fail.

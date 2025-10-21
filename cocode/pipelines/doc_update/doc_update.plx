@@ -15,8 +15,7 @@ DocumentationSuggestions = "Final suggestions for updating documentation"
 type = "PipeLLM"
 description = "Extract relevant git diff citations for documentation changes with old/new code patterns"
 inputs = { git_diff = "swe_diff.GitDiff" }
-output = "GitDiffCitation"
-multiple_output = true
+output = "GitDiffCitation[]"
 system_prompt = """
 You are a git diff analyzer. Extract specific citations from git diffs that show changes affecting user-facing functionality.
 IMPORTANT: The git diff shows changes from CURRENT version to an OLD version, so interpret accordingly:
@@ -62,8 +61,7 @@ For each citation, identify what the CURRENT code does (+ lines) vs what the OLD
 type = "PipeLLM"
 description = "Identify changes that affect documentation with specific patterns"
 inputs = { git_diff = "swe_diff.GitDiff", git_citations = "GitDiffCitation" }
-output = "DocumentationItem"
-multiple_output = true
+output = "DocumentationItem[]"
 system_prompt = """
 You are a documentation analyst. Identify changes that affect documentation in the docs/ directory.
 IMPORTANT: The git diff shows CURRENT → OLD, so focus on what the CURRENT version does that documentation should reflect.
@@ -130,8 +128,7 @@ Be very specific about the exact text patterns that need to be updated in the do
 type = "PipeLLM"
 description = "Create structured documentation changes with exact old/new patterns"
 inputs = { doc_analyses = "DocumentationAnalysis" }
-output = "DocumentationChangeItem"
-multiple_output = true
+output = "DocumentationChangeItem[]"
 system_prompt = """
 You are a documentation coordinator. Convert documentation analyses into structured, actionable changes with exact patterns.
 Each change should include specific file paths, locations, exact old patterns to find, and exact new patterns to replace with.

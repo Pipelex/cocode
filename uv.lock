@@ -551,7 +551,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
     { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], specifier = "==0.12.0" },
+    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], git = "https://github.com/Pipelex/pipelex.git?rev=dev" },
     { name = "pygithub", specifier = "==2.4.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
@@ -1823,7 +1823,7 @@ wheels = [
 [[package]]
 name = "pipelex"
 version = "0.12.0"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/Pipelex/pipelex.git?rev=dev#fe266cb30bce6b1c41481683b8e0589ad2bbc4ca" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
@@ -1850,10 +1850,6 @@ dependencies = [
     { name = "typer" },
     { name = "typing-extensions" },
     { name = "yattag" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/dc/43/b9390b8ea17331d9345cb894b8942bb16ea380f2f9b0f87c9a0d3e97af33/pipelex-0.12.0.tar.gz", hash = "sha256:f5a211f284ee3414fb54e02b24913c4091bae44c5466dab50bb381559c53414d", size = 283728, upload-time = "2025-10-15T11:57:53.7Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/66/0f/85bcaba17f5a63ec058c4a139e6543bc319c66de556a6ce3b764ba921779/pipelex-0.12.0-py3-none-any.whl", hash = "sha256:ae336a3ff9e693150687ff0b87b52625174b0e2828dea10b2cdcb8c71aacbef0", size = 453820, upload-time = "2025-10-15T11:57:51.647Z" },
 ]
 
 [package.optional-dependencies]
