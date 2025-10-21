@@ -22,7 +22,6 @@ def reset_pipelex_config_fixture():
         pipelex_instance.validate_libraries()
         config = get_config()
         assert isinstance(config, pipelex.config.PipelexConfig)
-        assert config.project_name == "cocode"
     except Exception as exc:
         Console().print(Traceback())
         pytest.exit(f"Critical Pipelex setup error: {exc}")

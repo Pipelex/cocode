@@ -551,7 +551,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
     { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], specifier = "==0.12.0" },
+    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], editable = "../pipelex" },
     { name = "pygithub", specifier = "==2.4.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
@@ -1823,7 +1823,7 @@ wheels = [
 [[package]]
 name = "pipelex"
 version = "0.12.0"
-source = { registry = "https://pypi.org/simple" }
+source = { editable = "../pipelex" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
@@ -1851,10 +1851,6 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/dc/43/b9390b8ea17331d9345cb894b8942bb16ea380f2f9b0f87c9a0d3e97af33/pipelex-0.12.0.tar.gz", hash = "sha256:f5a211f284ee3414fb54e02b24913c4091bae44c5466dab50bb381559c53414d", size = 283728, upload-time = "2025-10-15T11:57:53.7Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/66/0f/85bcaba17f5a63ec058c4a139e6543bc319c66de556a6ce3b764ba921779/pipelex-0.12.0-py3-none-any.whl", hash = "sha256:ae336a3ff9e693150687ff0b87b52625174b0e2828dea10b2cdcb8c71aacbef0", size = 453820, upload-time = "2025-10-15T11:57:51.647Z" },
-]
 
 [package.optional-dependencies]
 anthropic = [
@@ -1871,6 +1867,64 @@ google-genai = [
     { name = "google-genai" },
     { name = "instructor", extra = ["google-genai"] },
 ]
+
+[package.metadata]
+requires-dist = [
+    { name = "aioboto3", marker = "extra == 'bedrock'", specifier = ">=13.4.0" },
+    { name = "aiofiles", specifier = ">=23.2.1" },
+    { name = "anthropic", marker = "extra == 'anthropic'", specifier = ">=0.60.0" },
+    { name = "backports-strenum", marker = "python_full_version < '3.11'", specifier = ">=1.3.0" },
+    { name = "boto3", marker = "extra == 'bedrock'", specifier = ">=1.34.131" },
+    { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
+    { name = "cocode", marker = "extra == 'dev'", specifier = "==0.3.0" },
+    { name = "fal-client", marker = "extra == 'fal'", specifier = ">=0.4.1" },
+    { name = "filetype", specifier = ">=1.2.0" },
+    { name = "google-auth-oauthlib", marker = "extra == 'google'", specifier = ">=1.2.1" },
+    { name = "google-genai", marker = "extra == 'google-genai'" },
+    { name = "httpx", specifier = ">=0.23.0,<1.0.0" },
+    { name = "instructor", specifier = ">=1.8.3,<1.11.0" },
+    { name = "instructor", extras = ["google-genai"], marker = "extra == 'google-genai'" },
+    { name = "jinja2", specifier = ">=3.1.4" },
+    { name = "json2html", specifier = ">=1.3.0" },
+    { name = "kajson", specifier = "==0.3.1" },
+    { name = "markdown", specifier = ">=3.6" },
+    { name = "mistralai", marker = "extra == 'mistralai'", specifier = "==1.5.2" },
+    { name = "mkdocs", marker = "extra == 'docs'", specifier = "==1.6.1" },
+    { name = "mkdocs-glightbox", marker = "extra == 'docs'", specifier = "==0.4.0" },
+    { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
+    { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
+    { name = "networkx", specifier = ">=3.4.2" },
+    { name = "openai", specifier = ">=1.60.1" },
+    { name = "pillow", specifier = ">=11.2.1" },
+    { name = "polyfactory", specifier = ">=2.21.0" },
+    { name = "pydantic", specifier = "==2.10.6" },
+    { name = "pylint", marker = "extra == 'dev'", specifier = ">=3.3.8" },
+    { name = "pypdfium2", specifier = ">=4.30.0,!=4.30.1" },
+    { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
+    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
+    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=6.1.1" },
+    { name = "pytest-mock", marker = "extra == 'dev'", specifier = ">=3.14.0" },
+    { name = "pytest-sugar", marker = "extra == 'dev'", specifier = ">=1.0.0" },
+    { name = "pytest-xdist", marker = "extra == 'dev'", specifier = ">=3.6.1" },
+    { name = "python-dotenv", specifier = ">=1.0.1" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "rich", specifier = ">=13.8.1" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6.8" },
+    { name = "shortuuid", specifier = ">=1.0.13" },
+    { name = "tomli", specifier = ">=2.3.0" },
+    { name = "tomlkit", specifier = ">=0.13.2" },
+    { name = "typer", specifier = ">=0.16.0" },
+    { name = "types-aioboto3", extras = ["bedrock", "bedrock-runtime"], marker = "extra == 'dev'", specifier = ">=13.4.0" },
+    { name = "types-aiofiles", marker = "extra == 'dev'", specifier = ">=24.1.0.20240626" },
+    { name = "types-markdown", marker = "extra == 'dev'", specifier = ">=3.6.0.20240316" },
+    { name = "types-networkx", marker = "extra == 'dev'", specifier = ">=3.3.0.20241020" },
+    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = ">=6.0.12.20250326" },
+    { name = "typing-extensions", specifier = ">=4.13.2" },
+    { name = "yattag", specifier = ">=1.15.2" },
+]
+provides-extras = ["anthropic", "bedrock", "fal", "google", "google-genai", "mistralai", "docs", "dev"]
 
 [[package]]
 name = "platformdirs"
