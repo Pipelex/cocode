@@ -1010,6 +1010,26 @@ inputs = {
 
 - `output`: The name of the concept to output. The `ConceptName` should have the same name as the python class if you want structured output:
 
+#### Input Multiplicity
+
+By default, inputs expect a single item. Use bracket notation to specify multiple items:
+
+```plx
+## Single item (default)
+inputs = { document = "Text" }
+
+## Variable list - indeterminate number of items
+inputs = { documents = "Text[]" }
+
+## Fixed count - exactly N items
+inputs = { comparison_items = "Image[2]" }
+```
+
+**Key points:**
+- No brackets = single item (default behavior)
+- Use `[]` for lists of unknown length
+- Use `[N]` (where N is an integer) when operation requires exact count (e.g., comparing 2 items)
+
 ### Structuring Models
 
 Once you've defined your concepts semantically (see "Concept Definitions" above), you need to specify their structure if they have fields.
@@ -1276,22 +1296,22 @@ prompt = "Analyze this data"
 
 #### Multiple Outputs
 
-Generate multiple outputs (fixed number):
+Generate multiple outputs (fixed number) - use bracket notation:
 ```plx
 [pipe.generate_ideas]
 type = "PipeLLM"
 description = "Generate ideas"
-output = "Idea"
-nb_output = 3  # Generate exactly 3 ideas
+output = "Idea[3]"  # Generate exactly 3 ideas
+prompt = "Generate 3 ideas"
 ```
 
-Generate multiple outputs (variable number):
+Generate multiple outputs (variable number) - use bracket notation:
 ```plx
 [pipe.generate_ideas]
 type = "PipeLLM"
 description = "Generate ideas"
-output = "Idea"
-multiple_output = true  # Let the LLM decide how many to generate
+output = "Idea[]"  # Let the LLM decide how many to generate
+prompt = "Generate ideas"
 ```
 
 #### Vision
@@ -1542,8 +1562,7 @@ Multiple Image Generation:
 type = "PipeImgGen"
 description = "Generate multiple image variations"
 inputs = { prompt = "ImgGenPrompt" }
-output = "Image"
-nb_output = 3
+output = "Image[3]"
 seed = "auto"
 ```
 
@@ -1570,7 +1589,6 @@ safety_tolerance = 3
 - `quality`: Image quality ("standard", "hd")
 
 **Output Configuration:**
-- `nb_output`: Number of images to generate
 - `aspect_ratio`: Image dimensions ("1:1", "16:9", "9:16", etc.)
 - `output_format`: File format ("png", "jpeg", "webp")
 - `background`: Background type ("default", "transparent")
@@ -1724,7 +1742,7 @@ Presets are meant to record the choice of an llm with its hyper parameters (temp
 
 Examples:
 ```toml
-llm_to_reason = { model = "base-claude", temperature = 1 }
+llm_for_complex_reasoning = { model = "base-claude", temperature = 1 }
 llm_to_extract_invoice = { model = "claude-3-7-sonnet", temperature = 0.1, max_tokens = "auto" }
 ```
 
@@ -1808,7 +1826,7 @@ async def extract_gantt(image_url: str) -> GanttChart:
     # Run the pipe
     pipe_output = await execute_pipeline(
         pipe_code="extract_gantt_by_steps",
-        inputs={
+        input_memory={
             "gantt_chart_image": {
                 "concept": "gantt.GanttImage",
                 "content": ImageContent(url=image_url),
@@ -1834,7 +1852,7 @@ pretty_print(gantt_chart, title="Gantt Chart")
 The input memory is a dictionary, where the key is the name of the input variable and the value provides details to make it a stuff object. The relevant definitions are:
 ```python
 StuffContentOrData = dict[str, Any] | StuffContent | list[Any] | str
-ImplicitMemory = dict[str, StuffContentOrData]
+PipelineInputs = dict[str, StuffContentOrData]
 ```
 As you can seen, we made it so different ways can be used to define that stuff using structured content or data.
 
@@ -1847,7 +1865,7 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
 ## If you assign a string, by default it will be considered as a TextContent.
     pipe_output = await execute_pipeline(
         pipe_code="master_advisory_orchestrator",
-        inputs={
+        input_memory={
             "user_input": problem_description,
         },
     )
@@ -1857,7 +1875,7 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
 ## the system knows what content it corresponds to:
     pipe_output = await execute_pipeline(
         pipe_code="power_extractor_dpe",
-        inputs={
+        input_memory={
             "document": PDFContent(url=pdf_url),
         },
     )
@@ -1866,7 +1884,7 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
 ## Because ImageContent is a native concept, we can use it directly as a value:
     pipe_output = await execute_pipeline(
         pipe_code="fashion_variation_pipeline",
-        inputs={
+        input_memory={
             "fashion_photo": ImageContent(url=image_url),
         },
     )
@@ -1876,7 +1894,7 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
 ## so we must provide it using a dict with the concept and the content:
     pipe_output = await execute_pipeline(
         pipe_code="extract_gantt_by_steps",
-        inputs={
+        input_memory={
             "gantt_chart_image": {
                 "concept": "gantt.GanttImage",
                 "content": ImageContent(url=image_url),
@@ -1888,7 +1906,7 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
     pipe_output = await execute_pipeline(
         pipe_code="retrieve_then_answer",
         dynamic_output_concept_code="contracts.Fees",
-        inputs={
+        input_memory={
             "text": load_text_from_path(path=text_path),
             "question": {
                 "concept": "answer.Question",
@@ -2032,7 +2050,7 @@ Presets are meant to record the choice of an llm with its hyper parameters (temp
 
 Examples:
 ```toml
-llm_to_reason = { model = "base-claude", temperature = 1 }
+llm_for_complex_reasoning = { model = "base-claude", temperature = 1 }
 llm_to_extract_invoice = { model = "claude-3-7-sonnet", temperature = 0.1, max_tokens = "auto" }
 ```
 
