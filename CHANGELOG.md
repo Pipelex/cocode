@@ -180,7 +180,7 @@
 
 ### Changed
 - Simplified pipeline input handling to use inputs instead of working_memory pattern
-- Updated pipeline type definitions from CodeDiff to swe_diff.GitDiff for better naming consistency
+- Updated pipeline type definitions from CodeDiff to git.GitDiff for better naming consistency
 - Switched default LLM model from gpt-4o to claude-4-sonnet for software engineering tasks
 - Polished code related to cursor rules file detection with support for .cursor/rules directory pattern, using failable_load_text_from_path for better error handling
 

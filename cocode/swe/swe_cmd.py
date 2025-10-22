@@ -134,7 +134,7 @@ async def swe_from_repo_diff(
         pipe_run_mode=pipe_run_mode,
         inputs={
             "git_diff": {
-                "concept": "swe_diff.GitDiff",
+                "concept": "git.GitDiff",
                 "content": git_diff,
             }
         },
@@ -182,7 +182,7 @@ async def swe_from_repo_diff_with_prompt(
         pipe_run_mode=pipe_run_mode,
         inputs={
             "git_diff": {
-                "concept": "swe_diff.GitDiff",
+                "concept": "git.GitDiff",
                 "content": git_diff,
             },
             "prompt": prompt,
@@ -218,7 +218,7 @@ async def swe_doc_update_from_diff(
         pipe_code="doc_update",
         inputs={
             "git_diff": {
-                "concept": "swe_diff.GitDiff",
+                "concept": "git.GitDiff",
                 "content": git_diff,
             }
         },

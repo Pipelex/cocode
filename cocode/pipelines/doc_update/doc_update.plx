@@ -14,7 +14,7 @@ DocumentationSuggestions = "Final suggestions for updating documentation"
 [pipe.extract_git_citations]
 type = "PipeLLM"
 description = "Extract relevant git diff citations for documentation changes with old/new code patterns"
-inputs = { git_diff = "swe_diff.GitDiff" }
+inputs = { git_diff = "git.GitDiff" }
 output = "GitDiffCitation[]"
 system_prompt = """
 You are a git diff analyzer. Extract specific citations from git diffs that show changes affecting user-facing functionality.
@@ -60,7 +60,7 @@ For each citation, identify what the CURRENT code does (+ lines) vs what the OLD
 [pipe.identify_doc_changes]
 type = "PipeLLM"
 description = "Identify changes that affect documentation with specific patterns"
-inputs = { git_diff = "swe_diff.GitDiff", git_citations = "GitDiffCitation" }
+inputs = { git_diff = "git.GitDiff", git_citations = "GitDiffCitation" }
 output = "DocumentationItem[]"
 system_prompt = """
 You are a documentation analyst. Identify changes that affect documentation in the docs/ directory.
@@ -225,7 +225,7 @@ Keep it simple, clear, and actionable. Focus on updating documentation to accura
 [pipe.doc_update]
 type = "PipeSequence"
 description = "Documentation update analysis with clean output formatting"
-inputs = { git_diff = "swe_diff.GitDiff" }
+inputs = { git_diff = "git.GitDiff" }
 output = "Text"
 steps = [
     { pipe = "extract_git_citations", result = "git_citations" },
