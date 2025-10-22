@@ -10,12 +10,11 @@ DraftChangelog = "A draft changelog with sections for each type of change."
 type = "PipeSequence"
 description = "Write a comprehensive changelog for a software project"
 inputs = { git_diff = "git.GitDiff" }
-output = "MarkdownChangelog"
+output = "changelog.MarkdownChangelog"
 steps = [
     { pipe = "draft_changelog_from_git_diff", result = "draft_changelog" },
     { pipe = "polish_changelog", result = "structured_changelog" },
     { pipe = "format_changelog_as_markdown", result = "markdown_changelog" },
-    { pipe = "finalize_changelog" },
 ]
 
 [pipe.draft_changelog_from_git_diff]
@@ -50,7 +49,7 @@ Of course, not all sections are required, only include the relevant ones.
 type = "PipeLLM"
 description = "Polish and improve the draft changelog"
 inputs = { draft_changelog = "DraftChangelog" }
-output = "StructuredChangelog"
+output = "changelog.StructuredChangelog"
 model = "llm_for_swe"
 structuring_method = "preliminary_text"
 system_prompt = """
@@ -65,35 +64,5 @@ Remove redundancy in the changelog. For instance, I don't want to see the same c
 And when you see several changes that were made for the same purpose, groupd them as a single item.
 Don't add fluff, stay sharp and to the point.
 Use nice readable markdown formatting.
-
-Maintain the markdown formatting and the classic changelog sections:
-### Added
-### Changed
-### Fixed
-### Removed
-### Deprecated
-### Security
-
-Of course, not all sections are required, only include the relevant ones.
-"""
-
-[pipe.finalize_changelog]
-type = "PipeLLM"
-description = "Polish and improve the changelog"
-inputs = { structured_changelog = "StructuredChangelog" }
-output = "MarkdownChangelog"
-model = "llm_for_swe"
-system_prompt = """
-You are an expert technical writer. Your task is to polish and improve a changelog to make it more clear, concise, and well-structured.
-"""
-prompt = """
-Review and polish the following changelog:
-
-@structured_changelog
-
-Remove redundancy: I don't want to see echos between "Changed" and "Fixed" or "Added".
-Remove trivial changes.
-Keep the markdown formatting and the standard structure of the changelog.
-It's OK to remove some sections if they are empty after removing redundancy and trivial changes.
 """
 
