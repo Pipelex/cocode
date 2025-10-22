@@ -66,7 +66,7 @@ def changelog_update_cmd(
 
     asyncio.run(
         swe_from_repo_diff(
-            pipe_code="write_changelog",
+            pipe_code="write_changelog_enhanced",
             repo_path=repo_path,
             version=version,
             output_filename=output_filename,

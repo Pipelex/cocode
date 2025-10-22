@@ -14,7 +14,7 @@ AIInstructionUpdateSuggestions = "Comprehensive suggestions for updating all AI 
 [pipe.analyze_agents_md_changes]
 type = "PipeLLM"
 description = "Analyze changes needed for AGENTS.md file"
-inputs = { git_diff = "swe_diff.GitDiff", agents_content = "AgentsContent" }
+inputs = { git_diff = "git.GitDiff", agents_content = "AgentsContent" }
 output = "AIInstructionFileAnalysis"
 system_prompt = """
 You are an AI instruction expert specializing in AGENTS.md files.
@@ -66,7 +66,7 @@ Be specific about utility methods and helper functions that are part of the code
 [pipe.analyze_claude_md_changes]
 type = "PipeLLM"
 description = "Analyze changes needed for CLAUDE.md file"
-inputs = { git_diff = "swe_diff.GitDiff", claude_content = "ClaudeContent" }
+inputs = { git_diff = "git.GitDiff", claude_content = "ClaudeContent" }
 output = "AIInstructionFileAnalysis"
 system_prompt = """
 You are an AI instruction expert specializing in CLAUDE.md files.
@@ -119,7 +119,7 @@ Be specific about utility methods and helper functions that are part of the code
 [pipe.analyze_cursor_rules_changes]
 type = "PipeLLM"
 description = "Analyze changes needed for cursor rules files"
-inputs = { git_diff = "swe_diff.GitDiff", cursor_rules_content = "CursorRulesContent" }
+inputs = { git_diff = "git.GitDiff", cursor_rules_content = "CursorRulesContent" }
 output = "AIInstructionFileAnalysis"
 system_prompt = """
 You are an AI instruction expert specializing in cursor rules files.
@@ -275,7 +275,7 @@ IMPORTANT FORMATTING RULES:
 [pipe.ai_instruction_update_parallel]
 type = "PipeParallel"
 description = "Analyze changes for all AI instruction files in parallel"
-inputs = { git_diff = "swe_diff.GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
+inputs = { git_diff = "git.GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
 output = "AIInstructionParallelResults"
 parallels = [
     { pipe = "analyze_agents_md_changes", result = "agents_analysis" },
@@ -287,7 +287,7 @@ combined_output = "ai_instruction_update.AIInstructionParallelResults"
 [pipe.ai_instruction_update]
 type = "PipeSequence"
 description = "AI instruction update analysis with parallel file processing and formatting"
-inputs = { git_diff = "swe_diff.GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
+inputs = { git_diff = "git.GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
 output = "Text"
 steps = [
     { pipe = "ai_instruction_update_parallel", result = "parallel_analyses" },

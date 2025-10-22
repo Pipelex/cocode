@@ -9,9 +9,8 @@ SplitIdentifier = "Identifiers used to split large text into smaller parts"
 type = "PipeLLM"
 description = "Analyze large text and generate optimal split identifiers"
 inputs = { text = "Text" }
-output = "Text"
+output = "Text[]"
 model = { model = "llm_for_large_codebase", temperature = 0.1 }
-multiple_output = true
 system_prompt = "You are an expert at analyzing text structure and finding optimal ways to split large texts into meaningful, coherent chunks."
 prompt = """
 Analyze the following text and identify the most meaningful structural delimiters for splitting it into logical chunks.

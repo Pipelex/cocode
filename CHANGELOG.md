@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.4.0] - 2025-10-21
+
+### Added
+ - **Multiplicity syntax:** Introduced bracket notation for defining input/output multiplicity in `.plx` files: `TypeName[]` for variable items, `TypeName[N]` for fixed count (e.g., `output = "Idea[]"` or `output = "Image[3]"`)
+ - **`git` pipeline domain:** Created `git.plx` file to house `git.GitDiff` concept and related pipelines
+
+### Changed
+ - **Upgraded Pipelex:** Updated core dependency from `0.12.0` to `0.13.0` to support new multiplicity syntax
+ - **API simplification:** Renamed `execute_pipeline` parameter `input_memory` to `inputs`, internal type `ImplicitMemory` to `PipelineInputs`, and model alias `llm_to_reason` to `llm_for_complex_reasoning`
+ - **Pipeline organization:** Refactored monolithic `swe_diff.plx` into focused files (`git.plx`, `write_changelog_enhanced.plx`). Moved and renamed `swe_diff.GitDiff` to `git.GitDiff`
+ - **Changelog generation:** The `changelog update` command now uses the `write_changelog_enhanced` pipeline
+ - **Documentation:** Updated all docs (`README.md`, `AGENTS.md`, AI instruction files) to reflect new multiplicity syntax and naming conventions
+
+### Fixed
+ - **Execution context:** Added note to `README.md` clarifying that `cocode` must be run from the project's root directory
+
+### Removed
+ - **Legacy multiplicity parameters:** Removed `nb_output` and `multiple_output` parameters, replaced by bracket notation
+
 ## [v0.3.0] - 2025-10-15
 
 ### Highlights
@@ -179,8 +198,8 @@
 - New PipeCode enum values for extraction and documentation operations: EXTRACT_FUNDAMENTALS, EXTRACT_ENVIRONMENT_BUILD, EXTRACT_CODING_STANDARDS, EXTRACT_TEST_STRATEGY, EXTRACT_COLLABORATION, DOC_PROOFREAD, DOC_UPDATE, AI_INSTRUCTION_UPDATE
 
 ### Changed
-- Simplified pipeline input handling to use input_memory instead of working_memory pattern
-- Updated pipeline type definitions from CodeDiff to swe_diff.GitDiff for better naming consistency
+- Simplified pipeline input handling to use inputs instead of working_memory pattern
+- Updated pipeline type definitions from CodeDiff to git.GitDiff for better naming consistency
 - Switched default LLM model from gpt-4o to claude-4-sonnet for software engineering tasks
 - Polished code related to cursor rules file detection with support for .cursor/rules directory pattern, using failable_load_text_from_path for better error handling
 
