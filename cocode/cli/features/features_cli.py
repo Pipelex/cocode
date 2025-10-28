@@ -6,7 +6,7 @@ import asyncio
 from typing import Annotated, Optional
 
 import typer
-from pipelex.pipe_run.pipe_run_params import PipeRunMode
+from pipelex.pipe_run.pipe_run_mode import PipeRunMode
 
 from cocode.common import PipeCode, get_output_dir
 from cocode.swe.swe_cmd import swe_from_file

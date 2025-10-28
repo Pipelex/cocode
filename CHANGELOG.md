@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.5.0] - 2025-10-27
+
+- Bump `pipelex` to `v0.14.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
+### Changed
+ - Documentation Improvements: Overhauled `README.md` with a new "Get Your API Keys" section outlining three configuration methods (free `PIPELEX_API_KEY`, bring-your-own provider keys, or local AI models). Updated terminology from "AI-powered pipelines" to "AI-powered workflows".
+
+### Removed
+ - Removed unused `is_activity_tracking_enabled` option from `pipelex.toml` configuration files.
+ - Removed `reportConstantRedescription` and `reportShadowedImports` linter rules from `pyproject.toml`.
+
 ## [v0.4.0] - 2025-10-21
 
 ### Added
