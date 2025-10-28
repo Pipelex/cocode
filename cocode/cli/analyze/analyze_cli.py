@@ -7,7 +7,7 @@ from typing import Annotated, List, Optional
 
 import typer
 from pipelex.hub import get_pipeline_tracker
-from pipelex.pipe_run.pipe_run_params import PipeRunMode
+from pipelex.pipe_run.pipe_run_mode import PipeRunMode
 from pipelex.tools.misc.file_utils import load_text_from_path
 
 from cocode.common import get_output_dir, validate_repo_path

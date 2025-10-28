@@ -2,7 +2,7 @@
 
 *Cocode is the friend of your code*
 
-Cocode is a powerful command-line tool for analyzing and processing code repositories. It converts repository structures and contents into text formats, extracts code interfaces, and performs software engineering analysis using **AI-powered pipelines** using [Pipelex](https://github.com/Pipelex/pipelex).
+Cocode is a powerful command-line tool for analyzing and processing code repositories. It converts repository structures and contents into text formats, extracts code interfaces, and performs software engineering analysis using **AI-powered workflows** using [Pipelex](https://github.com/Pipelex/pipelex).
 
 <h3 align="center">Cocode demo</h3>
   <p align="center">
@@ -25,17 +25,41 @@ pip install cocode
 
 Important: the current version of Cocode only works when run from the cocode directory.
 
+## 🔑 Get Your API Keys
+
+Cocode's built-in AI workflows require access to AI models. To use the main features (changelog generation, documentation updates, proofreading), you need API keys for:
+
+- **Claude models** (Anthropic) - Required for changelog generation and documentation analysis
+- **Gemini models** (Google) - Required for documentation proofreading
+
+You have several options:
+
+### Option 1: Free Pipelex API Key (Free)
+Get free access to all models with a single API key:
+- Join our [Discord community](https://go.pipelex.com/discord) 
+- Request your **free API key** (no credit card required) in the [🔑・free-api-key](https://discord.com/channels/1369447918955921449/1418228010431025233) channel
+- Add it to your `.env` file: `PIPELEX_API_KEY=your-key-here`
+
+### Option 2: Bring Your Own API Keys
+Use your own API keys from AI providers:
+
+**Required for core features:**
+- Claude models - Use either:
+  - `ANTHROPIC_API_KEY` - Direct Anthropic API ([Get key](https://console.anthropic.com/))
+  - Amazon Bedrock - AWS credentials for Claude via Bedrock ([Setup guide](https://docs.pipelex.com/pages/configuration/config-technical/inference-backend-config/))
+- Google Cloud credentials - For Gemini models ([Setup guide](https://docs.pipelex.com/pages/build-reliable-ai-workflows-with-pipelex/ai-plugins-for-multi-llm-workflows/#4-google-vertex-ai-configuration))
+
+Add these to your environment variables or in your `.env` file in your project root.
+
+### Option 3: Local AI
+You can also use local models with Ollama, vLLM, or any OpenAI-compatible endpoint. See the [Pipelex configuration guide](https://docs.pipelex.com/pages/setup/configure-ai-providers/) for details.
+
 ## ✅ Validation
 
 ```bash
 # Verify setup and pipelines
 cocode validate
 ```
-
-### Set up environment variables
-
-Enter your API keys into your `.env` file. The `OPENAI_API_KEY` is enough to get you started, but some pipelines require models from other providers.
-Some complex pipelines require GCP credentials (See [GCP credentials](https://docs.pipelex.com/pages/build-reliable-ai-workflows-with-pipelex/ai-plugins-for-multi-llm-workflows/#4-google-vertex-ai-configuration) for more details), or Anthropic API keys `ANTHROPIC_API_KEY`.
 
 ## 🛠️ Quick Start
 
@@ -45,10 +69,10 @@ Some complex pipelines require GCP credentials (See [GCP credentials](https://do
 cocode doc update v1.0.0 path/to/your/local/repository
 
 # Proofread documentation against codebase
-cocode doc proofread --doc-dir docs path/to/your/local/repository # Requires GCP credentials for Gemini
+cocode doc proofread --doc-dir docs path/to/your/local/repository
 
 # Generate changelog from version diff
-cocode changelog update v1.0.0 path/to/your/local/repository # Requires Anthropic API key for claude
+cocode changelog update v1.0.0 path/to/your/local/repository
 
 # Update AI instructions (AGENTS.md, CLAUDE.md, cursor rules) based on code changes
 cocode ai_instructions update v1.0.0 path/to/your/local/repository
