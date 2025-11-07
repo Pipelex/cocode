@@ -1,5 +1,28 @@
 # Changelog
 
+## [v0.6.0] - 2025-11-07
+
+- Bump `pipelex` to `v0.15.3`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
+### Added
+ - New Models: `claude-4.5-haiku` (Anthropic, Amazon Bedrock, Pipelex Inference), `claude-4.5-sonnet` (BlackBox AI), `gpt-5` and `o3` (Azure OpenAI), and image generation models on BlackBox AI: `flux-pro`, `flux-pro/v1.1`, `flux-pro/v1.1-ultra`, `fast-lightning-sdxl`, `nano-banana`
+ - Project Configuration: New `.pipelex/pipelex.toml` file for customizing logging, directory scanning, prompt dumping, and cost reporting
+ - Routing Profiles: `pipelex_first` profile now includes `fallback_order` for resilient routing; added backend-specific profiles (`all_openai`, `all_anthropic`, etc.)
+ - Model Presets: New waterfall lists (`smart_llm_with_vision`, `smart_llm_for_structured`, `cheap_llm`) and skill-specific presets
+ - Documentation: Configuration files now include headers with documentation and support links; backends configuration includes `display_name` for each provider
+
+### Changed
+ - Dependencies: Upgraded `pipelex` from v0.14.0 to v0.15.3
+ - Model Deck Refactoring: Presets renamed and grouped by skill for clarity; obsolete generic presets replaced with specific waterfall lists
+ - Default Aliases: `base-gpt` and `best-gpt` now point to `gpt-4o` instead of `gpt-5` for stability
+ - Backend Organization: Inference backends in `backends.toml` sorted alphabetically
+ - Internal Refactoring: Changelog generation pipeline moved from `swe_diff` to `changelog` domain; pipelines updated to use new model presets
+ - Tooling: Makefile `validate` command now uses `cocode validate` entry point
+
+
+### Removed
+ - Makefile shorthand commands: `rl` (reinitlibraries) and `ri` (reinstall)
+
 ## [v0.5.0] - 2025-10-27
 
 - Bump `pipelex` to `v0.14.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
