@@ -11,6 +11,9 @@
 # - Headers with dots must be quoted (e.g., ["gpt-4.1"])
 # - Model costs are in USD per million tokens (input/output)
 #
+# Documentation: https://docs.pipelex.com
+# Support: https://go.pipelex.com/discord
+#
 ################################################################################
 
 ################################################################################
@@ -75,6 +78,12 @@ inputs = ["text", "images"]
 outputs = ["text"]
 costs = { input = 1.25, output = 10.00 }
 
+[gpt-5]
+model_id = "pipelex/gpt-5"
+inputs = ["text", "images"]
+outputs = ["text"]
+costs = { input = 1.25, output = 10.00 }
+
 # --- Claude LLMs --------------------------------------------------------------
 ["claude-4-sonnet"]
 model_id = "pipelex/claude-4-sonnet"
@@ -93,6 +102,12 @@ model_id = "pipelex/claude-4.5-sonnet"
 inputs = ["text", "images"]
 outputs = ["text", "structured"]
 costs = { input = 3, output = 15 }
+
+["claude-4.5-haiku"]
+model_id = "pipelex/claude-4.5-haiku"
+inputs = ["text", "images"]
+outputs = ["text", "structured"]
+costs = { input = 1, output = 5 }
 
 # --- Gemini LLMs --------------------------------------------------------------
 ["gemini-2.0-flash"]
