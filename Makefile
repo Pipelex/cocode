@@ -9,6 +9,7 @@ PROJECT_NAME := $(shell grep '^name = ' pyproject.toml | sed -E 's/name = "(.*)"
 PYTHON_VERSION ?= 3.13
 VENV_PYTHON := $(VIRTUAL_ENV)/bin/python
 VENV_PYTEST := $(VIRTUAL_ENV)/bin/pytest
+VENV_COCODE := $(VIRTUAL_ENV)/bin/cocode
 VENV_RUFF := $(VIRTUAL_ENV)/bin/ruff
 VENV_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
 VENV_MYPY := $(VIRTUAL_ENV)/bin/mypy
@@ -64,8 +65,6 @@ make merge-check-ruff-format  - Run ruff merge check without updating files
 make merge-check-mypy         - Run mypy merge check without updating files
 make merge-check-pyright	  - Run pyright merge check without updating files
 
-make rl                       - Shorthand -> reinitlibraries
-make ri                       - Shorthand -> reinstall
 make v                        - Shorthand -> validate
 make codex-tests              - Run tests for Codex (exit on first failure) (no inference, no codex_disabled)
 make gha-tests		          - Run tests for github actions (exit on first failure) (no inference, no gha_disabled)
@@ -157,7 +156,7 @@ update: env
 
 validate: env
 	$(call PRINT_TITLE,"Running setup sequence")
-	$(VENV_PIPELEX) validate all
+	$(VENV_COCODE) validate
 
 ##############################################################################################
 ############################      Cleaning                        ############################

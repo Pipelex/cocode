@@ -1,4 +1,4 @@
-domain = "swe_diff"
+domain = "changelog"
 description = "Pipelines for analyzing differences between two versions of a codebase."
 
 [concept]

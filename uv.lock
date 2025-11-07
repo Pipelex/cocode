@@ -520,7 +520,7 @@ wheels = [
 
 [[package]]
 name = "cocode"
-version = "0.4.0"
+version = "0.6.0"
 source = { editable = "." }
 dependencies = [
     { name = "pipelex", extra = ["anthropic", "bedrock", "google", "google-genai"] },
@@ -560,7 +560,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
     { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], specifier = "==0.14.0" },
+    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], specifier = "==0.15.3" },
     { name = "pygithub", specifier = "==2.4.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
@@ -1683,7 +1683,7 @@ wheels = [
 
 [[package]]
 name = "openai"
-version = "1.97.0"
+version = "1.109.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -1695,9 +1695,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e0/c6/b8d66e4f3b95493a8957065b24533333c927dc23817abe397f13fe589c6e/openai-1.97.0.tar.gz", hash = "sha256:0be349569ccaa4fb54f97bb808423fd29ccaeb1246ee1be762e0c81a47bae0aa", size = 493850, upload-time = "2025-07-16T16:37:35.196Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c6/a1/a303104dc55fc546a3f6914c842d3da471c64eec92043aef8f652eb6c524/openai-1.109.1.tar.gz", hash = "sha256:d173ed8dbca665892a6db099b4a2dfac624f94d20a93f46eb0b56aae940ed869", size = 564133, upload-time = "2025-09-24T13:00:53.075Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8a/91/1f1cf577f745e956b276a8b1d3d76fa7a6ee0c2b05db3b001b900f2c71db/openai-1.97.0-py3-none-any.whl", hash = "sha256:a1c24d96f4609f3f7f51c9e1c2606d97cc6e334833438659cfd687e9c972c610", size = 764953, upload-time = "2025-07-16T16:37:33.135Z" },
+    { url = "https://files.pythonhosted.org/packages/1d/2a/7dd3d207ec669cacc1f186fd856a0f61dbc255d24f6fdc1a6715d6051b0f/openai-1.109.1-py3-none-any.whl", hash = "sha256:6bcaf57086cf59159b8e27447e4e7dd019db5d29a438072fbd49c290c7e65315", size = 948627, upload-time = "2025-09-24T13:00:50.754Z" },
 ]
 
 [[package]]
@@ -1831,7 +1831,7 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.14.0"
+version = "0.15.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -1861,9 +1861,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/dc/0b/df38c73af5cb5676d0b86fe0d4109509321cee3241f01fd579a00df82e20/pipelex-0.14.0.tar.gz", hash = "sha256:98de691a69208084e46f3ded16eb968edc76333ecfd4284c523f733da03b1c4c", size = 324683, upload-time = "2025-10-28T00:03:47.417Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fd/5d/8ddb1753bd47ec6b6a540ae7688486704771f16789fd4620519eb4f474de/pipelex-0.15.3.tar.gz", hash = "sha256:2fca8cf73daf3a3383600a6fb5282727d438f22166cf1489fee1fcd5ba2f4ebd", size = 339315, upload-time = "2025-11-07T20:41:35.593Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/36/44/fbe0d3efa97dab030b775754099de4240b3c9ce2741916ab895219a77460/pipelex-0.14.0-py3-none-any.whl", hash = "sha256:6193e82aa2d875283a37007551906f086d5864cf4f493d3caaa9260c3e918ed0", size = 508407, upload-time = "2025-10-28T00:03:45.343Z" },
+    { url = "https://files.pythonhosted.org/packages/d6/71/668cc9b8399decae4f3fbd002ed51b251a17af630dcfcfbcd07e3f96bec9/pipelex-0.15.3-py3-none-any.whl", hash = "sha256:d1011c7bbe3f3d13bc30208f8dd677fc58ab09ffecec386c3ee945843a44b051", size = 531257, upload-time = "2025-11-07T20:41:33.559Z" },
 ]
 
 [package.optional-dependencies]

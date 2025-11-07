@@ -17,7 +17,7 @@ description = "Find code files that implement or use elements mentioned in docs"
 inputs = { doc_file = "DocumentationFile", repo_map = "RepositoryMap" }
 output = "FilePath[]"
 model = { model = "llm_for_large_codebase", temperature = 0.1 }
-model_to_structure = "cheap_llm_for_object"
+model_to_structure = "cheap_llm_for_structured"
 structuring_method = "preliminary_text"
 system_prompt = """
 Extract code elements mentioned in docs (classes, functions, commands) and find their actual implementations or usages in the codebase.
