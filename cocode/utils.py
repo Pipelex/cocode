@@ -6,13 +6,10 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 from pipelex import log
-from pipelex.system.exceptions import RootException
 from pipelex.tools.misc.file_utils import load_text_from_path
 from pipelex.tools.misc.filetype_utils import FileType, detect_file_type_from_path
 
-
-class NoDifferencesFound(RootException):
-    pass
+from cocode.exceptions import NoDifferencesFound
 
 
 def run_tree_command(

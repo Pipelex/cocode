@@ -1,4 +1,4 @@
-from pipelex import log, pretty_print
+from pipelex import log
 from pipelex.core.pipes.pipe_output import PipeOutput
 from pipelex.core.stuffs.text_content import TextContent
 from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
@@ -37,7 +37,6 @@ async def process_swe_pipeline_result(
     to_stdout: bool,
 ) -> None:
     """Common function to process text through SWE pipeline and handle output."""
-    pretty_print(pipe_output, title="Pipe output")
     swe_stuff = pipe_output.main_stuff
 
     if to_stdout:

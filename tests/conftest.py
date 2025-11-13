@@ -4,6 +4,7 @@ import pipelex.config
 import pipelex.pipelex
 import pytest
 from pipelex.config import get_config
+from pipelex.system.configuration.config_check import check_is_initialized
 from rich import print
 from rich.console import Console
 from rich.traceback import Traceback
@@ -11,6 +12,13 @@ from rich.traceback import Traceback
 pytest_plugins = [
     "pipelex.test_extras.shared_pytest_plugins",
 ]
+
+
+@pytest.fixture(scope="session", autouse=True)
+def check_pipelex_initialized():
+    if not check_is_initialized():
+        pytest.exit("Pipelex must be initialized before running the tests")
+    yield
 
 
 @pytest.fixture(scope="module", autouse=True)
