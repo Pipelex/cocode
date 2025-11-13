@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.6.1] - 2025-11-13
+
+### Added
+ - Groq inference backend with configuration for Meta Llama 3.1/3.3/4, Llama Guard, OpenAI GPT-OSS, Groq compound models, Moonshot, and Qwen models via `.pipelex/inference/backends/groq.toml`
+
+### Changed
+ - Centralized exception handling by moving `PythonProcessingError`, `RepoxException`, and `NoDifferencesFound` to `cocode/exceptions.py`
+ - Upgraded dependencies: `pipelex` to `0.15.4`, `pytest` to `9.0.1`
+ - Improved test configuration with pre-flight initialization check
+
 ## [v0.6.0] - 2025-11-07
 
 - Bump `pipelex` to `v0.15.3`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
