@@ -511,7 +511,7 @@ wheels = [
 
 [[package]]
 name = "cocode"
-version = "0.6.0"
+version = "0.6.1"
 source = { editable = "." }
 dependencies = [
     { name = "pipelex", extra = ["anthropic", "bedrock", "google", "google-genai"] },
