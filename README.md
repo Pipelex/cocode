@@ -77,12 +77,6 @@ cocode changelog update v1.0.0 path/to/your/local/repository
 # Update AI instructions (AGENTS.md, CLAUDE.md, cursor rules) based on code changes
 cocode ai_instructions update v1.0.0 path/to/your/local/repository
 
-# GitHub operations
-cocode github auth  # Check GitHub authentication status
-cocode github repo-info owner/repo  # Get repository information
-cocode github check-branch owner/repo main  # Check if branch exists
-cocode github list-branches owner/repo  # List repository branches
-cocode github sync-labels owner/repo labels.json  # Sync labels from JSON file
 ```
 
 ### 📁 Output Location
