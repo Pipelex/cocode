@@ -1,4 +1,4 @@
-from pipelex import log, pretty_print
+from pipelex import log
 from pipelex.core.pipes.pipe_output import PipeOutput
 from pipelex.core.stuffs.text_content import TextContent
 from pipelex.tools.misc.file_utils import ensure_path, save_text_to_path
