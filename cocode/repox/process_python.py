@@ -2,14 +2,9 @@ import ast
 from typing import List
 
 from pipelex import log
-from pipelex.system.exceptions import RootException
 from pipelex.types import StrEnum
 
 from cocode.utils import format_with_ruff
-
-
-class PythonProcessingError(RootException):
-    pass
 
 
 class PythonProcessingRule(StrEnum):

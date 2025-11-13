@@ -16,17 +16,12 @@ from typing import Callable, Dict, List, Optional, Set, Tuple
 import pathspec
 from pathspec import PathSpec
 from pipelex import log
-from pipelex.system.exceptions import RootException
 from pipelex.tools.misc.filetype_utils import FileType, FileTypeException
 
+from cocode.exceptions import RepoxException
 from cocode.repox.models import OutputStyle
 from cocode.repox.repox_formatters import build_flat_output, build_import_list, extract_full_path, mark_non_empty_dirs
 from cocode.utils import check_type_and_load_if_text, run_tree_command
-
-
-class RepoxException(RootException):
-    pass
-
 
 REPOX_IGNORED_PATHS = [
     ".git",

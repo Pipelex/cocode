@@ -37,7 +37,6 @@ async def process_swe_pipeline_result(
     to_stdout: bool,
 ) -> None:
     """Common function to process text through SWE pipeline and handle output."""
-    pretty_print(pipe_output, title="Pipe output")
     swe_stuff = pipe_output.main_stuff
 
     if to_stdout:
