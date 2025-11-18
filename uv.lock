@@ -511,7 +511,7 @@ wheels = [
 
 [[package]]
 name = "cocode"
-version = "0.6.1"
+version = "0.6.2"
 source = { editable = "." }
 dependencies = [
     { name = "pipelex", extra = ["anthropic", "bedrock", "google", "google-genai"] },
@@ -551,7 +551,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
     { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], specifier = "==0.15.4" },
+    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], specifier = "==0.15.5" },
     { name = "pygithub", specifier = "==2.4.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },
@@ -928,23 +928,6 @@ wheels = [
 ]
 
 [[package]]
-name = "groq"
-version = "0.13.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "anyio" },
-    { name = "distro" },
-    { name = "httpx" },
-    { name = "pydantic" },
-    { name = "sniffio" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/90/75/3b3e6b9495ca8e2e7f08373412f2f3c5fd0d8cbe987905d7caebc84abba2/groq-0.13.1.tar.gz", hash = "sha256:588fd5bee984f4eb46ec89552778d5698b9e9614435defef868645c19463cbcc", size = 109709, upload-time = "2024-12-15T08:50:28.984Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f0/ad/2bf9b91085b1d67e432bc3071378570e7fd0326c5c648376e6230d3fed99/groq-0.13.1-py3-none-any.whl", hash = "sha256:0c5d1d6df93de55de705fe73729b79baaa0c871f7575d6aa64b2962b56101b3e", size = 109114, upload-time = "2024-12-15T08:50:26.091Z" },
-]
-
-[[package]]
 name = "h11"
 version = "0.16.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1025,9 +1008,6 @@ wheels = [
 google-genai = [
     { name = "google-genai" },
     { name = "jsonref" },
-]
-groq = [
-    { name = "groq" },
 ]
 
 [[package]]
@@ -1799,14 +1779,14 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.15.4"
+version = "0.15.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
     { name = "filetype" },
     { name = "httpx" },
-    { name = "instructor", extra = ["groq"] },
+    { name = "instructor" },
     { name = "jinja2" },
     { name = "json2html" },
     { name = "kajson" },
@@ -1829,9 +1809,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a2/27/0c1b5bf61f297340365f7ce3e2e3447e33377c173bf7e5ddb04627860f36/pipelex-0.15.4.tar.gz", hash = "sha256:092aef3e25c0eed5614e3052339610c3ace9a657a78d1461ee9de230dcd92faa", size = 352867, upload-time = "2025-11-13T12:32:25.955Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/06/fe/afe6ab990f7c32e263d828f92827acf1aef0c10d629d80c9719132522982/pipelex-0.15.5.tar.gz", hash = "sha256:28ae5f45c8f93c69b43ebd14a58ea0640c0cc8ed95920929ee97d937b7b0fd88", size = 359986, upload-time = "2025-11-18T14:14:10.729Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/eb/d7/def4f3ea6da2dfbd54bf73e126afa9b77a40de539d61c7c02d74e9417885/pipelex-0.15.4-py3-none-any.whl", hash = "sha256:2db407a65668027b3f9c28fe3cc6bdb7bb5252cec06fe69e09f930df9e65fca8", size = 557525, upload-time = "2025-11-13T12:32:23.715Z" },
+    { url = "https://files.pythonhosted.org/packages/d8/c6/8cd43af2d94395130f3ecdfa76e0fb29fc4d84d0614c4ec5afca528d950b/pipelex-0.15.5-py3-none-any.whl", hash = "sha256:aa8576bc3633c6dba0e5bd6632974ed564ba4d69dc2bc640d8dfdf51a6d1a231", size = 563319, upload-time = "2025-11-18T14:14:09.04Z" },
 ]
 
 [package.optional-dependencies]

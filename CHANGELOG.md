@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.6.2] - 2025-11-18
+
+- Bump `pipelex` to `v0.15.5`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
 ## [v0.6.1] - 2025-11-13
 
 ### Added
