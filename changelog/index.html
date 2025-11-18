@@ -1,0 +1,1726 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Cocode - Repository analysis and AI-powered code understanding">
+      
+      
+      
+        <link rel="canonical" href="https://pipelex.github.io/cocode/changelog/">
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Changelog - Cocode Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#changelog" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Cocode Documentation" class="md-header__button md-logo" aria-label="Cocode Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Cocode Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Changelog
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pipelex/cocode" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Cocode on GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Cocode Documentation" class="md-nav__button md-logo" aria-label="Cocode Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Cocode Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pipelex/cocode" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Cocode on GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pages/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pages/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pages/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#v063-2025-11-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.6.3] - 2025-11-18
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v062-2025-11-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.6.2] - 2025-11-18
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v061-2025-11-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.6.1] - 2025-11-13
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.6.1] - 2025-11-13">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v060-2025-11-07" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.6.0] - 2025-11-07
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.6.0] - 2025-11-07">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v050-2025-10-27" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.5.0] - 2025-10-27
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.5.0] - 2025-10-27">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#changed_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v040-2025-10-21" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.4.0] - 2025-10-21
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.4.0] - 2025-10-21">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v030-2025-10-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.3.0] - 2025-10-15
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.3.0] - 2025-10-15">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#highlights" class="md-nav__link">
+    <span class="md-ellipsis">
+      Highlights
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#added_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v023-2025-09-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.2.3] - 2025-09-22
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.2.3] - 2025-09-22">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#changed_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v022-2025-09-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.2.2] - 2025-09-18
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.2.2] - 2025-09-18">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#highlights_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Highlights
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#added_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v021-2025-09-06" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.2.1] - 2025-09-06
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.2.1] - 2025-09-06">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#changed_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v020-2025-09-06" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.2.0] - 2025-09-06
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.2.0] - 2025-09-06">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deprecated" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deprecated
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v013-2025-09-06" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.1.3] - 2025-09-06
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.1.3] - 2025-09-06">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v012-2025-09-03" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.1.2] - 2025-09-03
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.1.2] - 2025-09-03">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#changed_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v011-2025-09-02" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.1.1] - 2025-09-02
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.1.1] - 2025-09-02">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v010-2025-09-02" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.1.0] - 2025-09-02
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.1.0] - 2025-09-02">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#changed_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v0015-2025-08-29" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.15] - 2025-08-29
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.0.15] - 2025-08-29">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#changed_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v0014-2025-08-29" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.14] - 2025-08-29
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.0.14] - 2025-08-29">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fixed_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v0013-2025-08-27" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.13] - 2025-08-27
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.0.13] - 2025-08-27">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#changed_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v0012-2025-08-21" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.12] - 2025-08-21
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.0.12] - 2025-08-21">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#changed_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v0011-2025-08-02" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.11] - 2025-08-02
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.0.11] - 2025-08-02">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v0010-2025-08-02" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.10] - 2025-08-02
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.0.10] - 2025-08-02">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#changed_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v009-2025-07-26" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.9] - 2025-07-26
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.0.9] - 2025-07-26">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v008-2025-07-25" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.8] - 2025-07-25
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.0.8] - 2025-07-25">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v007-2025-07-24" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.7] - 2025-07-24
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.0.7] - 2025-07-24">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v006-2025-07-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.6] - 2025-07-18
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.0.6] - 2025-07-18">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v005-2025-07-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.5] - 2025-07-15
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v004-2025-07-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.4] - 2025-07-15
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v003-2025-07-15" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.3] - 2025-07-15
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.0.3] - 2025-07-15">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v002-2025-07-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.2] - 2025-07-11
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="[v0.0.2] - 2025-07-11">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changed_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#v001-2025-07-09" class="md-nav__link">
+    <span class="md-ellipsis">
+      [v0.0.1] - 2025-07-09
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="changelog">Changelog</h1>
+<h2 id="v063-2025-11-18">[v0.6.3] - 2025-11-18</h2>
+<ul>
+<li>Bump <code>pipelex</code> to <code>v0.15.7</code> to fix <code>pipelex doctor</code></li>
+</ul>
+<h2 id="v062-2025-11-18">[v0.6.2] - 2025-11-18</h2>
+<ul>
+<li>Bump <code>pipelex</code> to <code>v0.15.6</code>: See <code>Pipelex</code> changelog <a href="https://docs.pipelex.com/changelog/">here</a></li>
+</ul>
+<h2 id="v061-2025-11-13">[v0.6.1] - 2025-11-13</h2>
+<h3 id="added">Added</h3>
+<ul>
+<li>Groq inference backend with configuration for Meta Llama 3.1/3.3/4, Llama Guard, OpenAI GPT-OSS, Groq compound models, Moonshot, and Qwen models via <code>.pipelex/inference/backends/groq.toml</code></li>
+</ul>
+<h3 id="changed">Changed</h3>
+<ul>
+<li>Centralized exception handling by moving <code>PythonProcessingError</code>, <code>RepoxException</code>, and <code>NoDifferencesFound</code> to <code>cocode/exceptions.py</code></li>
+<li>Upgraded dependencies: <code>pipelex</code> to <code>0.15.4</code>, <code>pytest</code> to <code>9.0.1</code></li>
+<li>Improved test configuration with pre-flight initialization check</li>
+</ul>
+<h2 id="v060-2025-11-07">[v0.6.0] - 2025-11-07</h2>
+<ul>
+<li>Bump <code>pipelex</code> to <code>v0.15.3</code>: See <code>Pipelex</code> changelog <a href="https://docs.pipelex.com/changelog/">here</a></li>
+</ul>
+<h3 id="added_1">Added</h3>
+<ul>
+<li>New Models: <code>claude-4.5-haiku</code> (Anthropic, Amazon Bedrock, Pipelex Inference), <code>claude-4.5-sonnet</code> (BlackBox AI), <code>gpt-5</code> and <code>o3</code> (Azure OpenAI), and image generation models on BlackBox AI: <code>flux-pro</code>, <code>flux-pro/v1.1</code>, <code>flux-pro/v1.1-ultra</code>, <code>fast-lightning-sdxl</code>, <code>nano-banana</code></li>
+<li>Project Configuration: New <code>.pipelex/pipelex.toml</code> file for customizing logging, directory scanning, prompt dumping, and cost reporting</li>
+<li>Routing Profiles: <code>pipelex_first</code> profile now includes <code>fallback_order</code> for resilient routing; added backend-specific profiles (<code>all_openai</code>, <code>all_anthropic</code>, etc.)</li>
+<li>Model Presets: New waterfall lists (<code>smart_llm_with_vision</code>, <code>smart_llm_for_structured</code>, <code>cheap_llm</code>) and skill-specific presets</li>
+<li>Documentation: Configuration files now include headers with documentation and support links; backends configuration includes <code>display_name</code> for each provider</li>
+</ul>
+<h3 id="changed_1">Changed</h3>
+<ul>
+<li>Dependencies: Upgraded <code>pipelex</code> from v0.14.0 to v0.15.3</li>
+<li>Model Deck Refactoring: Presets renamed and grouped by skill for clarity; obsolete generic presets replaced with specific waterfall lists</li>
+<li>Default Aliases: <code>base-gpt</code> and <code>best-gpt</code> now point to <code>gpt-4o</code> instead of <code>gpt-5</code> for stability</li>
+<li>Backend Organization: Inference backends in <code>backends.toml</code> sorted alphabetically</li>
+<li>Internal Refactoring: Changelog generation pipeline moved from <code>swe_diff</code> to <code>changelog</code> domain; pipelines updated to use new model presets</li>
+<li>Tooling: Makefile <code>validate</code> command now uses <code>cocode validate</code> entry point</li>
+</ul>
+<h3 id="removed">Removed</h3>
+<ul>
+<li>Makefile shorthand commands: <code>rl</code> (reinitlibraries) and <code>ri</code> (reinstall)</li>
+</ul>
+<h2 id="v050-2025-10-27">[v0.5.0] - 2025-10-27</h2>
+<ul>
+<li>Bump <code>pipelex</code> to <code>v0.14.0</code>: See <code>Pipelex</code> changelog <a href="https://docs.pipelex.com/changelog/">here</a></li>
+</ul>
+<h3 id="changed_2">Changed</h3>
+<ul>
+<li>Documentation Improvements: Overhauled <code>README.md</code> with a new "Get Your API Keys" section outlining three configuration methods (free <code>PIPELEX_API_KEY</code>, bring-your-own provider keys, or local AI models). Updated terminology from "AI-powered pipelines" to "AI-powered workflows".</li>
+</ul>
+<h3 id="removed_1">Removed</h3>
+<ul>
+<li>Removed unused <code>is_activity_tracking_enabled</code> option from <code>pipelex.toml</code> configuration files.</li>
+<li>Removed <code>reportConstantRedescription</code> and <code>reportShadowedImports</code> linter rules from <code>pyproject.toml</code>.</li>
+</ul>
+<h2 id="v040-2025-10-21">[v0.4.0] - 2025-10-21</h2>
+<h3 id="added_2">Added</h3>
+<ul>
+<li><strong>Multiplicity syntax:</strong> Introduced bracket notation for defining input/output multiplicity in <code>.plx</code> files: <code>TypeName[]</code> for variable items, <code>TypeName[N]</code> for fixed count (e.g., <code>output = "Idea[]"</code> or <code>output = "Image[3]"</code>)</li>
+<li><strong><code>git</code> pipeline domain:</strong> Created <code>git.plx</code> file to house <code>git.GitDiff</code> concept and related pipelines</li>
+</ul>
+<h3 id="changed_3">Changed</h3>
+<ul>
+<li><strong>Upgraded Pipelex:</strong> Updated core dependency from <code>0.12.0</code> to <code>0.13.0</code> to support new multiplicity syntax</li>
+<li><strong>API simplification:</strong> Renamed <code>execute_pipeline</code> parameter <code>input_memory</code> to <code>inputs</code>, internal type <code>ImplicitMemory</code> to <code>PipelineInputs</code>, and model alias <code>llm_to_reason</code> to <code>llm_for_complex_reasoning</code></li>
+<li><strong>Pipeline organization:</strong> Refactored monolithic <code>swe_diff.plx</code> into focused files (<code>git.plx</code>, <code>write_changelog_enhanced.plx</code>). Moved and renamed <code>swe_diff.GitDiff</code> to <code>git.GitDiff</code></li>
+<li><strong>Changelog generation:</strong> The <code>changelog update</code> command now uses the <code>write_changelog_enhanced</code> pipeline</li>
+<li><strong>Documentation:</strong> Updated all docs (<code>README.md</code>, <code>AGENTS.md</code>, AI instruction files) to reflect new multiplicity syntax and naming conventions</li>
+</ul>
+<h3 id="fixed">Fixed</h3>
+<ul>
+<li><strong>Execution context:</strong> Added note to <code>README.md</code> clarifying that <code>cocode</code> must be run from the project's root directory</li>
+</ul>
+<h3 id="removed_2">Removed</h3>
+<ul>
+<li><strong>Legacy multiplicity parameters:</strong> Removed <code>nb_output</code> and <code>multiple_output</code> parameters, replaced by bracket notation</li>
+</ul>
+<h2 id="v030-2025-10-15">[v0.3.0] - 2025-10-15</h2>
+<h3 id="highlights">Highlights</h3>
+<ul>
+<li>Bump <code>pipelex</code> to <code>v0.12.0</code>: See <code>Pipelex</code> changelog <a href="https://docs.pipelex.com/changelog/">here</a></li>
+<li>Major overhaul of Pipelex language syntax and inference configuration system</li>
+</ul>
+<h3 id="added_3">Added</h3>
+<ul>
+<li><code>analyze</code> command for analyzing git diffs with custom prompts</li>
+<li>Migration guide for upgrading to v0.3.0</li>
+<li>Granular documentation guides: <code>write_pipelex.mdc</code>, <code>python_standards.mdc</code>, <code>run_pipelex.mdc</code></li>
+<li>Inference backend configurations for <code>google</code></li>
+</ul>
+<h3 id="changed_4">Changed</h3>
+<ul>
+<li><strong>Breaking</strong>: Overhauled Pipelex language syntax: <code>definition</code> → <code>description</code>, <code>llm</code> → <code>model</code>, <code>prompt_template</code> → <code>prompt</code>, <code>PipeOcr</code> → <code>PipeExtract</code>, <code>PipeJinja2</code> → <code>PipeCompose</code></li>
+<li><strong>Breaking</strong>: Revamped inference configuration to structured backend system in <code>.pipelex/inference/</code></li>
+<li><strong>Breaking</strong>: Renamed CLI flag <code>--ignore-pattern</code> → <code>--exclude-pattern</code></li>
+<li>Renamed <code>pipelex_libraries</code> directory → <code>pipelines</code></li>
+<li>Updated test markers: <code>ocr</code> → <code>extract</code>, <code>imgg</code> → <code>img_gen</code></li>
+<li>Default routing profile changed to <code>pipelex_first</code></li>
+</ul>
+<h3 id="removed_3">Removed</h3>
+<ul>
+<li>Monolithic rule files (replaced with specific guides)</li>
+<li>Legacy <code>base_library</code> pipelines (functionality moved to core)</li>
+<li><code>init</code> and <code>reinitbaselibrary</code> Makefile commands</li>
+<li><code>base_templates.toml</code> (contents integrated into core)</li>
+</ul>
+<h2 id="v023-2025-09-22">[v0.2.3] - 2025-09-22</h2>
+<h3 id="changed_5">Changed</h3>
+<ul>
+<li>Cleaned cli commands.</li>
+</ul>
+<h2 id="v022-2025-09-18">[v0.2.2] - 2025-09-18</h2>
+<h3 id="highlights_1">Highlights</h3>
+<ul>
+<li>Bump <code>pipelex</code> to <code>v0.10.2</code>: See <code>Pipelex</code> changelog <a href="https://docs.pipelex.com/changelog/">here</a></li>
+</ul>
+<h3 id="added_4">Added</h3>
+<ul>
+<li>Comprehensive inference backend configuration system supporting Anthropic, Azure OpenAI, Bedrock, BlackboxAI, Mistral, Ollama, OpenAI, Perplexity, VertexAI, and XAI</li>
+<li>New model deck system with routing profiles for model-to-backend management</li>
+<li>Support for latest AI models: Claude 4 (sonnet, opus, 4.1-opus), GPT-5 (standard, mini, nano, chat), O3/O4, Grok-3, and Gemini 2.5</li>
+<li>Model aliases system with cost tracking and input/output type specifications</li>
+</ul>
+<h3 id="changed_6">Changed</h3>
+<ul>
+<li>Migrated from LLM deck to model deck system with backend-specific configurations</li>
+<li>Restructured configuration from <code>cocode/pipelex_libraries</code> to <code>.pipelex</code> directory</li>
+<li>Updated model naming conventions and pipeline configurations</li>
+</ul>
+<h3 id="removed_4">Removed</h3>
+<ul>
+<li>Legacy LLM integrations and individual provider files (anthropic.toml, openai.toml, etc.)</li>
+<li>Old configuration files: plugin_config.toml, preferred_platforms, ocr_handles, llm_external_handles</li>
+</ul>
+<h2 id="v021-2025-09-06">[v0.2.1] - 2025-09-06</h2>
+<h3 id="changed_7">Changed</h3>
+<ul>
+<li>Bump <code>pipelex</code> to <code>v0.9.4</code>: See <code>Pipelex</code> changelog <a href="https://docs.pipelex.com/changelog/">here</a></li>
+<li>Support BlackboxAI endpoints for inference</li>
+</ul>
+<h2 id="v020-2025-09-06">[v0.2.0] - 2025-09-06</h2>
+<h3 id="added_5">Added</h3>
+<ul>
+<li>Command group structure with <code>app.add_typer()</code> for better CLI organization</li>
+<li><code>cocode/common.py</code> module with shared utilities (<code>PipeCode</code> enum, <code>validate_repo_path()</code>, <code>get_output_dir()</code>)</li>
+<li>Alternative command names for flexibility (e.g., <code>repox repo</code> alongside <code>repox convert</code>)</li>
+<li>GitHub repository support for analyzing both local and remote repositories</li>
+<li>Smart caching system for GitHub repositories with local storage</li>
+<li>GitHub authentication support via Personal Access Tokens (PAT) and GitHub CLI</li>
+<li>Private repository access with proper authentication</li>
+<li>Shallow cloning for faster repository analysis</li>
+<li>Branch-specific repository analysis support</li>
+<li>Multiple GitHub URL format support (short format, HTTPS, SSH, branch-specific)</li>
+<li>Force refresh functionality for cached repositories</li>
+<li>Temporary directory mode for GitHub repository cloning</li>
+<li>Cache cleanup functionality for old repositories</li>
+<li>Comprehensive GitHub repository manager with <code>GitHubRepoManager</code> class</li>
+<li>Integration tests for GitHub functionality</li>
+<li>Unit tests for GitHub repository manager</li>
+<li>Enhanced CLI documentation with GitHub repository examples</li>
+</ul>
+<h3 id="changed_8">Changed</h3>
+<ul>
+<li><strong>Major CLI restructuring</strong>: Reorganized flat command structure into logical command groups for better organization and maintainability</li>
+<li><code>repox</code> → <code>repox convert</code> (repository processing commands)</li>
+<li><code>swe-*</code> commands → <code>swe *</code> subcommands (e.g., <code>swe-from-repo</code> → <code>swe from-repo</code>)</li>
+<li><code>validate</code> → <code>validation validate</code> (with additional <code>validation dry-run</code> and <code>validation check-config</code> options)</li>
+<li><strong>Improved CLI architecture</strong>: Extracted command implementations from main CLI module into co-located packages (<code>cocode/repox/repox_cli.py</code>, <code>cocode/swe/swe_cli.py</code>, etc.) for better code organization</li>
+<li><strong>Updated documentation</strong>: All examples and references updated to reflect new command structure</li>
+<li>Repository path validation now supports both local paths and GitHub URLs</li>
+<li>All SWE commands now support GitHub repository analysis in addition to local repositories</li>
+<li>CLI help text updated to reflect GitHub repository support</li>
+<li>Command descriptions enhanced with GitHub repository examples</li>
+</ul>
+<h3 id="removed_5">Removed</h3>
+<ul>
+<li>Direct command implementations from main CLI module (moved to dedicated CLI modules)</li>
+</ul>
+<h3 id="deprecated">Deprecated</h3>
+<ul>
+<li>Direct <code>cocode validate</code> command (still works but shows deprecation notice; use <code>cocode validation validate</code> instead)</li>
+</ul>
+<h3 id="security">Security</h3>
+<ul>
+<li>GitHub authentication support with secure token handling</li>
+<li>Private repository access with proper credential management</li>
+</ul>
+<h2 id="v013-2025-09-06">[v0.1.3] - 2025-09-06</h2>
+<h3 id="added_6">Added</h3>
+<ul>
+<li>Better support for BlackboxAI IDE</li>
+<li>VS Code extensions recommendations file with Pipelex, Ruff, and MyPy extensions</li>
+<li>File association for .plx files in VS Code settings</li>
+<li>Bump <code>pipelex</code> to <code>v0.9.3</code>: See <code>Pipelex</code> changelog <a href="https://docs.pipelex.com/changelog/">here</a></li>
+</ul>
+<h2 id="v012-2025-09-03">[v0.1.2] - 2025-09-03</h2>
+<h3 id="changed_9">Changed</h3>
+<ul>
+<li>Deactivated pipeline tracking and activity tracking in <code>pipelex.toml</code>.</li>
+<li>Added IDE extension link to <code>README.md</code>.</li>
+</ul>
+<h2 id="v011-2025-09-02">[v0.1.1] - 2025-09-02</h2>
+<h3 id="added_7">Added</h3>
+<ul>
+<li>Added demo video to README.md</li>
+</ul>
+<h2 id="v010-2025-09-02">[v0.1.0] - 2025-09-02</h2>
+<h3 id="changed_10">Changed</h3>
+<ul>
+<li>Bump <code>pipelex</code> to <code>v0.9.0</code>: See <code>Pipelex</code> changelog <a href="https://docs.pipelex.com/changelog/">here</a></li>
+<li>Switched from <code>TOML</code> to <code>PLX</code> for pipeline definitions.</li>
+</ul>
+<h2 id="v0015-2025-08-29">[v0.0.15] - 2025-08-29</h2>
+<h3 id="changed_11">Changed</h3>
+<ul>
+<li>Fixed <code>typing_extensions</code> import error in <code>cocode/pipelex_libraries/pipelines/swe_diff/swe_diff.py</code> to use <code>typing_extensions</code> instead of <code>typing</code>.</li>
+</ul>
+<h2 id="v0014-2025-08-29">[v0.0.14] - 2025-08-29</h2>
+<h3 id="fixed_1">Fixed</h3>
+<ul>
+<li>Fixed <code>StrEnum</code> import error in <code>cocode/cli.py</code> and <code>cocode/repox/process_python.py</code> to use <code>pipelex.types.StrEnum</code> instead of <code>enum.StrEnum</code>.</li>
+</ul>
+<h2 id="v0013-2025-08-27">[v0.0.13] - 2025-08-27</h2>
+<h3 id="changed_12">Changed</h3>
+<ul>
+<li>Bump <code>pipelex</code> to <code>v0.8.1</code>: See <code>Pipelex</code> changelog <a href="https://docs.pipelex.com/changelog/">here</a></li>
+</ul>
+<h2 id="v0012-2025-08-21">[v0.0.12] - 2025-08-21</h2>
+<h3 id="changed_13">Changed</h3>
+<ul>
+<li>Bump <code>pipelex</code> to <code>v0.7.0</code>: See <code>Pipelex</code> changelog <a href="https://docs.pipelex.com/changelog/">here</a></li>
+</ul>
+<h2 id="v0011-2025-08-02">[v0.0.11] - 2025-08-02</h2>
+<h3 id="added_8">Added</h3>
+<ul>
+<li>Added comprehensive changelog generation pipeline (<code>write_changelog_enhanced</code>) with three-stage processing: draft generation, polishing, and markdown formatting</li>
+<li>Added <code>DraftChangelog</code> concept definition for intermediate changelog processing</li>
+<li>Added AI-powered <code>draft_changelog_from_git_diff</code> pipe that analyzes code diffs using LLM to extract changes, improvements, and features</li>
+<li>Added <code>polish_changelog</code> pipe that removes redundancy, groups related changes, and applies markdown formatting</li>
+</ul>
+<h2 id="v0010-2025-08-02">[v0.0.10] - 2025-08-02</h2>
+<h3 id="changed_14">Changed</h3>
+<ul>
+<li>Default output file extension changed from .txt to .md for SWE diff analysis</li>
+<li>Pipelex dependency constraint relaxed from exact version 0.6.9 to minimum version &gt;=0.6.9</li>
+<li>Jinja2 template formatting improved with consistent indentation for changelog sections</li>
+</ul>
+<h2 id="v009-2025-07-26">[v0.0.9] - 2025-07-26</h2>
+<ul>
+<li>Updated pipelex dependency from version 0.6.8 to 0.6.9</li>
+</ul>
+<h3 id="added_9">Added</h3>
+<ul>
+<li>README example for new CLI command <code>swe-ai-instruction-update</code> for updating AI instruction files</li>
+<li>New PipeCode enum values for extraction and documentation operations: EXTRACT_FUNDAMENTALS, EXTRACT_ENVIRONMENT_BUILD, EXTRACT_CODING_STANDARDS, EXTRACT_TEST_STRATEGY, EXTRACT_COLLABORATION, DOC_PROOFREAD, DOC_UPDATE, AI_INSTRUCTION_UPDATE</li>
+</ul>
+<h3 id="changed_15">Changed</h3>
+<ul>
+<li>Simplified pipeline input handling to use inputs instead of working_memory pattern</li>
+<li>Updated pipeline type definitions from CodeDiff to git.GitDiff for better naming consistency</li>
+<li>Switched default LLM model from gpt-4o to claude-4-sonnet for software engineering tasks</li>
+<li>Polished code related to cursor rules file detection with support for .cursor/rules directory pattern, using failable_load_text_from_path for better error handling</li>
+</ul>
+<h3 id="fixed_2">Fixed</h3>
+<ul>
+<li>Corrected typo in documentation update prompt template ('inclide' to 'include')</li>
+<li>Removed redundant doc_dir parameter from AI instruction update command</li>
+<li>Cleaned up unused to_stdout parameter from doc proofread command</li>
+</ul>
+<h2 id="v008-2025-07-25">[v0.0.8] - 2025-07-25</h2>
+<h3 id="added_10">Added</h3>
+<ul>
+<li><code>NoDifferencesFound</code> exception class for handling cases where no differences are found in git diff.</li>
+</ul>
+<h3 id="changed_16">Changed</h3>
+<ul>
+<li>Modified <code>swe_diff.plx</code> to reflect changes in pipeline steps and inputs/outputs.</li>
+<li>Refactored CLI commands to use <code>PipeRunMode</code> instead of <code>dry_run</code>.</li>
+</ul>
+<h3 id="removed_6">Removed</h3>
+<ul>
+<li>Moved utility code from <code>swe_cmd.py</code> to <code>swe_utils.py</code>.</li>
+</ul>
+<h2 id="v007-2025-07-24">[v0.0.7] - 2025-07-24</h2>
+<h3 id="added_11">Added</h3>
+<ul>
+<li>New pipeline for proofreading documentation: <code>cocode swe-doc-proofread . --doc-dir docs</code></li>
+</ul>
+<h3 id="changed_17">Changed</h3>
+<ul>
+<li>Updated dependencies to <code>pipelex</code> version <code>v0.6.6</code>. See full <code>Pipelex</code> changelog <a href="https://github.com/Pipelex/pipelex/blob/main/CHANGELOG.md">here</a>.</li>
+<li>Updated LLM configurations in <code>cocode_deck.toml</code> and <code>vertexai.toml</code> files.</li>
+</ul>
+<h2 id="v006-2025-07-18">[v0.0.6] - 2025-07-18</h2>
+<h3 id="added_12">Added</h3>
+<ul>
+<li>New pipeline for updating documentation based on <code>git diff</code> analysis.</li>
+<li>New pipeline for updating AI instruction files based on <code>git diff</code> analysis.</li>
+</ul>
+<h3 id="changed_18">Changed</h3>
+<ul>
+<li>Updated dependencies to <code>pipelex</code> version <code>0.6.3</code>.</li>
+<li>Modified the <code>Makefile</code> to include new commands for installing the latest dependencies and initializing libraries.</li>
+</ul>
+<h2 id="v005-2025-07-15">[v0.0.5] - 2025-07-15</h2>
+<ul>
+<li>Added the <code>pipelex_libraries</code> folder to the project</li>
+<li>Added <code>/pipelex_libraries</code> to <code>.gitignore</code></li>
+<li>Moved <code>data/github/example_labels.json</code> to <code>tests/data/github/example_labels.json</code></li>
+</ul>
+<h2 id="v004-2025-07-15">[v0.0.4] - 2025-07-15</h2>
+<ul>
+<li>Added GHA for publishing to PyPI, changelog check, doc deployment, and more</li>
+</ul>
+<h2 id="v003-2025-07-15">[v0.0.3] - 2025-07-15</h2>
+<h3 id="added_13">Added</h3>
+<ul>
+<li>New GitHub integration module (based on PyGithub) for cocode with commands for authentication, branch checking, repository info, and label syncing</li>
+<li>New issue templates for bug reports, feature requests, and general issues in GitHub</li>
+<li>New documentation pages including Getting Started, Commands, Examples, and Contributing</li>
+</ul>
+<h3 id="changed_19">Changed</h3>
+<ul>
+<li>Updated Makefile to include new documentation commands for serving, checking, and deploying documentation with mkdocs</li>
+<li>Enhanced CLI with new command group for GitHub-related operations</li>
+</ul>
+<h2 id="v002-2025-07-11">[v0.0.2] - 2025-07-11</h2>
+<h3 id="added_14">Added</h3>
+<ul>
+<li>Added <code>CLA.md</code>, <code>CONTRIBUTING.md</code>, and <code>CODE_OF_CONDUCT.md</code>.</li>
+</ul>
+<h3 id="changed_20">Changed</h3>
+<ul>
+<li>Fresh new look for the CLI: better helpers, sub commands, and more</li>
+</ul>
+<h3 id="fixed_3">Fixed</h3>
+<ul>
+<li>Fixed the dry run of <code>pipelex</code></li>
+<li>Removed implementation of the <code>system</code> as in <code>pipelex</code>.</li>
+</ul>
+<h2 id="v001-2025-07-09">[v0.0.1] - 2025-07-09</h2>
+<ul>
+<li>Initial release</li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      © 2025 Evotis S.A.S. <br/>MIT License
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/pipelex/cocode" target="_blank" rel="noopener" title="Cocode on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://pypi.org/project/cocode/" target="_blank" rel="noopener" title="cocode on PyPI" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4.1-11.3 9.1-20.3 20.1-20.3M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.7-142.6c-11.1 0-20.1-9.1-20.1-20.3.1-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4s-9 20.3-20.1 20.3"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://go.pipelex.com/discord" target="_blank" rel="noopener" title="Pipelex on Discord" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M524.531 69.836a1.5 1.5 0 0 0-.764-.7A485 485 0 0 0 404.081 32.03a1.82 1.82 0 0 0-1.923.91 338 338 0 0 0-14.9 30.6 447.9 447.9 0 0 0-134.426 0 310 310 0 0 0-15.135-30.6 1.89 1.89 0 0 0-1.924-.91 483.7 483.7 0 0 0-119.688 37.107 1.7 1.7 0 0 0-.788.676C39.068 183.651 18.186 294.69 28.43 404.354a2.02 2.02 0 0 0 .765 1.375 487.7 487.7 0 0 0 146.825 74.189 1.9 1.9 0 0 0 2.063-.676A348 348 0 0 0 208.12 430.4a1.86 1.86 0 0 0-1.019-2.588 321 321 0 0 1-45.868-21.853 1.885 1.885 0 0 1-.185-3.126 251 251 0 0 0 9.109-7.137 1.82 1.82 0 0 1 1.9-.256c96.229 43.917 200.41 43.917 295.5 0a1.81 1.81 0 0 1 1.924.233 235 235 0 0 0 9.132 7.16 1.884 1.884 0 0 1-.162 3.126 301.4 301.4 0 0 1-45.89 21.83 1.875 1.875 0 0 0-1 2.611 391 391 0 0 0 30.014 48.815 1.86 1.86 0 0 0 2.063.7A486 486 0 0 0 610.7 405.729a1.88 1.88 0 0 0 .765-1.352c12.264-126.783-20.532-236.912-86.934-334.541M222.491 337.58c-28.972 0-52.844-26.587-52.844-59.239s23.409-59.241 52.844-59.241c29.665 0 53.306 26.82 52.843 59.239 0 32.654-23.41 59.241-52.843 59.241m195.38 0c-28.971 0-52.843-26.587-52.843-59.239s23.409-59.241 52.843-59.241c29.667 0 53.307 26.82 52.844 59.239 0 32.654-23.177 59.241-52.844 59.241"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.footer", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>
