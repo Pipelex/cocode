@@ -3,8 +3,13 @@ import logging
 import pipelex.config
 import pipelex.pipelex
 import pytest
+from pipelex.cli.cli_factory import make_pipelex_for_cli
+from pipelex.cli.commands.validate_cmd import do_validate_all_libraries_and_dry_run
+from pipelex.cli.error_handlers import ErrorContext
 from pipelex.config import get_config
+from pipelex.pipelex import Pipelex
 from pipelex.system.configuration.config_check import check_is_initialized
+from pipelex.system.configuration.configs import PipelexConfig
 from rich import print
 from rich.console import Console
 from rich.traceback import Traceback
@@ -26,17 +31,17 @@ def reset_pipelex_config_fixture():
     # Code to run before each test
     print("\n[magenta]pipelex setup[/magenta]")
     try:
-        pipelex_instance = pipelex.pipelex.Pipelex.make()
-        pipelex_instance.validate_libraries()
+        make_pipelex_for_cli(context=ErrorContext.VALIDATION)
+        do_validate_all_libraries_and_dry_run()
         config = get_config()
-        assert isinstance(config, pipelex.config.PipelexConfig)
+        assert isinstance(config, PipelexConfig)
     except Exception as exc:
         Console().print(Traceback())
         pytest.exit(f"Critical Pipelex setup error: {exc}")
     yield
     # Code to run after each test
     print("\n[magenta]pipelex teardown[/magenta]")
-    pipelex_instance.teardown()
+    Pipelex.teardown_if_needed()
 
 
 @pytest.fixture(scope="function", autouse=True)
