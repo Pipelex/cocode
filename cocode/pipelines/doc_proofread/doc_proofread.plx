@@ -107,7 +107,7 @@ Make it concise and focused on the most critical issues only.
 [pipe.doc_proofread]
 type = "PipeSequence"
 description = "Complete documentation proofreading pipeline for CLI usage"
-inputs = { repo_map = "RepositoryMap", doc_files = "DocumentationFile" }
+inputs = { repo_map = "RepositoryMap", doc_files = "DocumentationFile[]" }
 output = "MarkdownReport"
 steps = [
     { pipe = "proofread_doc_sequence", batch_over = "doc_files", batch_as = "doc_file", result = "all_inconsistencies" },
