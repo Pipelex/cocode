@@ -11,6 +11,17 @@ MarkdownReport = "A markdown report containing documentation inconsistencies for
 
 [pipe]
 
+[pipe.proofread_doc_sequence]
+type = "PipeSequence"
+description = "Process a single documentation file to find inconsistencies"
+inputs = { doc_file = "DocumentationFile", repo_map = "RepositoryMap" }
+output = "DocumentationInconsistency[]"
+steps = [
+    { pipe = "find_related_code_files", result = "related_file_paths" },
+    { pipe = "read_doc_file", result = "related_files" },
+    { pipe = "proofread_single_doc", result = "inconsistencies" }
+]
+
 [pipe.find_related_code_files]
 type = "PipeLLM"
 description = "Find code files that implement or use elements mentioned in docs"
@@ -61,17 +72,6 @@ Look for things that would BREAK user code, like:
 Skip anything that's not a showstopper. If it would just be confusing but still work, ignore it.
 """
 
-[pipe.proofread_doc_sequence]
-type = "PipeSequence"
-description = "Process a single documentation file to find inconsistencies"
-inputs = { doc_file = "DocumentationFile", repo_map = "RepositoryMap" }
-output = "DocumentationInconsistency"
-steps = [
-    { pipe = "find_related_code_files", result = "related_file_paths" },
-    { pipe = "read_doc_file", result = "related_files" },
-    { pipe = "proofread_single_doc", result = "inconsistencies" }
-]
-
 [pipe.create_cursor_report]
 type = "PipeLLM"
 description = "Create a markdown report with inconsistencies formatted as a Cursor prompt"
@@ -118,6 +118,6 @@ steps = [
 type = "PipeFunc"
 description = "Read the content of related codebase files"
 inputs = { related_file_paths = "FilePath" }
-output = "CodebaseFileContent"
+output = "CodebaseFileContent[]"
 function_name = "read_file_content"
 

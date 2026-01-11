@@ -6,7 +6,6 @@ import asyncio
 from typing import Annotated, List, Optional
 
 import typer
-from pipelex.hub import get_pipeline_tracker
 
 from cocode.common import validate_repo_path
 from cocode.swe.swe_cmd import swe_ai_instruction_update_from_diff
@@ -60,5 +59,3 @@ def ai_instructions_update_cmd(
             exclude_patterns=exclude_patterns,
         )
     )
-
-    get_pipeline_tracker().output_flowchart()
