@@ -14,6 +14,10 @@ from rich import print
 from rich.console import Console
 from rich.traceback import Traceback
 
+from cocode.common import PIPELINE_LIBRARY_DIRS
+
+PIPELINE_LIBRARY_DIRS_FOR_TESTS = [*PIPELINE_LIBRARY_DIRS, "tests/pipelines"]
+
 pytest_plugins = [
     "pipelex.test_extras.shared_pytest_plugins",
 ]
@@ -31,7 +35,7 @@ def reset_pipelex_config_fixture():
     # Code to run before each test
     print("\n[magenta]pipelex setup[/magenta]")
     try:
-        make_pipelex_for_cli(context=ErrorContext.VALIDATION)
+        make_pipelex_for_cli(context=ErrorContext.VALIDATION, library_dirs=PIPELINE_LIBRARY_DIRS)
         do_validate_all_libraries_and_dry_run()
         config = get_config()
         assert isinstance(config, PipelexConfig)

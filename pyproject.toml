@@ -18,12 +18,12 @@ classifiers = [
 ]
 
 dependencies = [
-    "pipelex[anthropic,google,google-genai,bedrock]==0.15.7",
+    "pipelex[anthropic,google,google-genai,bedrock]",
     "PyGithub==2.4.0",
 ]
 
 [tool.uv.sources]
-pipelex = { path = "../pipelex", editable = true }
+pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "feature/Chicago" }
 
 [project.optional-dependencies]
 docs = [
@@ -83,7 +83,8 @@ required-version = ">=0.7.2"
 [tool.mypy]
 packages = ["cocode", "tests"]
 check_untyped_defs = true
-exclude = "^.*\\.venv/.*$"
+# exclude = "^.*\\.venv/.*$"
+exclude = "^.*\\.venv/.*$|^.*/pipelex/tests/.*$"
 mypy_path = "."
 plugins = ["pydantic.mypy"]
 python_version = "3.11"
