@@ -9,7 +9,6 @@ from pipelex import log
 from pipelex.cli.commands.validate_cmd import do_validate_all_libraries_and_dry_run
 from pipelex.hub import get_pipes
 from pipelex.pipe_run.dry_run import dry_run_pipes
-from pipelex.pipelex import Pipelex
 
 validation_app = typer.Typer(
     name="validation",

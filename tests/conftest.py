@@ -1,7 +1,5 @@
 import logging
 
-import pipelex.config
-import pipelex.pipelex
 import pytest
 from pipelex.cli.cli_factory import make_pipelex_for_cli
 from pipelex.cli.commands.validate_cmd import do_validate_all_libraries_and_dry_run
