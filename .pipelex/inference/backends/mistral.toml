@@ -24,6 +24,7 @@
 model_type = "llm"
 sdk = "mistral"
 prompting_target = "mistral"
+structure_method = "instructor/mistral_tools"
 
 ################################################################################
 # LANGUAGE MODELS
@@ -129,15 +130,36 @@ outputs = ["text", "structured"]
 costs = { input = 0.4, output = 2.0 }
 
 ################################################################################
-# OCR MODELS
+# EXTRACTION MODELS
 ################################################################################
 
+# TODO: add support to pricing per page
+
 # --- OCR Models ---------------------------------------------------------------
+[mistral-ocr-2503]
+model_type = "text_extractor"
+model_id = "mistral-ocr-2503"
+max_tokens = 16384
+inputs = ["pdf", "image"]
+outputs = ["pages"]
+
+[mistral-ocr-2505]
+model_type = "text_extractor"
+model_id = "mistral-ocr-2505"
+max_tokens = 16384
+inputs = ["pdf", "image"]
+outputs = ["pages"]
+
+[mistral-ocr-2512]
+model_type = "text_extractor"
+model_id = "mistral-ocr-2512"
+max_tokens = 16384
+inputs = ["pdf", "image"]
+outputs = ["pages"]
+
 [mistral-ocr]
 model_type = "text_extractor"
 model_id = "mistral-ocr-latest"
-max_tokens = 131072
+max_tokens = 16384
 inputs = ["pdf", "image"]
 outputs = ["pages"]
-costs = { input = 0.4, output = 2.0 }
-

@@ -17,6 +17,7 @@ from cocode.cli.changelog.changelog_cli import changelog_app
 from cocode.cli.doc.doc_cli import doc_app
 from cocode.cli.features.features_cli import features_app
 from cocode.cli.repo.repo_cli import repo_app
+from cocode.common import PIPELINE_LIBRARY_DIRS
 from cocode.github.github_cli import github_app
 from cocode.repox.repox_cli import repox_app
 from cocode.validation_cli import validation_app
@@ -64,7 +65,7 @@ app.add_typer(github_app, name="github", help="GitHub-related operations and uti
 @app.callback(invoke_without_command=True)
 def main(ctx: TyperContext) -> None:
     """Initialize Pipelex system before any command runs."""
-    Pipelex.make()
+    Pipelex.make(library_dirs=PIPELINE_LIBRARY_DIRS)
 
     if ctx.invoked_subcommand is None:
         print(ctx.get_help())

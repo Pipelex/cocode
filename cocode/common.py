@@ -13,6 +13,8 @@ from pipelex.types import StrEnum
 from cocode.github.github_repo_manager import GitHubRepoManager
 from cocode.repox.repox_processor import RESULTS_DIR
 
+PIPELINE_LIBRARY_DIRS = ["cocode/pipelines"]
+
 
 class PipeCode(StrEnum):
     """Pipeline codes for SWE analysis operations."""

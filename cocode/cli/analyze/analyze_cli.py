@@ -6,7 +6,6 @@ import asyncio
 from typing import Annotated, List, Optional
 
 import typer
-from pipelex.hub import get_pipeline_tracker
 from pipelex.pipe_run.pipe_run_mode import PipeRunMode
 from pipelex.tools.misc.file_utils import load_text_from_path
 
@@ -100,4 +99,3 @@ def analyze_diff_cmd(
             exclude_patterns=exclude_patterns,
         )
     )
-    get_pipeline_tracker().output_flowchart()

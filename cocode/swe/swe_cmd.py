@@ -355,12 +355,12 @@ async def swe_doc_proofread(
     doc_files = create_documentation_files_from_paths(doc_file_paths, doc_dir)
 
     repo_map_stuff = StuffFactory.make_stuff(
-        concept=get_required_concept(concept_string="doc_proofread.RepositoryMap"),
+        concept=get_required_concept(concept_ref="doc_proofread.RepositoryMap"),
         content=RepositoryMap(repo_content=repo_text),
         name="repo_map",
     )
     doc_files_stuff = StuffFactory.make_stuff(
-        concept=get_required_concept(concept_string="doc_proofread.DocumentationFile"),
+        concept=get_required_concept(concept_ref="doc_proofread.DocumentationFile"),
         content=ListContent[DocumentationFile](items=doc_files),
         name="doc_files",
     )

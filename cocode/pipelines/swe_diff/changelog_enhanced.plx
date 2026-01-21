@@ -1,5 +1,5 @@
-domain = "changelog"
-description = "Pipelines for analyzing differences between two versions of a codebase."
+domain = "changelog_enhanced"
+description = "Pipelines for analyzing differences between two versions of a codebase — enhanced version."
 
 [concept]
 DraftChangelog = "A draft changelog with sections for each type of change."

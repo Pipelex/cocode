@@ -13,13 +13,17 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
 ]
 
 dependencies = [
-    "pipelex[anthropic,google,google-genai,bedrock]==0.15.7",
+    "pipelex[anthropic,google,google-genai,bedrock]",
     "PyGithub==2.4.0",
 ]
+
+[tool.uv.sources]
+pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "pre-release/v0.18.0b2" }
 
 [project.optional-dependencies]
 docs = [
@@ -79,7 +83,8 @@ required-version = ">=0.7.2"
 [tool.mypy]
 packages = ["cocode", "tests"]
 check_untyped_defs = true
-exclude = "^.*\\.venv/.*$"
+# exclude = "^.*\\.venv/.*$"
+exclude = "^.*\\.venv/.*$|^.*/pipelex/tests/.*$"
 mypy_path = "."
 plugins = ["pydantic.mypy"]
 python_version = "3.11"

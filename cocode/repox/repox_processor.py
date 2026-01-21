@@ -16,7 +16,7 @@ from typing import Callable, Dict, List, Optional, Set, Tuple
 import pathspec
 from pathspec import PathSpec
 from pipelex import log
-from pipelex.tools.misc.filetype_utils import FileType, FileTypeException
+from pipelex.tools.misc.filetype_utils import FileType, FileTypeError
 
 from cocode.exceptions import RepoxException
 from cocode.repox.models import OutputStyle
@@ -257,7 +257,7 @@ class RepoxProcessor:
                         # text file
                         file_type, text_if_applicable = file_check
                         file_content = self._specific_text_file_processing(file_type=file_type, text=text_if_applicable)
-                except FileTypeException as exc:
+                except FileTypeError as exc:
                     log.warning(f"Skipping '{file_path}' - could not determine file type: {exc}")
                     continue
                 file_contents[relative_path] = file_content
