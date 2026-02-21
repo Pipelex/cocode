@@ -1,17 +1,17 @@
 <!-- BEGIN_PIPELEX_RULES -->
 # Pipelex Coding Rules
 
-## Guide to write or edit pipelines using the Pipelex language in .plx files
+## Guide to write or edit pipelines using the Pipelex language in .mthds files
 
 - Always first write your "plan" in natural language, then transcribe it in pipelex.
-- You should ALWAYS RUN validation when you are writing or editing a `.plx` file. It will ensure the pipe is runnable. If not, iterate.
-  - For a specific file: `pipelex validate path_to_file.plx`
+- You should ALWAYS RUN validation when you are writing or editing a `.mthds` file. It will ensure the pipe is runnable. If not, iterate.
+  - For a specific file: `pipelex validate path_to_file.mthds`
   - For all pipelines: `pipelex validate all`
   - **IMPORTANT**: Ensure the Python virtual environment is activated before running `pipelex` commands. For standard installations, the venv is named `.venv` - always check that first. The commands will not work without proper venv activation.
 - Please use POSIX standard for files. (empty lines, no trailing whitespaces, etc.)
 
 ### Pipeline File Naming
-- Files must be `.plx` for pipelines (Always add an empty line at the end of the file, and do not add trailing whitespaces to PLX files at all)
+- Files must be `.mthds` for pipelines (Always add an empty line at the end of the file, and do not add trailing whitespaces to MTHDS files at all)
 - Files must be `.py` for code defining the data structures
 - Use descriptive names in `snake_case`
 
@@ -26,7 +26,7 @@ A pipeline file has three main sections:
 domain = "domain_code"
 description = "Description of the domain" # Optional
 ```
-Note: The domain code usually matches the plx filename for single-file domains. For multi-file domains, use the subdirectory name.
+Note: The domain code usually matches the mthds filename for single-file domains. For multi-file domains, use the subdirectory name.
 
 #### Concept Definitions
 
@@ -985,7 +985,7 @@ You can override the predefined llm presets by setting them in `.pipelex/inferen
 ---
 
 ALWAYS RUN validation when you are finished writing pipelines: This checks for errors. If there are errors, iterate until it works.
-- For a specific bundle/file: `pipelex validate path_to_file.plx`
+- For a specific bundle/file: `pipelex validate path_to_file.mthds`
 - For all pipelines: `pipelex validate all`
 - Remember: Ensure your Python virtual environment is activated (typically `.venv` for standard installations) before running `pipelex` commands.
 
@@ -1001,7 +1001,7 @@ import asyncio
 
 from pipelex import pretty_print
 from pipelex.pipelex import Pipelex
-from pipelex.pipeline.execute import execute_pipeline
+from pipelex.pipeline.runner import PipelexRunner
 
 
 async def hello_world() -> str:
@@ -1009,9 +1009,11 @@ async def hello_world() -> str:
     This function demonstrates the use of a super simple Pipelex pipeline to generate text.
     """
     # Run the pipe
-    pipe_output = await execute_pipeline(
+    runner = PipelexRunner()
+    response = await runner.execute_pipeline(
         pipe_code="hello_world",
     )
+    pipe_output = response.pipe_output
 
     return pipe_output.main_stuff_as_str
 
@@ -1030,7 +1032,7 @@ import asyncio
 
 from pipelex import pretty_print
 from pipelex.pipelex import Pipelex
-from pipelex.pipeline.execute import execute_pipeline
+from pipelex.pipeline.runner import PipelexRunner
 from pipelex.core.stuffs.image_content import ImageContent
 
 from my_project.gantt.gantt_struct import GanttChart
@@ -1041,7 +1043,8 @@ IMAGE_URL = "assets/gantt/gantt_tree_house.png"
 
 async def extract_gantt(image_url: str) -> GanttChart:
     # Run the pipe
-    pipe_output = await execute_pipeline(
+    runner = PipelexRunner()
+    response = await runner.execute_pipeline(
         pipe_code="extract_gantt_by_steps",
         inputs={
             "gantt_chart_image": {
@@ -1050,6 +1053,7 @@ async def extract_gantt(image_url: str) -> GanttChart:
             }
         },
     )
+    pipe_output = response.pipe_output
     # Output the result
     return pipe_output.main_stuff_as(content_type=GanttChart)
 
@@ -1075,41 +1079,46 @@ As you can seen, we made it so different ways can be used to define that stuff u
 
 #### Different ways to set up the input memory
 
-So here are a few concrete examples of calls to execute_pipeline with various ways to set up the input memory:
+So here are a few concrete examples of calls to `PipelexRunner.execute_pipeline` with various ways to set up the input memory:
 
 ```python
+    runner = PipelexRunner()
+
 ## Here we have a single input and it's a Text.
 ## If you assign a string, by default it will be considered as a TextContent.
-    pipe_output = await execute_pipeline(
+    response = await runner.execute_pipeline(
         pipe_code="master_advisory_orchestrator",
         inputs={
             "user_input": problem_description,
         },
     )
+    pipe_output = response.pipe_output
 
 ## Here we have a single input and it's a document.
 ## Because DocumentContent is a native concept, we can use it directly as a value,
 ## the system knows what content it corresponds to:
-    pipe_output = await execute_pipeline(
+    response = await runner.execute_pipeline(
         pipe_code="power_extractor_dpe",
         inputs={
             "document": DocumentContent(url=pdf_url),
         },
     )
+    pipe_output = response.pipe_output
 
 ## Here we have a single input and it's an Image.
 ## Because ImageContent is a native concept, we can use it directly as a value:
-    pipe_output = await execute_pipeline(
+    response = await runner.execute_pipeline(
         pipe_code="fashion_variation_pipeline",
         inputs={
             "fashion_photo": ImageContent(url=image_url),
         },
     )
+    pipe_output = response.pipe_output
 
 ## Here we have a single input, it's an image but
 ## its actually a more specific concept gantt.GanttImage which refines Image,
 ## so we must provide it using a dict with the concept and the content:
-    pipe_output = await execute_pipeline(
+    response = await runner.execute_pipeline(
         pipe_code="extract_gantt_by_steps",
         inputs={
             "gantt_chart_image": {
@@ -1118,9 +1127,10 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
             }
         },
     )
+    pipe_output = response.pipe_output
 
 ## Here is a more complex example with multiple inputs assigned using different ways:
-    pipe_output = await execute_pipeline(
+    response = await runner.execute_pipeline(
         pipe_code="retrieve_then_answer",
         dynamic_output_concept_code="contracts.Fees",
         inputs={
@@ -1132,11 +1142,12 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
             "client_instructions": client_instructions,
         },
     )
+    pipe_output = response.pipe_output
 ```
 
 ### Using the outputs of a pipeline
 
-All pipe executions return a `PipeOutput` object.
+All pipe executions return a `PipelexPipelineExecuteResponse` object, from which you access the `PipeOutput` via `response.pipe_output`.
 It's a BaseModel which contains the resulting working memory at the end of the execution and the pipeline run id.
 It also provides a bunch of accessor functions and properties to unwrap the main stuff, which is the last stuff added to the working memory:
 

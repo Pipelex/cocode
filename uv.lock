@@ -182,7 +182,7 @@ wheels = [
 
 [[package]]
 name = "anthropic"
-version = "0.69.0"
+version = "0.83.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -194,9 +194,9 @@ dependencies = [
     { name = "sniffio" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c8/9d/9ad1778b95f15c5b04e7d328c1b5f558f1e893857b7c33cd288c19c0057a/anthropic-0.69.0.tar.gz", hash = "sha256:c604d287f4d73640f40bd2c0f3265a2eb6ce034217ead0608f6b07a8bc5ae5f2", size = 480622, upload-time = "2025-09-29T16:53:45.282Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/db/e5/02cd2919ec327b24234abb73082e6ab84c451182cc3cc60681af700f4c63/anthropic-0.83.0.tar.gz", hash = "sha256:a8732c68b41869266c3034541a31a29d8be0f8cd0a714f9edce3128b351eceb4", size = 534058, upload-time = "2026-02-19T19:26:38.904Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9b/38/75129688de5637eb5b383e5f2b1570a5cc3aecafa4de422da8eea4b90a6c/anthropic-0.69.0-py3-none-any.whl", hash = "sha256:1f73193040f33f11e27c2cd6ec25f24fe7c3f193dc1c5cde6b7a08b18a16bcc5", size = 337265, upload-time = "2025-09-29T16:53:43.686Z" },
+    { url = "https://files.pythonhosted.org/packages/5f/75/b9d58e4e2a4b1fc3e75ffbab978f999baf8b7c4ba9f96e60edb918ba386b/anthropic-0.83.0-py3-none-any.whl", hash = "sha256:f069ef508c73b8f9152e8850830d92bd5ef185645dbacf234bb213344a274810", size = 456991, upload-time = "2026-02-19T19:26:40.114Z" },
 ]
 
 [[package]]
@@ -560,7 +560,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
     { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], git = "https://github.com/Pipelex/pipelex.git?branch=pre-release%2Fv0.18.0b2" },
+    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], git = "https://github.com/Pipelex/pipelex.git?branch=feature%2FEpic-mthds-1" },
     { name = "pygithub", specifier = "==2.4.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },
@@ -1339,6 +1339,20 @@ wheels = [
 ]
 
 [[package]]
+name = "mthds"
+version = "0.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "backports-strenum", marker = "python_full_version < '3.11'" },
+    { name = "httpx" },
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b4/1c/207fed4b05c8dbcfe6f6c0802b0c59cdc683466f02f95625475248e1ff20/mthds-0.0.2.tar.gz", hash = "sha256:273aaec6e8332f462f772c1bd58cf5baaea4a69224de2fa024b08ebe7ed005f1", size = 60229, upload-time = "2026-02-19T13:38:28.094Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6c/52/c831b1c6bb0a2b7ecaf21de099132eb4c1a1277569ad7ae214da86dd5583/mthds-0.0.2-py3-none-any.whl", hash = "sha256:168210f289f67cc1fd831ddc4bb46f2d65de6c48b5932406bc31459be94f312e", size = 11818, upload-time = "2026-02-19T13:38:26.447Z" },
+]
+
+[[package]]
 name = "multidict"
 version = "6.6.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1894,8 +1908,8 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.18.0b2"
-source = { git = "https://github.com/Pipelex/pipelex.git?branch=pre-release%2Fv0.18.0b2#06b33904bd697791e058c7bc5b43454d96839f46" }
+version = "0.18.0b3"
+source = { git = "https://github.com/Pipelex/pipelex.git?branch=feature%2FEpic-mthds-1#91bb08603c71c450fa0900f8c539151cf7ad19d3" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
@@ -1906,6 +1920,7 @@ dependencies = [
     { name = "json2html" },
     { name = "kajson" },
     { name = "markdown" },
+    { name = "mthds" },
     { name = "networkx", version = "3.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "networkx", version = "3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "openai" },
@@ -1914,6 +1929,7 @@ dependencies = [
     { name = "opentelemetry-sdk" },
     { name = "opentelemetry-semantic-conventions" },
     { name = "pillow" },
+    { name = "pipelex-tools" },
     { name = "polyfactory" },
     { name = "portkey-ai" },
     { name = "posthog" },
@@ -1922,6 +1938,7 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "pyyaml" },
     { name = "rich" },
+    { name = "semantic-version" },
     { name = "shortuuid" },
     { name = "tomli" },
     { name = "tomlkit" },
@@ -1943,6 +1960,21 @@ google = [
 google-genai = [
     { name = "google-genai" },
     { name = "instructor", extra = ["google-genai"] },
+]
+
+[[package]]
+name = "pipelex-tools"
+version = "0.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/5a/06/b0b78881565093fd5c662dbb128b9ed8e090403c1d6110357e1ce8ed9ea2/pipelex_tools-0.2.0.tar.gz", hash = "sha256:8dc6b866aae05dd2d59ac80f5f21ab31c5477b9e09400d86fc2a1b2143868266", size = 143877, upload-time = "2026-02-21T21:04:34.277Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/56/54/865a714ff7880f148acc762686a8281844e5620af38a307fdf535dc4fb94/pipelex_tools-0.2.0-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:0d3cac6f46be310a66d242b9ca42a237042661c77ed8de1c4116c2b066f9e977", size = 5077220, upload-time = "2026-02-21T21:04:20.644Z" },
+    { url = "https://files.pythonhosted.org/packages/d3/47/09abdef9d35cadbda5d3909fe45546282f87d48ad0c876f757f4dc5a847a/pipelex_tools-0.2.0-py3-none-macosx_11_0_arm64.whl", hash = "sha256:7c908648a72b96bef1a68c2ff2ba407e39757e8843f45e1e799d11fab78c405b", size = 4826425, upload-time = "2026-02-21T21:04:22.403Z" },
+    { url = "https://files.pythonhosted.org/packages/cf/35/2dea7a7c615e349807b5aa56604b83e5ed4aa2f7ba6b3249fab7d1d23582/pipelex_tools-0.2.0-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:45f88bffd036d5813cd2684a6cc6fba46852e25614a3723faa8e5ef16fb0dd28", size = 4965360, upload-time = "2026-02-21T21:04:24.959Z" },
+    { url = "https://files.pythonhosted.org/packages/4c/59/2dacf08122e0302b7bf07ea4617dcbf82946445b8b5fcf137443fde3bd20/pipelex_tools-0.2.0-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:b1cc46c25659c6f42ec088a13fa685f1b49f836b22a7300dc807573f74b3af7f", size = 5216110, upload-time = "2026-02-21T21:04:26.904Z" },
+    { url = "https://files.pythonhosted.org/packages/2b/09/89f87484e575205632d3f97c7f22dd3080473ab34c50801d6f12a031028d/pipelex_tools-0.2.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:283210d5f24cbc945a80b3127fc42abc7cf3dbaa18b269d68561bc6a528e1b14", size = 5222398, upload-time = "2026-02-21T21:04:29.134Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/31/6777aa89f9ef096e963b890b748150d4085351edb013edc97b57256488e6/pipelex_tools-0.2.0-py3-none-win32.whl", hash = "sha256:f39eb059f27f2426c3c3dbc990e9d1c13ab66cee3974a1e9d513b4cff24fd7b2", size = 4598419, upload-time = "2026-02-21T21:04:30.819Z" },
+    { url = "https://files.pythonhosted.org/packages/5b/c9/4a3c74f29a5a73f4ca3ea79943212472db5803f13e1de324da5d706f0e01/pipelex_tools-0.2.0-py3-none-win_amd64.whl", hash = "sha256:94488f11c1700bd682cb9da981ee7e7569bc1fa601544ae658254592fc493f56", size = 5393983, upload-time = "2026-02-21T21:04:32.558Z" },
 ]
 
 [[package]]
@@ -2598,6 +2630,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ed/5d/9dcc100abc6711e8247af5aa561fc07c4a046f72f659c3adea9a449e191a/s3transfer-0.13.0.tar.gz", hash = "sha256:f5e6db74eb7776a37208001113ea7aa97695368242b364d73e91c981ac522177", size = 150232, upload-time = "2025-05-22T19:24:50.245Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/18/17/22bf8155aa0ea2305eefa3a6402e040df7ebe512d1310165eda1e233c3f8/s3transfer-0.13.0-py3-none-any.whl", hash = "sha256:0148ef34d6dd964d0d8cf4311b2b21c474693e57c2e069ec708ce043d2b527be", size = 85152, upload-time = "2025-05-22T19:24:48.703Z" },
+]
+
+[[package]]
+name = "semantic-version"
+version = "2.10.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7d/31/f2289ce78b9b473d582568c234e104d2a342fd658cc288a7553d83bb8595/semantic_version-2.10.0.tar.gz", hash = "sha256:bdabb6d336998cbb378d4b9db3a4b56a1e3235701dc05ea2690d9a997ed5041c", size = 52289, upload-time = "2022-05-26T13:35:23.454Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6a/23/8146aad7d88f4fcb3a6218f41a60f6c2d4e3a72de72da1825dc7c8f7877c/semantic_version-2.10.0-py2.py3-none-any.whl", hash = "sha256:de78a3b8e0feda74cabc54aab2da702113e33ac9d9eb9d2389bcf1f58b7d9177", size = 15552, upload-time = "2022-05-26T13:35:21.206Z" },
 ]
 
 [[package]]

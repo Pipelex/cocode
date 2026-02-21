@@ -9,7 +9,7 @@ from pipelex.core.stuffs.list_content import ListContent
 from pipelex.core.stuffs.stuff_factory import StuffFactory
 from pipelex.hub import get_report_delegate, get_required_concept
 from pipelex.pipe_run.pipe_run_mode import PipeRunMode
-from pipelex.pipeline.execute import execute_pipeline
+from pipelex.pipeline.runner import PipelexRunner
 from pipelex.tools.misc.file_utils import ensure_path, failable_load_text_from_path, load_text_from_path, save_text_to_path
 
 from cocode.pipelines.doc_proofread.doc_proofread_models import DocumentationFile, DocumentationInconsistency, RepositoryMap
@@ -23,6 +23,16 @@ from cocode.utils import NoDifferencesFound, run_git_diff_command
 
 class SweFromRepoDiffWithPromptError(Exception):
     pass
+
+
+async def _execute_pipeline(
+    pipe_code: str,
+    inputs: Any = None,
+    pipe_run_mode: PipeRunMode | None = None,
+) -> PipeOutput:
+    runner = PipelexRunner(pipe_run_mode=pipe_run_mode)
+    response = await runner.execute_pipeline(pipe_code=pipe_code, inputs=inputs)
+    return response.pipe_output
 
 
 async def swe_from_repo(
@@ -59,7 +69,7 @@ async def swe_from_repo(
     repo_text = get_repo_text_for_swe(repox_processor=processor)
 
     # Run the pipe
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code=pipe_code,
         pipe_run_mode=pipe_run_mode,
         inputs={"repo_text": repo_text},
@@ -90,7 +100,7 @@ async def swe_from_file(
     text = load_text_from_path(input_file_path)
 
     # Run the pipe
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code=pipe_code,
         pipe_run_mode=pipe_run_mode,
         inputs={"text": text},
@@ -129,7 +139,7 @@ async def swe_from_repo_diff(
         return
 
     # Run the pipe
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code=pipe_code,
         pipe_run_mode=pipe_run_mode,
         inputs={
@@ -177,7 +187,7 @@ async def swe_from_repo_diff_with_prompt(
         return
 
     # Run the pipe
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code=pipe_code,
         pipe_run_mode=pipe_run_mode,
         inputs={
@@ -214,7 +224,7 @@ async def swe_doc_update_from_diff(
     # Generate git diff
     git_diff = run_git_diff_command(repo_path=repo_path, version=version, include_patterns=include_patterns, exclude_patterns=exclude_patterns)
 
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code="doc_update",
         inputs={
             "git_diff": {
@@ -293,7 +303,7 @@ async def swe_ai_instruction_update_from_diff(
         stuff_list=[git_diff_stuff, agents_content_stuff, claude_content_stuff, cursor_rules_content_stuff]
     )
 
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code="ai_instruction_update",
         inputs=working_memory,
     )
@@ -367,7 +377,7 @@ async def swe_doc_proofread(
 
     working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[repo_map_stuff, doc_files_stuff])
 
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code="doc_proofread",
         inputs=working_memory,
     )
