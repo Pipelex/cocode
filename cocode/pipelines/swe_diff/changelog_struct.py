@@ -1,7 +1,3 @@
-from __future__ import annotations
-
-from typing import List
-
 from pipelex import log
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field, model_validator
@@ -9,12 +5,12 @@ from typing_extensions import Self
 
 
 class StructuredChangelog(StructuredContent):
-    added: List[str] = Field(default_factory=list, description="New features.")
-    changed: List[str] = Field(default_factory=list, description="Updates to existing behavior.")
-    fixed: List[str] = Field(default_factory=list, description="Bug fixes.")
-    removed: List[str] = Field(default_factory=list, description="Features removed.")
-    deprecated: List[str] = Field(default_factory=list, description="Soon-to-be removed features.")
-    security: List[str] = Field(default_factory=list, description="Security-related changes.")
+    added: list[str] = Field(default_factory=list, description="New features.")
+    changed: list[str] = Field(default_factory=list, description="Updates to existing behavior.")
+    fixed: list[str] = Field(default_factory=list, description="Bug fixes.")
+    removed: list[str] = Field(default_factory=list, description="Features removed.")
+    deprecated: list[str] = Field(default_factory=list, description="Soon-to-be removed features.")
+    security: list[str] = Field(default_factory=list, description="Security-related changes.")
 
     # --- validation ---------------------------------------------------------
     @model_validator(mode="after")
