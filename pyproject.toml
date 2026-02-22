@@ -24,7 +24,7 @@ dependencies = [
 
 [tool.uv.sources]
 # pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "pre-release/v0.18.0b2" }
-pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "feature/Epic-mthds-1" }
+pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "feature/Chicago" }
 
 [project.optional-dependencies]
 docs = [

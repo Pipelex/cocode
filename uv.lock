@@ -560,7 +560,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
     { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], git = "https://github.com/Pipelex/pipelex.git?branch=feature%2FEpic-mthds-1" },
+    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], git = "https://github.com/Pipelex/pipelex.git?branch=feature%2FChicago" },
     { name = "pygithub", specifier = "==2.4.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },
@@ -1909,7 +1909,7 @@ wheels = [
 [[package]]
 name = "pipelex"
 version = "0.18.0b3"
-source = { git = "https://github.com/Pipelex/pipelex.git?branch=feature%2FEpic-mthds-1#91bb08603c71c450fa0900f8c539151cf7ad19d3" }
+source = { git = "https://github.com/Pipelex/pipelex.git?branch=feature%2FChicago#258890c9cfc6e86fd71280450fa48718abfee04c" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
