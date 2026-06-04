@@ -1,9 +1,9 @@
+import asyncio
 import logging
 from pathlib import Path
 
 import pytest
 from pipelex.cli.cli_factory import make_pipelex_for_cli
-from pipelex.cli.commands.validate_cmd import do_validate_all_libraries_and_dry_run
 from pipelex.cli.error_handlers import ErrorContext
 from pipelex.config import get_config
 from pipelex.hub import get_library_manager, set_current_library
@@ -18,6 +18,7 @@ from rich.console import Console
 from rich.traceback import Traceback
 
 from cocode.common import PIPELINE_LIBRARY_DIRS
+from cocode.validation_cli import dry_run_all_pipes, load_all_pipeline_libraries
 
 PIPELINE_LIBRARY_DIRS_FOR_TESTS = [*PIPELINE_LIBRARY_DIRS, "tests/pipelines"]
 
@@ -56,7 +57,8 @@ def reset_pipelex_config_fixture(request: FixtureRequest):
         else:
             # When inference is enabled, use the CLI factory for proper error handling
             make_pipelex_for_cli(context=ErrorContext.VALIDATION, library_dirs=PIPELINE_LIBRARY_DIRS)
-            do_validate_all_libraries_and_dry_run()
+            load_all_pipeline_libraries()
+            asyncio.run(dry_run_all_pipes())
         config = get_config()
         assert isinstance(config, PipelexConfig)
     except Exception as exc:

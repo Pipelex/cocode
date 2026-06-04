@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, cast
 
 from pipelex import log, pretty_print
@@ -97,7 +98,7 @@ async def swe_from_file(
     """Process SWE analysis from an existing text file instead of building from repository."""
     log.info(f"Processing SWE from file: '{input_file_path}'")
 
-    text = load_text_from_path(input_file_path)
+    text = load_text_from_path(Path(input_file_path))
 
     # Run the pipe
     pipe_output = await _execute_pipeline(
@@ -237,8 +238,8 @@ async def swe_doc_update_from_diff(
 
     get_report_delegate().generate_report()
 
-    ensure_path(output_dir)
-    output_file_path = f"{output_dir}/{output_filename}"
+    ensure_path(Path(output_dir))
+    output_file_path = Path(output_dir) / output_filename
     save_text_to_path(text=formatted_output, path=output_file_path)
     log.info(f"Done, documentation update suggestions saved to file: '{output_file_path}'")
 
@@ -258,11 +259,11 @@ async def swe_ai_instruction_update_from_diff(
 
     # Read AGENTS.md content
     agents_md_path = os.path.join(repo_path, "AGENTS.md")
-    agents_content = failable_load_text_from_path(agents_md_path) or ""
+    agents_content = failable_load_text_from_path(Path(agents_md_path)) or ""
 
     # Read CLAUDE.md content
     claude_md_path = os.path.join(repo_path, "CLAUDE.md")
-    claude_content = failable_load_text_from_path(claude_md_path) or ""
+    claude_content = failable_load_text_from_path(Path(claude_md_path)) or ""
 
     # Read cursor rules content (check two possible patterns)
     cursor_rules_content = ""
@@ -270,7 +271,7 @@ async def swe_ai_instruction_update_from_diff(
     cursor_rules_dir = os.path.join(repo_path, ".cursor/rules")
 
     # Pattern 1: Single .cursorrules file
-    if content := failable_load_text_from_path(cursorrules_path):
+    if content := failable_load_text_from_path(Path(cursorrules_path)):
         cursor_rules_content = content
 
     # Pattern 2: Multiple .md files in .cursor/rules/ directory
@@ -288,7 +289,7 @@ async def swe_ai_instruction_update_from_diff(
             # Concatenate all .md files
             for file in md_files:
                 file_path = os.path.join(cursor_rules_dir, file)
-                if content := failable_load_text_from_path(file_path):
+                if content := failable_load_text_from_path(Path(file_path)):
                     cursor_rules_content += f"=== {file} ===\n{content}\n\n"
         except Exception as exc:
             log.warning(f"Error reading cursor rules directory {cursor_rules_dir}: {exc}")
@@ -314,8 +315,8 @@ async def swe_ai_instruction_update_from_diff(
     get_report_delegate().generate_report()
 
     # Always output to file as text
-    ensure_path(output_dir)
-    output_file_path = f"{output_dir}/{output_filename}"
+    ensure_path(Path(output_dir))
+    output_file_path = Path(output_dir) / output_filename
 
     # The output is already formatted by the LLM in the pipeline
     text_content = formatted_output.as_str
@@ -406,12 +407,12 @@ async def swe_doc_proofread(
 
     json_output = json.dumps(inconsistencies_data, indent=2, ensure_ascii=False)
 
-    ensure_path(output_dir)
-    output_file_path = f"{output_dir}/{output_filename}.json"
+    ensure_path(Path(output_dir))
+    output_file_path = Path(output_dir) / f"{output_filename}.json"
     save_text_to_path(text=json_output, path=output_file_path)
     log.info(f"Done, output saved as JSON to file: '{output_file_path}'")
 
     report = pipe_output.main_stuff_as_str
-    save_text_to_path(text=report, path=f"{output_dir}/{output_filename}.md")
+    save_text_to_path(text=report, path=Path(output_dir) / f"{output_filename}.md")
 
     return pipe_output

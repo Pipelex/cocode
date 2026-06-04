@@ -30,7 +30,7 @@ best-gpt = "gpt-image-1.5"
 best-gemini = "nano-banana-pro"
 best-blackforestlabs = "flux-2-pro"
 
-default-general = "flux-2-pro"
+default-general = "nano-banana"
 default-premium = "nano-banana-pro"
 default-small = "gpt-image-1-mini"
 

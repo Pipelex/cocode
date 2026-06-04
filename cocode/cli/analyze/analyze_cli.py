@@ -3,6 +3,7 @@ Analyze management CLI commands.
 """
 
 import asyncio
+from pathlib import Path
 from typing import Annotated, List, Optional
 
 import typer
@@ -74,7 +75,7 @@ def analyze_diff_cmd(
     # Load prompt from file if provided
     the_prompt: str
     if prompt_file is not None:
-        the_prompt = load_text_from_path(prompt_file)
+        the_prompt = load_text_from_path(Path(prompt_file))
     elif prompt is not None:
         the_prompt = prompt
     else:

@@ -1,8 +1,9 @@
 import asyncio
 
 import pytest
-from pipelex.hub import get_pipes, get_required_concept
-from pipelex.pipe_run.dry_run import dry_run_pipes
+from pipelex.hub import get_required_concept
+
+from cocode.validation_cli import dry_run_all_pipes
 
 
 def test_boot():
@@ -17,4 +18,4 @@ def test_concept_exists():
 def test_dry_run_all_pipes():
     """Test that dry_run_all_pipes() runs successfully without errors."""
     # This should not raise any exceptions
-    asyncio.run(dry_run_pipes(get_pipes()))
+    asyncio.run(dry_run_all_pipes())

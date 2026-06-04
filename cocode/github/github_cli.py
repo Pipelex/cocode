@@ -1,5 +1,6 @@
 """GitHub CLI commands for cocode."""
 
+from pathlib import Path
 from typing import Annotated
 
 import typer
@@ -178,7 +179,7 @@ def sync_labels(
 
         # Get labels to sync
         try:
-            labels_to_sync = load_json_list_from_path(labels_file)
+            labels_to_sync = load_json_list_from_path(Path(labels_file))
             console.print(f"📂 [dim]Loading labels from: {labels_file}[/dim]")
         except Exception as e:
             console.print(f"❌ [red]Error loading labels file:[/red] {e}")
