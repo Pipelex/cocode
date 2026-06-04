@@ -54,3 +54,9 @@ settings.local.json
 
 # GCP credentials
 gcp_credentials.json
+
+# Pipelex config sync backups
+*.bak.*
+
+# Work-in-progress notes
+wip/
