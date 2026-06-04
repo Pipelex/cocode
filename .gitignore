@@ -42,6 +42,9 @@ results/
 # temps
 temp/
 
+# Pipelex runtime traces
+.pipelex/traces/
+
 # Local settings
 pipelex_super.toml
 settings.local.json
