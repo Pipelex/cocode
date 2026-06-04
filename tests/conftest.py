@@ -1,13 +1,13 @@
 import asyncio
 import logging
-from pathlib import Path
 
 import pytest
 from pipelex.cli.cli_factory import make_pipelex_for_cli
 from pipelex.cli.error_handlers import ErrorContext
 from pipelex.config import get_config
-from pipelex.hub import get_library_manager, set_current_library
 from pipelex.pipelex import Pipelex
+from pipelex.pipeline.bundle_validator import BundleValidator
+from pipelex.pipeline.execution_seams import load_libraries_and_activate
 from pipelex.system.configuration.config_check import check_is_initialized
 from pipelex.system.configuration.configs import PipelexConfig
 from pipelex.system.runtime import IntegrationMode
@@ -18,7 +18,6 @@ from rich.console import Console
 from rich.traceback import Traceback
 
 from cocode.common import PIPELINE_LIBRARY_DIRS
-from cocode.validation_cli import dry_run_all_pipes, load_all_pipeline_libraries
 
 PIPELINE_LIBRARY_DIRS_FOR_TESTS = [*PIPELINE_LIBRARY_DIRS, "tests/pipelines"]
 
@@ -41,24 +40,20 @@ def reset_pipelex_config_fixture(request: FixtureRequest):
     try:
         disable_inference = is_inference_disabled_in_pipelex(request)
         if disable_inference:
-            # When inference is disabled, use Pipelex.make() directly with disable_inference=True
-            # This skips gateway terms check and uses mock content generator
+            # When inference is disabled, use Pipelex.make() directly with needs_inference=False:
+            # this skips the gateway terms check and uses a mock content generator.
             Pipelex.make(
                 integration_mode=IntegrationMode.CI,
-                disable_inference=True,
+                needs_inference=False,
                 library_dirs=PIPELINE_LIBRARY_DIRS,
             )
-            # Load libraries manually (without validation/dry-run that needs model resolution)
-            library_manager = get_library_manager()
-            library_id, _ = library_manager.open_library()
-            set_current_library(library_id=library_id)
-            library_dirs_paths = [Path(lib_dir) for lib_dir in PIPELINE_LIBRARY_DIRS]
-            library_manager.load_libraries(library_id=library_id, library_dirs=library_dirs_paths)
+            # Load libraries and keep them loaded (no dry-run, which would need model resolution)
+            load_libraries_and_activate(PIPELINE_LIBRARY_DIRS)
         else:
             # When inference is enabled, use the CLI factory for proper error handling
             make_pipelex_for_cli(context=ErrorContext.VALIDATION, library_dirs=PIPELINE_LIBRARY_DIRS)
-            load_all_pipeline_libraries()
-            asyncio.run(dry_run_all_pipes())
+            load_libraries_and_activate(PIPELINE_LIBRARY_DIRS)
+            asyncio.run(BundleValidator().validate_current_library())
         config = get_config()
         assert isinstance(config, PipelexConfig)
     except Exception as exc:
