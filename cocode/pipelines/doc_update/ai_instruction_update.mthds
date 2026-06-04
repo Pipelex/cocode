@@ -1,12 +1,12 @@
-domain = "ai_instruction_update"
+domain      = "ai_instruction_update"
 description = "Pipeline for updating AI instruction files (AGENTS.md, CLAUDE.md, cursor rules) based on git diff"
 
 [concept]
-AgentsContent = "Content of the AGENTS.md file"
-ClaudeContent = "Content of the CLAUDE.md file"
-CursorRulesContent = "Content of cursor rules files"
-AIInstructionFileAnalysis = "Analysis of changes needed for a specific AI instruction file"
-AIInstructionParallelResults = "Results from parallel analysis of AI instruction files"
+AgentsContent                  = "Content of the AGENTS.md file"
+ClaudeContent                  = "Content of the CLAUDE.md file"
+CursorRulesContent             = "Content of cursor rules files"
+AIInstructionFileAnalysis      = "Analysis of changes needed for a specific AI instruction file"
+AIInstructionParallelResults   = "Results from parallel analysis of AI instruction files"
 AIInstructionUpdateSuggestions = "Comprehensive suggestions for updating all AI instruction files"
 
 [pipe]
@@ -277,10 +277,10 @@ type = "PipeParallel"
 description = "Analyze changes for all AI instruction files in parallel"
 inputs = { git_diff = "git.GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
 output = "AIInstructionParallelResults"
-parallels = [
-    { pipe = "analyze_agents_md_changes", result = "agents_analysis" },
-    { pipe = "analyze_claude_md_changes", result = "claude_analysis" },
-    { pipe = "analyze_cursor_rules_changes", result = "cursor_analysis" },
+branches = [
+  { pipe = "analyze_agents_md_changes", result = "agents_analysis" },
+  { pipe = "analyze_claude_md_changes", result = "claude_analysis" },
+  { pipe = "analyze_cursor_rules_changes", result = "cursor_analysis" },
 ]
 combined_output = "ai_instruction_update.AIInstructionParallelResults"
 
@@ -290,8 +290,7 @@ description = "AI instruction update analysis with parallel file processing and 
 inputs = { git_diff = "git.GitDiff", agents_content = "AgentsContent", claude_content = "ClaudeContent", cursor_rules_content = "CursorRulesContent" }
 output = "Text"
 steps = [
-    { pipe = "ai_instruction_update_parallel", result = "parallel_analyses" },
-    { pipe = "combine_ai_instruction_analyses", result = "combined_suggestions" },
-    { pipe = "format_ai_instruction_output", result = "ai_instruction_output" },
+  { pipe = "ai_instruction_update_parallel", result = "parallel_analyses" },
+  { pipe = "combine_ai_instruction_analyses", result = "combined_suggestions" },
+  { pipe = "format_ai_instruction_output", result = "ai_instruction_output" },
 ]
-

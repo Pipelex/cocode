@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from pipelex import log
 from pipelex.core.pipes.pipe_output import PipeOutput
 from pipelex.core.stuffs.text_content import TextContent
@@ -45,8 +47,8 @@ async def process_swe_pipeline_result(
         else:
             print(swe_stuff)
     else:
-        ensure_path(output_dir)
-        output_file_path = f"{output_dir}/{output_filename}"
+        ensure_path(Path(output_dir))
+        output_file_path = Path(output_dir) / output_filename
         if isinstance(swe_stuff.content, TextContent):
             save_text_to_path(text=swe_stuff.as_str, path=output_file_path)
         else:

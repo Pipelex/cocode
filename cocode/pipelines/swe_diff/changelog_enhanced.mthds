@@ -1,5 +1,5 @@
-domain = "changelog"
-description = "Pipelines for analyzing differences between two versions of a codebase."
+domain      = "changelog_enhanced"
+description = "Pipelines for analyzing differences between two versions of a codebase — enhanced version."
 
 [concept]
 DraftChangelog = "A draft changelog with sections for each type of change."
@@ -12,9 +12,9 @@ description = "Write a comprehensive changelog for a software project"
 inputs = { git_diff = "git.GitDiff" }
 output = "changelog.MarkdownChangelog"
 steps = [
-    { pipe = "draft_changelog_from_git_diff", result = "draft_changelog" },
-    { pipe = "polish_changelog", result = "structured_changelog" },
-    { pipe = "format_changelog_as_markdown", result = "markdown_changelog" },
+  { pipe = "draft_changelog_from_git_diff", result = "draft_changelog" },
+  { pipe = "polish_changelog", result = "structured_changelog" },
+  { pipe = "format_changelog_as_markdown", result = "markdown_changelog" },
 ]
 
 [pipe.draft_changelog_from_git_diff]
@@ -22,7 +22,7 @@ type = "PipeLLM"
 description = "Write a changelog for a software project."
 inputs = { git_diff = "git.GitDiff" }
 output = "DraftChangelog"
-model = "llm_for_git_diff"
+model = "$engineering-codebase-analysis"
 system_prompt = """
 You are an expert technical writer and software architect.
 """
@@ -50,8 +50,7 @@ type = "PipeLLM"
 description = "Polish and improve the draft changelog"
 inputs = { draft_changelog = "DraftChangelog" }
 output = "changelog.StructuredChangelog"
-model = "llm_for_swe"
-structuring_method = "preliminary_text"
+model = "$engineering-structured"
 system_prompt = """
 You are an expert technical writer. Your task is to polish and improve a draft changelog to make it more clear, concise, and well-structured.
 """
@@ -65,4 +64,3 @@ And when you see several changes that were made for the same purpose, groupd the
 Don't add fluff, stay sharp and to the point.
 Use nice readable markdown formatting.
 """
-

@@ -1,9 +1,9 @@
-domain = "changelog"
+domain      = "changelog"
 description = "Pipelines for analyzing differences between two versions of a codebase."
 
 [concept]
 StructuredChangelog = "A structured changelog with sections for each type of change."
-MarkdownChangelog = "A text report in markdown format that summarizes the changes made to the codebase between two versions."
+MarkdownChangelog   = "A text report in markdown format that summarizes the changes made to the codebase between two versions."
 
 [pipe]
 [pipe.write_changelog]
@@ -12,8 +12,8 @@ description = "Write a comprehensive changelog for a software project"
 inputs = { git_diff = "git.GitDiff" }
 output = "MarkdownChangelog"
 steps = [
-    { pipe = "structure_changelog_from_git_diff", result = "structured_changelog" },
-    { pipe = "format_changelog_as_markdown", result = "markdown_changelog" },
+  { pipe = "structure_changelog_from_git_diff", result = "structured_changelog" },
+  { pipe = "format_changelog_as_markdown", result = "markdown_changelog" },
 ]
 
 [pipe.structure_changelog_from_git_diff]
@@ -21,7 +21,7 @@ type = "PipeLLM"
 description = "Write a changelog for a software project."
 inputs = { git_diff = "git.GitDiff" }
 output = "StructuredChangelog"
-model = "llm_for_git_diff"
+model = "$engineering-codebase-analysis"
 system_prompt = """
 You are an expert technical writer and software architect. Your task is to carefully review the code diff and write a structured changelog.
 """
@@ -33,10 +33,10 @@ Be sure to include changes to code but also complementary pipelines, scripts, do
 """
 
 [pipe.format_changelog_as_markdown]
-type = "PipeCompose"
+type        = "PipeCompose"
 description = "Format the final changelog in markdown with proper structure"
-inputs = { structured_changelog = "StructuredChangelog" }
-output = "MarkdownChangelog"
+inputs      = { structured_changelog = "StructuredChangelog" }
+output      = "MarkdownChangelog"
 
 [pipe.format_changelog_as_markdown.template]
 category = "markdown"

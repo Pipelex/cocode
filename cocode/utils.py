@@ -98,12 +98,12 @@ def check_type_and_load_if_text(file_path: str) -> FileType | Tuple[FileType, st
         PermissionError: If the file cannot be read due to permissions.
     """
     try:
-        text = load_text_from_path(file_path)
+        text = load_text_from_path(Path(file_path))
         text_file_type = determine_text_file_type(file_path)
         return text_file_type, text
     except UnicodeDecodeError:
         # this is not an utf-8 text file
-        file_type = detect_file_type_from_path(file_path)
+        file_type = detect_file_type_from_path(Path(file_path))
         return file_type
 
 

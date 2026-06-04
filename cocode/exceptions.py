@@ -1,13 +1,16 @@
-from pipelex.base_exceptions import RootException
+class CocodeError(Exception):
+    def __init__(self, message: str):
+        super().__init__(message)
+        self.message = message
 
 
-class PythonProcessingError(RootException):
+class PythonProcessingError(CocodeError):
     pass
 
 
-class RepoxException(RootException):
+class RepoxException(CocodeError):
     pass
 
 
-class NoDifferencesFound(RootException):
+class NoDifferencesFound(CocodeError):
     pass

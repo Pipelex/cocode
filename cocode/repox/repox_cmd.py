@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 from pipelex import log
@@ -48,8 +49,8 @@ def repox_command(
     if to_stdout:
         print(repo_text)
     else:
-        ensure_path(output_dir)
-        output_file_path = f"{output_dir}/{output_filename}"
+        ensure_path(Path(output_dir))
+        output_file_path = Path(output_dir) / output_filename
         save_text_to_path(text=repo_text, path=output_file_path)
         log.info(f"Done, output saved as text to file: '{output_file_path}'")
 

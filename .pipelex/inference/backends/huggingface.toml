@@ -1,12 +1,14 @@
 ################################################################################
-# Internal Backend Configuration
+# Hugging Face Backend Configuration
 ################################################################################
 #
-# This file defines the model specifications for internal software-only models.
-# These models run internally without external APIs or AI services.
+# This file defines the model specifications for Hugging Face models.
+# It contains model definitions for various image generation models
+# accessible through the Hugging Face Inference API with provider="auto".
 #
 # Configuration structure:
 # - Each model is defined in its own section with the model name as the header
+# - Headers with dots or slashes must be quoted (e.g., ["stabilityai/stable-diffusion-2-1"])
 # - Model costs are in USD per million tokens (input/output)
 #
 # Documentation: https://docs.pipelex.com
@@ -19,26 +21,24 @@
 ################################################################################
 
 [defaults]
+model_type = "img_gen"
+sdk = "huggingface_img_gen"
 thinking_mode = "none"
 
 ################################################################################
-# TEXT EXTRACTION MODELS
+# IMAGE GENERATION MODELS
 ################################################################################
 
-# --- PyPDFium2 Text Extractor -------------------------------------------------
-[pypdfium2-extract-pdf]
-model_type = "text_extractor"
-sdk = "pypdfium2"
-model_id = "extract-text"
-inputs = ["pdf"]
-outputs = ["pages"]
-costs = {}
+# --- Qwen Image Models --------------------------------------------------
+[qwen-image]
+model_id = "Qwen/Qwen-Image"
+inputs = ["text"]
+outputs = ["image"]
+costs = { input = 0.0, output = 0.0 }
+variant = "fal-ai"
+# variant = "replicate"
 
-# --- Docling Text Extractor ---------------------------------------------------
-[docling-extract-text]
-model_type = "text_extractor"
-sdk = "docling_sdk"
-model_id = "extract-text"
-inputs = ["pdf", "image"]
-outputs = ["pages"]
-costs = {}
+[qwen-image.rules]
+prompt = "with_negative"
+aspect_ratio = "qwen_image"
+inference = "qwen_image"

@@ -1,16 +1,16 @@
-domain = "swe"
+domain      = "swe"
 description = "Pipelines for software engineering tasks."
 
 [concept]
-SoftwareDoc = "Documentation related to software engineering projects or codebases."
-InconsistencyReport = "A text report enumerating any inconsistencies detected within the provided documentation."
-SoftwareFeaturesRecap = "A comprehensive overview of software features highlighting key capabilities, strengths, and limitations without technical implementation details."
-FundamentalsDoc = "A comprehensive overview of the fundamental concepts and principles of software engineering."
-EnvironmentBuildDoc = "A comprehensive overview of the environment and build setup for a software project."
-CodingStandardsDoc = "A comprehensive overview of the coding standards and best practices for a software project."
-TestStrategyDoc = "A comprehensive overview of the testing strategy and procedures for a software project."
+SoftwareDoc             = "Documentation related to software engineering projects or codebases."
+InconsistencyReport     = "A text report enumerating any inconsistencies detected within the provided documentation."
+SoftwareFeaturesRecap   = "A comprehensive overview of software features highlighting key capabilities, strengths, and limitations without technical implementation details."
+FundamentalsDoc         = "A comprehensive overview of the fundamental concepts and principles of software engineering."
+EnvironmentBuildDoc     = "A comprehensive overview of the environment and build setup for a software project."
+CodingStandardsDoc      = "A comprehensive overview of the coding standards and best practices for a software project."
+TestStrategyDoc         = "A comprehensive overview of the testing strategy and procedures for a software project."
 ContextualGuidelinesDoc = "A comprehensive overview of the contextual development guidelines and conventions for a software project."
-CollaborationDoc = "A comprehensive overview of the collaboration and workflow information for a software project."
+CollaborationDoc        = "A comprehensive overview of the collaboration and workflow information for a software project."
 OnboardingDocumentation = "Complete set of documentation needed for onboarding new developers to a project."
 
 [pipe]
@@ -19,7 +19,7 @@ type = "PipeLLM"
 description = "Identify inconsistencies in a set of software engineering documents."
 inputs = { repo_text = "SoftwareDoc" }
 output = "InconsistencyReport"
-model = "llm_for_swe"
+model = "$engineering-structured"
 system_prompt = """
 You are an expert technical writer and software architect. Your task is to carefully review software documentation and point out any inconsistencies or contradictions.
 """
@@ -40,12 +40,12 @@ type = "PipeParallel"
 description = "Extract comprehensive onboarding documentation from software project docs"
 inputs = { repo_text = "SoftwareDoc" }
 output = "OnboardingDocumentation"
-parallels = [
-    { pipe = "extract_fundamentals", result = "fundamentals" },
-    { pipe = "extract_environment_build", result = "environment_build" },
-    { pipe = "extract_coding_standards", result = "coding_standards" },
-    { pipe = "extract_test_strategy", result = "test_strategy" },
-    { pipe = "extract_collaboration", result = "collaboration" },
+branches = [
+  { pipe = "extract_fundamentals", result = "fundamentals" },
+  { pipe = "extract_environment_build", result = "environment_build" },
+  { pipe = "extract_coding_standards", result = "coding_standards" },
+  { pipe = "extract_test_strategy", result = "test_strategy" },
+  { pipe = "extract_collaboration", result = "collaboration" },
 ]
 combined_output = "swe.OnboardingDocumentation"
 
@@ -54,7 +54,7 @@ type = "PipeLLM"
 description = "Extract fundamental project information from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "FundamentalsDoc"
-model = "llm_for_swe"
+model = "$engineering-structured"
 system_prompt = """
 You are an expert at extracting structured project information from software documentation. Focus on identifying core project context and foundational information.
 """
@@ -77,7 +77,7 @@ type = "PipeLLM"
 description = "Extract environment setup and build information from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "EnvironmentBuildDoc"
-model = "llm_for_swe"
+model = "$engineering-structured"
 system_prompt = """
 You are an expert at extracting development environment setup information from software documentation.
 """
@@ -102,7 +102,7 @@ type = "PipeLLM"
 description = "Extract code quality and style information from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "CodingStandardsDoc"
-model = "llm_for_swe"
+model = "$engineering-structured"
 system_prompt = """
 You are an expert at extracting code quality standards and tooling information from software documentation.
 """
@@ -128,7 +128,7 @@ type = "PipeLLM"
 description = "Extract testing strategy and procedures from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "TestStrategyDoc"
-model = "llm_for_swe"
+model = "$engineering-structured"
 system_prompt = """
 You are an expert at extracting testing strategies and procedures from software documentation.
 """
@@ -153,7 +153,7 @@ type = "PipeLLM"
 description = "Extract contextual development guidelines from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "ContextualGuidelinesDoc"
-model = "llm_for_swe"
+model = "$engineering-structured"
 system_prompt = """
 You are an expert at extracting contextual development guidelines and conventions from software documentation.
 """
@@ -176,7 +176,7 @@ type = "PipeLLM"
 description = "Extract collaboration and workflow information from documentation"
 inputs = { repo_text = "SoftwareDoc" }
 output = "CollaborationDoc"
-model = "llm_for_swe"
+model = "$engineering-structured"
 system_prompt = """
 You are an expert at extracting collaboration processes and workflow information from software documentation.
 """
@@ -201,7 +201,7 @@ type = "PipeLLM"
 description = "Extract and analyze software features from documentation to create a comprehensive feature overview"
 inputs = { repo_text = "SoftwareDoc" }
 output = "SoftwareFeaturesRecap"
-model = "llm_for_swe"
+model = "$engineering-structured"
 system_prompt = """
 You are a product analyst and technical writer specializing in software feature analysis. Your task is to analyze software documentation and create compelling feature presentations that highlight capabilities, strengths, and potential limitations.
 """
@@ -228,4 +228,3 @@ Guidelines:
 
 If insufficient information is available in the documentation to assess features comprehensively, indicate which aspects need additional information.
 """
-
