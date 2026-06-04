@@ -45,14 +45,14 @@ def reset_pipelex_config_fixture(request: FixtureRequest):
             Pipelex.make(
                 integration_mode=IntegrationMode.CI,
                 needs_inference=False,
-                library_dirs=PIPELINE_LIBRARY_DIRS,
+                library_dirs=PIPELINE_LIBRARY_DIRS_FOR_TESTS,
             )
             # Load libraries and keep them loaded (no dry-run, which would need model resolution)
-            load_libraries_and_activate(PIPELINE_LIBRARY_DIRS)
+            load_libraries_and_activate(PIPELINE_LIBRARY_DIRS_FOR_TESTS)
         else:
             # When inference is enabled, use the CLI factory for proper error handling
-            make_pipelex_for_cli(context=ErrorContext.VALIDATION, library_dirs=PIPELINE_LIBRARY_DIRS)
-            load_libraries_and_activate(PIPELINE_LIBRARY_DIRS)
+            make_pipelex_for_cli(context=ErrorContext.VALIDATION, library_dirs=PIPELINE_LIBRARY_DIRS_FOR_TESTS)
+            load_libraries_and_activate(PIPELINE_LIBRARY_DIRS_FOR_TESTS)
             asyncio.run(BundleValidator().validate_current_library())
         config = get_config()
         assert isinstance(config, PipelexConfig)

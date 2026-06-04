@@ -3,7 +3,6 @@ from pipelex.pipe_run.pipe_run_mode import PipeRunMode
 from pipelex.pipeline.runner import PipelexRunner
 
 
-@pytest.mark.xfail(reason="This test is failing because the hello_world pipeline is not found in the pipeline library.")
 @pytest.mark.asyncio
 @pytest.mark.inference
 @pytest.mark.dry_runnable

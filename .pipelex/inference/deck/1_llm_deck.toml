@@ -34,7 +34,7 @@ for_object = "@default-general"
 [llm.aliases]
 best-gpt = "gpt-5.5"
 best-claude = "claude-4.8-opus"
-best-gemini = "gemini-flash-latest"
+best-gemini = "gemini-pro-latest"
 best-mistral = "mistral-large"
 
 # Default aliases (first choice from waterfalls)
