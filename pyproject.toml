@@ -18,13 +18,9 @@ classifiers = [
 ]
 
 dependencies = [
-  "pipelex[anthropic,google,google-genai,bedrock]",
+  "pipelex[anthropic,google,google-genai,bedrock]==0.31.0",
   "PyGithub==2.4.0",
 ]
-
-[tool.uv.sources]
-# pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "fa15d15c3585cc5919bc05cab31e63f47ccb23dc" }
-pipelex = { path = "../pipelex", editable = true }
 
 [project.optional-dependencies]
 docs = [
@@ -36,7 +32,7 @@ docs = [
 dev = [
   "boto3-stubs>=1.35.24",
   "mypy>=1.11.2",
-  "pyright>=1.1.405",
+  "pyright>=1.1.410",
   "pytest>=9.0.1",
   "pytest_asyncio>=0.24.0",
   "pytest-cov>=6.1.1",
