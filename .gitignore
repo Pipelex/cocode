@@ -46,11 +46,13 @@ temp/
 .pipelex/traces/
 
 # Local settings
-pipelex_super.toml
 settings.local.json
 
-# To be removed
-/pipelex_libraries
+# Pipelex config sync backups
+*.bak.*
 
-# GCP credentials
-gcp_credentials.json
+# Work-in-progress notes
+wip/
+
+# Pipelex local config
+.pipelex/

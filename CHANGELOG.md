@@ -1,5 +1,21 @@
 # Changelog
 
+## [v0.7.0] - 2026-06-05
+
+### Changed
+ - Bump `pipelex` to `v0.31.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+ - Bump `pyright` to `1.1.410`
+ - Migrate pipeline definition files from the `.plx` extension to `.mthds`, aligning cocode with the MTHDS standard
+ - Resync `.pipelex/inference/` configuration: added `fal`, `huggingface`, `portkey`, `scaleway`, and `pipelex_gateway` backends and restructured the model decks and routing profiles
+ - `CLAUDE.md` is now a hand-maintained file scoped to a `## Commands` section (linting, testing, cleaning); dropped the auto-generated Pipelex `.mthds` authoring rules block
+
+### Added
+ - Release automation skill (`.claude/skills/release`) that bumps the version, finalizes the changelog, runs the quality gate, and opens the release PR
+ - `make agent-check` and `make agent-test` Makefile targets for AI agents: a combined lint/typecheck gate and a test run that is silent on success and only prints output on failure
+
+### Removed
+ - Legacy AI-instruction files now consolidated into `CLAUDE.md`: `.cursor/rules/*`, `.github/copilot-instructions.md`, `.windsurfrules.md`, `AGENTS.md`, and `BLACKBOX_RULES.md`
+
 ## [v0.6.3] - 2025-11-18
 
 - Bump `pipelex` to `v0.15.7` to fix `pipelex doctor`

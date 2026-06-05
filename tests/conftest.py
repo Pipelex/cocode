@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from pathlib import Path
 
 import pytest
 from pipelex.cli.cli_factory import make_pipelex_for_cli
@@ -19,7 +20,7 @@ from rich.traceback import Traceback
 
 from cocode.common import PIPELINE_LIBRARY_DIRS
 
-PIPELINE_LIBRARY_DIRS_FOR_TESTS = [*PIPELINE_LIBRARY_DIRS, "tests/pipelines"]
+PIPELINE_LIBRARY_DIRS_FOR_TESTS = [*PIPELINE_LIBRARY_DIRS, Path("tests/pipelines")]
 
 pytest_plugins = [
     "pipelex.test_extras.shared_pytest_plugins",
