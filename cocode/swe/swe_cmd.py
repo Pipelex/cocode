@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, cast
 
 from pipelex import log, pretty_print
@@ -9,7 +10,7 @@ from pipelex.core.stuffs.list_content import ListContent
 from pipelex.core.stuffs.stuff_factory import StuffFactory
 from pipelex.hub import get_report_delegate, get_required_concept
 from pipelex.pipe_run.pipe_run_mode import PipeRunMode
-from pipelex.pipeline.execute import execute_pipeline
+from pipelex.pipeline.runner import PipelexRunner
 from pipelex.tools.misc.file_utils import ensure_path, failable_load_text_from_path, load_text_from_path, save_text_to_path
 
 from cocode.pipelines.doc_proofread.doc_proofread_models import DocumentationFile, DocumentationInconsistency, RepositoryMap
@@ -23,6 +24,16 @@ from cocode.utils import NoDifferencesFound, run_git_diff_command
 
 class SweFromRepoDiffWithPromptError(Exception):
     pass
+
+
+async def _execute_pipeline(
+    pipe_code: str,
+    inputs: Any = None,
+    pipe_run_mode: PipeRunMode | None = None,
+) -> PipeOutput:
+    runner = PipelexRunner(pipe_run_mode=pipe_run_mode)
+    response = await runner.execute_pipeline(pipe_code=pipe_code, inputs=inputs)
+    return response.pipe_output
 
 
 async def swe_from_repo(
@@ -59,7 +70,7 @@ async def swe_from_repo(
     repo_text = get_repo_text_for_swe(repox_processor=processor)
 
     # Run the pipe
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code=pipe_code,
         pipe_run_mode=pipe_run_mode,
         inputs={"repo_text": repo_text},
@@ -87,10 +98,10 @@ async def swe_from_file(
     """Process SWE analysis from an existing text file instead of building from repository."""
     log.info(f"Processing SWE from file: '{input_file_path}'")
 
-    text = load_text_from_path(input_file_path)
+    text = load_text_from_path(Path(input_file_path))
 
     # Run the pipe
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code=pipe_code,
         pipe_run_mode=pipe_run_mode,
         inputs={"text": text},
@@ -129,7 +140,7 @@ async def swe_from_repo_diff(
         return
 
     # Run the pipe
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code=pipe_code,
         pipe_run_mode=pipe_run_mode,
         inputs={
@@ -177,7 +188,7 @@ async def swe_from_repo_diff_with_prompt(
         return
 
     # Run the pipe
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code=pipe_code,
         pipe_run_mode=pipe_run_mode,
         inputs={
@@ -214,7 +225,7 @@ async def swe_doc_update_from_diff(
     # Generate git diff
     git_diff = run_git_diff_command(repo_path=repo_path, version=version, include_patterns=include_patterns, exclude_patterns=exclude_patterns)
 
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code="doc_update",
         inputs={
             "git_diff": {
@@ -227,8 +238,8 @@ async def swe_doc_update_from_diff(
 
     get_report_delegate().generate_report()
 
-    ensure_path(output_dir)
-    output_file_path = f"{output_dir}/{output_filename}"
+    ensure_path(Path(output_dir))
+    output_file_path = Path(output_dir) / output_filename
     save_text_to_path(text=formatted_output, path=output_file_path)
     log.info(f"Done, documentation update suggestions saved to file: '{output_file_path}'")
 
@@ -248,11 +259,11 @@ async def swe_ai_instruction_update_from_diff(
 
     # Read AGENTS.md content
     agents_md_path = os.path.join(repo_path, "AGENTS.md")
-    agents_content = failable_load_text_from_path(agents_md_path) or ""
+    agents_content = failable_load_text_from_path(Path(agents_md_path)) or ""
 
     # Read CLAUDE.md content
     claude_md_path = os.path.join(repo_path, "CLAUDE.md")
-    claude_content = failable_load_text_from_path(claude_md_path) or ""
+    claude_content = failable_load_text_from_path(Path(claude_md_path)) or ""
 
     # Read cursor rules content (check two possible patterns)
     cursor_rules_content = ""
@@ -260,7 +271,7 @@ async def swe_ai_instruction_update_from_diff(
     cursor_rules_dir = os.path.join(repo_path, ".cursor/rules")
 
     # Pattern 1: Single .cursorrules file
-    if content := failable_load_text_from_path(cursorrules_path):
+    if content := failable_load_text_from_path(Path(cursorrules_path)):
         cursor_rules_content = content
 
     # Pattern 2: Multiple .md files in .cursor/rules/ directory
@@ -278,7 +289,7 @@ async def swe_ai_instruction_update_from_diff(
             # Concatenate all .md files
             for file in md_files:
                 file_path = os.path.join(cursor_rules_dir, file)
-                if content := failable_load_text_from_path(file_path):
+                if content := failable_load_text_from_path(Path(file_path)):
                     cursor_rules_content += f"=== {file} ===\n{content}\n\n"
         except Exception as exc:
             log.warning(f"Error reading cursor rules directory {cursor_rules_dir}: {exc}")
@@ -293,7 +304,7 @@ async def swe_ai_instruction_update_from_diff(
         stuff_list=[git_diff_stuff, agents_content_stuff, claude_content_stuff, cursor_rules_content_stuff]
     )
 
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code="ai_instruction_update",
         inputs=working_memory,
     )
@@ -304,8 +315,8 @@ async def swe_ai_instruction_update_from_diff(
     get_report_delegate().generate_report()
 
     # Always output to file as text
-    ensure_path(output_dir)
-    output_file_path = f"{output_dir}/{output_filename}"
+    ensure_path(Path(output_dir))
+    output_file_path = Path(output_dir) / output_filename
 
     # The output is already formatted by the LLM in the pipeline
     text_content = formatted_output.as_str
@@ -355,19 +366,19 @@ async def swe_doc_proofread(
     doc_files = create_documentation_files_from_paths(doc_file_paths, doc_dir)
 
     repo_map_stuff = StuffFactory.make_stuff(
-        concept=get_required_concept(concept_string="doc_proofread.RepositoryMap"),
+        concept=get_required_concept(concept_ref="doc_proofread.RepositoryMap"),
         content=RepositoryMap(repo_content=repo_text),
         name="repo_map",
     )
     doc_files_stuff = StuffFactory.make_stuff(
-        concept=get_required_concept(concept_string="doc_proofread.DocumentationFile"),
+        concept=get_required_concept(concept_ref="doc_proofread.DocumentationFile"),
         content=ListContent[DocumentationFile](items=doc_files),
         name="doc_files",
     )
 
     working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[repo_map_stuff, doc_files_stuff])
 
-    pipe_output = await execute_pipeline(
+    pipe_output = await _execute_pipeline(
         pipe_code="doc_proofread",
         inputs=working_memory,
     )
@@ -396,12 +407,12 @@ async def swe_doc_proofread(
 
     json_output = json.dumps(inconsistencies_data, indent=2, ensure_ascii=False)
 
-    ensure_path(output_dir)
-    output_file_path = f"{output_dir}/{output_filename}.json"
+    ensure_path(Path(output_dir))
+    output_file_path = Path(output_dir) / f"{output_filename}.json"
     save_text_to_path(text=json_output, path=output_file_path)
     log.info(f"Done, output saved as JSON to file: '{output_file_path}'")
 
     report = pipe_output.main_stuff_as_str
-    save_text_to_path(text=report, path=f"{output_dir}/{output_filename}.md")
+    save_text_to_path(text=report, path=Path(output_dir) / f"{output_filename}.md")
 
     return pipe_output

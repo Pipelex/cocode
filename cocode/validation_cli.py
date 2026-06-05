@@ -6,9 +6,10 @@ import asyncio
 
 import typer
 from pipelex import log
-from pipelex.hub import get_pipes
-from pipelex.pipe_run.dry_run import dry_run_pipes
-from pipelex.pipelex import Pipelex
+from pipelex.pipeline.bundle_validator import BundleValidator
+from pipelex.pipeline.execution_seams import load_libraries_and_activate
+
+from cocode.common import PIPELINE_LIBRARY_DIRS
 
 validation_app = typer.Typer(
     name="validation",
@@ -21,20 +22,22 @@ validation_app = typer.Typer(
 @validation_app.command("validate")
 def validate() -> None:
     """Run the setup sequence and validate all pipelines."""
-    Pipelex.get_instance().validate_libraries()
-    asyncio.run(dry_run_pipes(get_pipes()))
+    load_libraries_and_activate(PIPELINE_LIBRARY_DIRS)
+    asyncio.run(BundleValidator().validate_current_library())
     log.info("Setup sequence passed OK, config and pipelines are validated.")
 
 
 @validation_app.command("dry-run")
 def dry_run() -> None:
-    """Run dry validation of all pipelines without full setup."""
-    asyncio.run(dry_run_pipes(get_pipes()))
+    """Run dry validation of all pipelines."""
+    load_libraries_and_activate(PIPELINE_LIBRARY_DIRS)
+    asyncio.run(BundleValidator().validate_current_library())
     log.info("Dry run completed successfully.")
 
 
 @validation_app.command("check-config")
 def check_config() -> None:
     """Validate Pipelex configuration and libraries."""
-    Pipelex.get_instance().validate_libraries()
+    load_libraries_and_activate(PIPELINE_LIBRARY_DIRS)
+    asyncio.run(BundleValidator().validate_current_library())
     log.info("Configuration validation passed OK.")

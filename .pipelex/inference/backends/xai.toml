@@ -24,6 +24,8 @@
 model_type = "llm"
 sdk = "openai"
 prompting_target = "anthropic"
+structure_method = "instructor/openai_tools"
+thinking_mode = "none"
 
 ################################################################################
 # LANGUAGE MODELS
@@ -53,4 +55,3 @@ model_id = "grok-3-mini-fast-latest"
 inputs = ["text"]
 outputs = ["text"]
 costs = { input = 0.15, output = 4 }
-

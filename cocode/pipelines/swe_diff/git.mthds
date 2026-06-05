@@ -1,4 +1,4 @@
-domain = "git"
+domain      = "git"
 description = "Pipelines for analyzing git diffs."
 
 [concept]
@@ -9,7 +9,7 @@ type = "PipeLLM"
 description = "Analyze the git diff based on a prompt."
 inputs = { git_diff = "GitDiff", prompt = "Text" }
 output = "Text"
-model = "llm_for_git_diff"
+model = "$engineering-codebase-analysis"
 system_prompt = """
 You are an expert technical writer and software architect. Your task is to carefully review and analyze the code diff.
 """

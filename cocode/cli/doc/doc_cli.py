@@ -6,7 +6,6 @@ import asyncio
 from typing import Annotated, List, Optional
 
 import typer
-from pipelex.hub import get_pipeline_tracker
 
 from cocode.common import validate_repo_path
 from cocode.swe.swe_cmd import swe_doc_proofread, swe_doc_update_from_diff
@@ -64,8 +63,6 @@ def doc_update_cmd(
             exclude_patterns=exclude_patterns,
         )
     )
-
-    get_pipeline_tracker().output_flowchart()
 
 
 @doc_app.command("proofread")
@@ -130,5 +127,3 @@ def doc_proofread_cmd(
             exclude_patterns=exclude_patterns,
         )
     )
-
-    get_pipeline_tracker().output_flowchart()

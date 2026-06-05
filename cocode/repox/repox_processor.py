@@ -14,9 +14,10 @@ import re
 from typing import Callable, Dict, List, Optional, Set, Tuple
 
 import pathspec
-from pathspec import PathSpec
+from pathspec import PathSpec, Pattern
 from pipelex import log
-from pipelex.tools.misc.filetype_utils import FileType, FileTypeException
+from pipelex.tools.misc.exceptions import FileTypeError
+from pipelex.tools.misc.filetype_utils import FileType
 
 from cocode.exceptions import RepoxException
 from cocode.repox.models import OutputStyle
@@ -89,9 +90,9 @@ class RepoxProcessor:
         self.include_patterns = include_patterns
         self.path_pattern = path_pattern
         self.cli_exclude_patterns = exclude_patterns or []
-        self.gitignore_spec: Optional[PathSpec]
-        self.content_ignore_spec: PathSpec
-        self.tree_and_content_ignore_spec: PathSpec
+        self.gitignore_spec: Optional[PathSpec[Pattern]]
+        self.content_ignore_spec: PathSpec[Pattern]
+        self.tree_and_content_ignore_spec: PathSpec[Pattern]
         self.gitignore_spec, self.content_ignore_spec, self.tree_and_content_ignore_spec = self._ignore_specs(
             repo_path=repo_path,
             cli_exclude_patterns=exclude_patterns,
@@ -101,7 +102,7 @@ class RepoxProcessor:
         self,
         repo_path: str,
         cli_exclude_patterns: Optional[List[str]] = None,
-    ) -> Tuple[Optional[PathSpec], PathSpec, PathSpec]:
+    ) -> Tuple[Optional[PathSpec[Pattern]], PathSpec[Pattern], PathSpec[Pattern]]:
         """Load ignore specifications from various sources.
 
         Args:
@@ -120,7 +121,7 @@ class RepoxProcessor:
             tree_and_content_ignore_list.extend(cli_exclude_patterns)
         tree_and_content_ignore_spec = pathspec.PathSpec.from_lines("gitwildmatch", tree_and_content_ignore_list)
 
-        gitignore_spec: Optional[PathSpec] = None
+        gitignore_spec: Optional[PathSpec[Pattern]] = None
         if IS_GITIGNORE_APPLIED:
             gitignore_path = os.path.join(repo_path, ".gitignore")
             if os.path.exists(gitignore_path):
@@ -257,7 +258,7 @@ class RepoxProcessor:
                         # text file
                         file_type, text_if_applicable = file_check
                         file_content = self._specific_text_file_processing(file_type=file_type, text=text_if_applicable)
-                except FileTypeException as exc:
+                except FileTypeError as exc:
                     log.warning(f"Skipping '{file_path}' - could not determine file type: {exc}")
                     continue
                 file_contents[relative_path] = file_content

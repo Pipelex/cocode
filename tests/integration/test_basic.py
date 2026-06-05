@@ -1,7 +1,8 @@
 import asyncio
 
-from pipelex.hub import get_pipes, get_required_concept
-from pipelex.pipe_run.dry_run import dry_run_pipes
+import pytest
+from pipelex.hub import get_required_concept
+from pipelex.pipeline.bundle_validator import BundleValidator
 
 
 def test_boot():
@@ -12,7 +13,8 @@ def test_concept_exists():
     assert get_required_concept("swe.OnboardingDocumentation") is not None
 
 
+@pytest.mark.gha_disabled  # Requires model resolution which fails without configured backends
 def test_dry_run_all_pipes():
-    """Test that dry_run_all_pipes() runs successfully without errors."""
-    # This should not raise any exceptions
-    asyncio.run(dry_run_pipes(get_pipes()))
+    """Dry-run every pipe in the library loaded by the conftest fixture, expecting no errors."""
+    # The session fixture already loaded + activated the pipeline libraries; sweep the current one.
+    asyncio.run(BundleValidator().validate_current_library())

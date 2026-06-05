@@ -13,6 +13,10 @@ from pipelex.types import StrEnum
 from cocode.github.github_repo_manager import GitHubRepoManager
 from cocode.repox.repox_processor import RESULTS_DIR
 
+# Anchored to the installed package location (not the process cwd) so the bundled
+# pipelines load no matter which directory the `cocode` console script is run from.
+PIPELINE_LIBRARY_DIRS = [Path(__file__).parent / "pipelines"]
+
 
 class PipeCode(StrEnum):
     """Pipeline codes for SWE analysis operations."""

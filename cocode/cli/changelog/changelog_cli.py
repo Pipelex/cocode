@@ -6,7 +6,6 @@ import asyncio
 from typing import Annotated, List, Optional
 
 import typer
-from pipelex.hub import get_pipeline_tracker
 from pipelex.pipe_run.pipe_run_mode import PipeRunMode
 
 from cocode.common import get_output_dir, validate_repo_path
@@ -77,4 +76,3 @@ def changelog_update_cmd(
             exclude_patterns=exclude_patterns,
         )
     )
-    get_pipeline_tracker().output_flowchart()
