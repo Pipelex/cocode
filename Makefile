@@ -69,6 +69,7 @@ make v                        - Shorthand -> validate
 make codex-tests              - Run tests for Codex (exit on first failure) (no inference, no codex_disabled)
 make gha-tests		          - Run tests for github actions (exit on first failure) (no inference, no gha_disabled)
 make test                     - Run unit tests (no inference)
+make agent-test               - Run unit tests, silent on success, output on failure (for AI agents)
 make test-with-prints         - Run tests with prints (no inference)
 make t                        - Shorthand -> test-with-prints
 make tp                       - Shorthand -> test-with-prints
@@ -86,6 +87,7 @@ make docs-check               - Check documentation build with mkdocs
 make docs-deploy              - Deploy documentation with mkdocs
 
 make check                    - Shorthand -> format lint mypy
+make agent-check              - Fix imports + format lint pyright mypy (for AI agents)
 make c                        - Shorthand -> check
 make cc                       - Shorthand -> cleanderived check
 make li                       - Shorthand -> lock install
@@ -98,6 +100,7 @@ export HELP
 	format lint pyright mypy \
 	cleanderived cleanenv cleanlibraries cleanresults cr cleanall \
 	test t test-quiet tq test-with-prints tp test-inference ti \
+	agent-test agent-check \
 	codex-tests gha-tests \
 	run-all-tests run-manual-trigger-gha-tests run-gha_disabled-tests \
 	validate v check c cc \
@@ -246,6 +249,16 @@ test: env
 	else \
 		$(VENV_PYTEST) -s -m $(USUAL_PYTEST_MARKERS) -o log_cli=true -o log_level=WARNING $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
 	fi
+
+agent-test: env
+	@echo "• Running unit tests..."
+	@tmpfile=$$(mktemp); \
+	$(VENV_PYTEST) -m $(USUAL_PYTEST_MARKERS) -o log_level=WARNING --tb=short -q > "$$tmpfile" 2>&1; \
+	exit_code=$$?; \
+	if [ $$exit_code -ne 0 ]; then grep -vE '\[\s*[0-9]+%\]\s*$$' "$$tmpfile"; fi; \
+	rm -f "$$tmpfile"; \
+	if [ $$exit_code -eq 0 ]; then echo "• All tests passed."; fi; \
+	exit $$exit_code
 
 test-quiet: env
 	$(call PRINT_TITLE,"Unit testing without prints but displaying logs via pytest for WARNING level and above")
@@ -401,6 +414,9 @@ cc: cleanderived c
 
 check: cleanderived check-unused-imports c
 	@echo "> done: check"
+
+agent-check: fix-unused-imports format lint pyright mypy
+	@echo "> done: agent-check"
 
 v: validate
 	@echo "> done: v = validate"

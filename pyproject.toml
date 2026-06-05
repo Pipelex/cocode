@@ -216,7 +216,6 @@ markers = [
 
 [tool.ruff]
 exclude = [
-  ".cursor",
   ".git",
   ".github",
   ".mypy_cache",
