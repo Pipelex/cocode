@@ -1,6 +1,6 @@
 [project]
 name = "cocode"
-version = "0.7.0"
+version = "0.7.1"
 description = "Cocode is the friend of your code"
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -18,7 +18,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "pipelex[anthropic,google,google-genai,bedrock]==0.31.0",
+  "pipelex[anthropic,google,google-genai,bedrock]==0.32.1",
   "PyGithub==2.4.0",
 ]
 
@@ -93,15 +93,25 @@ ignore_missing_imports = true
 module = ["json2html"]
 
 [tool.pyright]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.11"
 include = ["cocode", "tests"]
-exclude = ["**/node_modules", "**/__pycache__"]
+exclude = [
+  "**/__pycache__",
+  ".venv",
+  ".git",
+  "build",
+  "dist",
+  "**/node_modules",
+  "**/.*",
+]
 extraPaths = ["./tests"]
 analyzeUnannotatedFunctions = true
 deprecateTypingAliases = false
 disableBytesTypePromotions = true
 enableExperimentalFeatures = false
 enableTypeIgnoreComments = true
-pythonVersion = "3.11"
 reportAbstractUsage = "error"
 reportArgumentType = "error"
 reportAssertAlwaysTrue = "error"

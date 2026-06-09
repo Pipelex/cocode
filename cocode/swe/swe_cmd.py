@@ -8,9 +8,10 @@ from pipelex.core.memory.working_memory_factory import WorkingMemoryFactory
 from pipelex.core.pipes.pipe_output import PipeOutput
 from pipelex.core.stuffs.list_content import ListContent
 from pipelex.core.stuffs.stuff_factory import StuffFactory
-from pipelex.hub import get_report_delegate, get_required_concept
+from pipelex.hub import get_required_concept
 from pipelex.pipe_run.pipe_run_mode import PipeRunMode
 from pipelex.pipeline.runner import PipelexRunner
+from pipelex.reporting.cost_report_renderer import render_cost_report_for_output
 from pipelex.tools.misc.file_utils import ensure_path, failable_load_text_from_path, load_text_from_path, save_text_to_path
 
 from cocode.pipelines.doc_proofread.doc_proofread_models import DocumentationFile, DocumentationInconsistency, RepositoryMap
@@ -76,7 +77,7 @@ async def swe_from_repo(
         inputs={"repo_text": repo_text},
     )
 
-    get_report_delegate().generate_report()
+    render_cost_report_for_output(pipe_output)
 
     #  handle output
     await process_swe_pipeline_result(
@@ -107,7 +108,7 @@ async def swe_from_file(
         inputs={"text": text},
     )
 
-    get_report_delegate().generate_report()
+    render_cost_report_for_output(pipe_output)
 
     # Process through SWE pipeline and handle output
     await process_swe_pipeline_result(
@@ -151,7 +152,7 @@ async def swe_from_repo_diff(
         },
     )
 
-    get_report_delegate().generate_report()
+    render_cost_report_for_output(pipe_output)
 
     # Process through SWE pipeline and handle output
     await process_swe_pipeline_result(
@@ -200,7 +201,7 @@ async def swe_from_repo_diff_with_prompt(
         },
     )
 
-    get_report_delegate().generate_report()
+    render_cost_report_for_output(pipe_output)
 
     # Process through SWE pipeline and handle output
     await process_swe_pipeline_result(
@@ -236,7 +237,7 @@ async def swe_doc_update_from_diff(
     )
     formatted_output = pipe_output.main_stuff_as_str
 
-    get_report_delegate().generate_report()
+    render_cost_report_for_output(pipe_output)
 
     ensure_path(Path(output_dir))
     output_file_path = Path(output_dir) / output_filename
@@ -312,7 +313,7 @@ async def swe_ai_instruction_update_from_diff(
     pretty_print(pipe_output, title="AI Instruction Update Analysis")
     formatted_output = pipe_output.main_stuff
 
-    get_report_delegate().generate_report()
+    render_cost_report_for_output(pipe_output)
 
     # Always output to file as text
     ensure_path(Path(output_dir))

@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.7.1] - 2026-06-09
+
+### Changed
+ - Bump `pipelex` to `v0.32.1`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+ - Adapt SWE commands to Pipelex's new cost-report rendering API: replace the removed `ReportingProtocol.generate_report()` with the one-arg `render_cost_report_for_output()` helper
+ - Tighten the `pyright` configuration (set `venvPath`/`venv`, broaden the exclude list)
+
+### Added
+ - Ignore Pipelex runtime traces (`.pipelex/traces/`) in `.gitignore`
+
 ## [v0.7.0] - 2026-06-05
 
 ### Changed
