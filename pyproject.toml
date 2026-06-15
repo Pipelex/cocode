@@ -18,7 +18,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "pipelex[anthropic,google,google-genai,bedrock]==0.32.1",
+  "pipelex[anthropic,google,google-genai,bedrock]==0.33.0",
   "PyGithub==2.4.0",
 ]
 
@@ -76,6 +76,10 @@ Documentation = "https://docs.pipelex.com/"
 
 [tool.uv]
 required-version = ">=0.7.2"
+
+[tool.uv.sources]
+# Temporary: track the keyword-only-arguments refactor branch of pipelex until it is released to PyPI.
+pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "529b908255e0eb513038a2d92a58730185a22b74" }
 
 [tool.mypy]
 packages = ["cocode", "tests"]

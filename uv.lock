@@ -615,7 +615,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
     { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], specifier = "==0.32.1" },
+    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], git = "https://github.com/Pipelex/pipelex.git?rev=529b908255e0eb513038a2d92a58730185a22b74" },
     { name = "pygithub", specifier = "==2.4.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.410" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },
@@ -1283,15 +1283,16 @@ wheels = [
 
 [[package]]
 name = "kajson"
-version = "0.6.0"
+version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic", version = "2.10.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.14'" },
     { name = "pydantic", version = "2.13.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.14'" },
+    { name = "tzdata" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8d/54/83c3b00f270c39037b699398e42e16837ef1109c8af47ac668fe3c14a817/kajson-0.6.0.tar.gz", hash = "sha256:7544a544e6f135f129015c9475ff2cc0a7fc8e76d6eea1d8d37f2e438ab4d936", size = 22567, upload-time = "2026-05-30T19:06:08.084Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d2/a4/da91af6dac42516e45a9897ba901d8ec2ee2b13b135caf6ce120867aac2b/kajson-0.7.0.tar.gz", hash = "sha256:1c8f80d157f980c9adb9fda0e77c1cc0078f50547d84ef548a5e19b5a84d8d37", size = 25071, upload-time = "2026-06-10T10:00:56.097Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e9/fb/e325ef3bd84f2d40286a09fe78447a0a20e3a6ec12ce28e0d4ecc8bce620/kajson-0.6.0-py3-none-any.whl", hash = "sha256:77ddb0e12b274479ced061d84da091a250fdeb3f4dd7444ae0c6ca929ba73431", size = 29024, upload-time = "2026-05-30T19:06:06.645Z" },
+    { url = "https://files.pythonhosted.org/packages/f0/1c/8251c0dadd1843e020edf4ef162aaa7dd0e98cbd2e1fe33d843807cd7ce9/kajson-0.7.0-py3-none-any.whl", hash = "sha256:d9903327bc7f182ec481ffafd074765347365600592e5f9f67866d5b0ae4f939", size = 31524, upload-time = "2026-06-10T10:00:54.952Z" },
 ]
 
 [[package]]
@@ -1493,7 +1494,7 @@ wheels = [
 
 [[package]]
 name = "mthds"
-version = "0.3.0"
+version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
@@ -1505,9 +1506,9 @@ dependencies = [
     { name = "tomlkit" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5b/3c/eea615b49c011657246ff61371ca4a95ab3baa94d4b79541bd4b0f816ae5/mthds-0.3.0.tar.gz", hash = "sha256:de479f977b2ec3614b23bdb53ed3e28e2332a2f1653ee92e118c530fe3d5d820", size = 112693, upload-time = "2026-04-29T12:50:11.426Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/46/fc/7822e39bc733f5f62577ea1d064c7283d84b97493e5372ceb430ce0c1027/mthds-0.4.1.tar.gz", hash = "sha256:1aa43860fef97aeab561473e45552ea619dee7c624bc4acad806dd960bb2fe5f", size = 132336, upload-time = "2026-06-11T21:46:28.332Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/86/1184f31583d3089baea9316853b329720cb786d8e01f38f303a17f1e3f4c/mthds-0.3.0-py3-none-any.whl", hash = "sha256:3f9822c23beb82607ec4bafcff99717fb6531eed8d19b86086dc9deb7825b06b", size = 49356, upload-time = "2026-04-29T12:50:09.734Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/92/8d6521c63e71fc4b782d7a875b27ad5b61cf1af718eb3321a3522aa33391/mthds-0.4.1-py3-none-any.whl", hash = "sha256:fdbf4ec25f4139b620cf5771fb8dc9fa27c2c249c161ca96afac389f2cfc6d4f", size = 61176, upload-time = "2026-06-11T21:46:26.978Z" },
 ]
 
 [[package]]
@@ -2065,8 +2066,8 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.32.1"
-source = { registry = "https://pypi.org/simple" }
+version = "0.33.0"
+source = { git = "https://github.com/Pipelex/pipelex.git?rev=529b908255e0eb513038a2d92a58730185a22b74#529b908255e0eb513038a2d92a58730185a22b74" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
@@ -2107,10 +2108,6 @@ dependencies = [
     { name = "typer" },
     { name = "typing-extensions" },
     { name = "urllib3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/91/e6/c3493f58164e18f33938f0d5e2b785b86df2fbaadb9409ae7003e6720891/pipelex-0.32.1.tar.gz", hash = "sha256:044e54e72a0d0d3dca6a3bcb86263463ce0fc7d7b7c754f8413157721e2e8b9d", size = 976393, upload-time = "2026-06-09T14:33:04.418Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/98/74/00e1d378e4d085907d39204fcada30916ec695933876221cd76929eba1b1/pipelex-0.32.1-py3-none-any.whl", hash = "sha256:2e2647ee31de51a580b420c18c622f759d2594810f45496d5b25199962937e24", size = 1397818, upload-time = "2026-06-09T14:33:02.185Z" },
 ]
 
 [package.optional-dependencies]

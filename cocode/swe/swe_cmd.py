@@ -10,7 +10,7 @@ from pipelex.core.stuffs.list_content import ListContent
 from pipelex.core.stuffs.stuff_factory import StuffFactory
 from pipelex.hub import get_required_concept
 from pipelex.pipe_run.pipe_run_mode import PipeRunMode
-from pipelex.pipeline.runner import PipelexRunner
+from pipelex.pipeline.runner import PipelexMTHDSProtocol
 from pipelex.reporting.cost_report_renderer import render_cost_report_for_output
 from pipelex.tools.misc.file_utils import ensure_path, failable_load_text_from_path, load_text_from_path, save_text_to_path
 
@@ -32,8 +32,8 @@ async def _execute_pipeline(
     inputs: Any = None,
     pipe_run_mode: PipeRunMode | None = None,
 ) -> PipeOutput:
-    runner = PipelexRunner(pipe_run_mode=pipe_run_mode)
-    response = await runner.execute_pipeline(pipe_code=pipe_code, inputs=inputs)
+    runner = PipelexMTHDSProtocol(pipe_run_mode=pipe_run_mode)
+    response = await runner.execute(pipe_code=pipe_code, inputs=inputs)
     return response.pipe_output
 
 
