@@ -38,7 +38,7 @@ dev = [
   "pytest-cov>=6.1.1",
   "pytest-mock>=3.14.0",
   "pytest-sugar>=1.0.0",
-  "ruff>=0.6.8",
+  "ruff==0.14.13",
   "types-aioboto3[bedrock,bedrock-runtime]>=13.4.0",
   "types-aiofiles>=24.1.0.20240626",
   "types-markdown>=3.6.0.20240316",
@@ -46,6 +46,10 @@ dev = [
   "types-openpyxl>=3.1.5.20250306",
   "types-PyYAML>=6.0.12.20250326",
 ]
+
+[tool.uv.sources]
+# pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "c48c577375ee6ac7128b1b3118ba62d0695ec1b2" }
+pipelex = { path = "../pipelex", editable = true }
 
 [project.scripts]
 cocode = "cocode.cli.main:app"
@@ -76,10 +80,6 @@ Documentation = "https://docs.pipelex.com/"
 
 [tool.uv]
 required-version = ">=0.7.2"
-
-[tool.uv.sources]
-# Temporary: track the keyword-only-arguments refactor branch of pipelex until it is released to PyPI.
-pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "0e32c8c02600e17bbe146331f9b701ccc03a1ca1" }
 
 [tool.mypy]
 packages = ["cocode", "tests"]

@@ -75,7 +75,7 @@ class CodingStandardsDoc(StructuredContent):
     )
 
 
-class TestingStrategyDoc(StructuredContent):
+class TestStrategyDoc(StructuredContent):
     test_pyramid_overview: Optional[str] = Field(
         None,
         description="Unit / integration / e2e boundaries and philosophy",
@@ -137,5 +137,5 @@ class OnboardingDocumentation(StructuredContent):
     fundamentals: Optional[FundamentalsDoc] = Field(None, description="Core project context and domain primer")
     environment_build: Optional[EnvironmentBuildDoc] = Field(None, description="Local environment requirements and build steps")
     coding_standards: Optional[CodingStandardsDoc] = Field(None, description="Style, linting, typing and security checks")
-    testing_strategy: Optional[TestingStrategyDoc] = Field(None, description="Testing philosophy, organization, commands and targets")
+    test_strategy: Optional[TestStrategyDoc] = Field(None, description="Testing philosophy, organization, commands and targets")
     collaboration: Optional[CollaborationDoc] = Field(None, description="Branching, PR flow, issue templates and licenses")

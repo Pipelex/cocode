@@ -1,13 +1,18 @@
 {
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
     "[python]": {
-        "editor.defaultFormatter": "charliermarsh.ruff"
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit",
+            "source.fixAll": "explicit"
+        }
     },
     "ruff.configuration": "--config=pyproject.toml",
     "mypy.enabled": true,
     "mypy.runUsingActiveInterpreter": true,
     "search.exclude": {
         ".mypy_cache/*": true,
-        "**/dev_context": true
     },
     "files.exclude": {
         "**/__pycache__": true,
