@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+ - Track the `pipelex` keyword-only-arguments refactor branch via a temporary `[tool.uv.sources]` git pin (non-subject function parameters across the `pipelex/` public surface are now keyword-only).
+ - Migrate the SWE pipeline runner off the removed `PipelexRunner` class: `PipelexRunner` → `PipelexMTHDSProtocol`, `execute_pipeline()` → `execute()` (the runner is now the MTHDS Protocol implementation; `response.pipe_output` is unchanged). Affects `cocode/swe/swe_cmd.py` and the hello-world integration test.
+
 ## [v0.7.1] - 2026-06-09
 
 ### Changed

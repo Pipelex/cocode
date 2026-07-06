@@ -47,7 +47,6 @@ branches = [
   { pipe = "extract_test_strategy", result = "test_strategy" },
   { pipe = "extract_collaboration", result = "collaboration" },
 ]
-combined_output = "swe.OnboardingDocumentation"
 
 [pipe.extract_fundamentals]
 type = "PipeLLM"

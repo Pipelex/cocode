@@ -12,8 +12,3 @@ api_key_method = "env"
 
 [cogt.extract_config]
 page_output_text_file_name = "page_text.md"
-
-[pipelex.feature_config]
-# WIP/Experimental feature flags
-is_pipeline_tracking_enabled = false
-is_reporting_enabled = true

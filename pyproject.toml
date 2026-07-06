@@ -18,7 +18,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "pipelex[anthropic,google,google-genai,bedrock]==0.32.1",
+  "pipelex[anthropic,google,google-genai,bedrock]==0.37.0",
   "PyGithub==2.4.0",
 ]
 
@@ -38,7 +38,7 @@ dev = [
   "pytest-cov>=6.1.1",
   "pytest-mock>=3.14.0",
   "pytest-sugar>=1.0.0",
-  "ruff>=0.6.8",
+  "ruff==0.14.13",
   "types-aioboto3[bedrock,bedrock-runtime]>=13.4.0",
   "types-aiofiles>=24.1.0.20240626",
   "types-markdown>=3.6.0.20240316",

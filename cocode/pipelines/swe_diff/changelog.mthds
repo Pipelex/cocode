@@ -46,42 +46,42 @@ template = """
 {% if structured_changelog.added %}
 ### Added
     {% for item in structured_changelog.added %}
- - {{ item }}
+- {{ item }}
     {% endfor %}
 {% endif %}
 
 {% if structured_changelog.changed %}
 ### Changed
     {% for item in structured_changelog.changed %}
- - {{ item }}
+- {{ item }}
     {% endfor %}
 {% endif %}
 
 {% if structured_changelog.fixed %}
 ### Fixed
     {% for item in structured_changelog.fixed %}
- - {{ item }}
+- {{ item }}
     {% endfor %}
 {% endif %}
 
 {% if structured_changelog.removed %}
 ### Removed
     {% for item in structured_changelog.removed %}
- - {{ item }}
+- {{ item }}
     {% endfor %}
 {% endif %}
 
 {% if structured_changelog.deprecated %}
 ### Deprecated
     {% for item in structured_changelog.deprecated %}
- - {{ item }}
+- {{ item }}
     {% endfor %}
 {% endif %}
 
 {% if structured_changelog.security %}
 ### Security
     {% for item in structured_changelog.security %}
- - {{ item }}
+- {{ item }}
     {% endfor %}
 {% endif %}
 """
