@@ -1,5 +1,22 @@
 # Changelog
 
+## [v0.8.0] - 2026-07-06
+
+### Added
+- **Editor:** Added VS Code workspace settings (`.vscode/settings.json`) to auto-format code and organize imports on save via Ruff, and set the default Python interpreter.
+
+### Changed
+- **Dependencies:** Upgraded `pipelex` to `0.37.0` (enforces keyword-only arguments across the public API) and pinned `ruff` to `0.14.13`.
+- **Core:** Migrated the SWE pipeline runner to the new MTHDS Protocol, replacing `PipelexRunner`/`execute_pipeline()` with `PipelexMTHDSProtocol`/`execute()` across `swe_cmd.py` and integration tests.
+- **Pipelines:** Renamed `TestingStrategyDoc` to `TestStrategyDoc` and its `testing_strategy` field to `test_strategy` in the `swe_docs` pipeline schema.
+
+### Fixed
+- **Pipelines:** Corrected markdown list formatting in the `swe_diff/changelog.mthds` template by removing an errant leading space.
+
+### Removed
+- **Config:** Removed the experimental `[pipelex.feature_config]` section and its flags (`is_reporting_enabled`, `is_pipeline_tracking_enabled`) from `pipelex.toml` files.
+- **Pipelines:** Removed `combined_output` definitions from the `ai_instruction_update.mthds` and `swe_docs.mthds` pipelines.
+
 ## [v0.7.1] - 2026-06-09
 
 ### Changed

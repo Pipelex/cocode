@@ -282,7 +282,6 @@ branches = [
   { pipe = "analyze_claude_md_changes", result = "claude_analysis" },
   { pipe = "analyze_cursor_rules_changes", result = "cursor_analysis" },
 ]
-combined_output = "ai_instruction_update.AIInstructionParallelResults"
 
 [pipe.ai_instruction_update]
 type = "PipeSequence"
