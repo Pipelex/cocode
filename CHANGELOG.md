@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- **CI:** Added Python 3.14 to the lint and test matrices, so every version advertised in the package classifiers is now actually tested.
+- **Core:** Import `StrEnum` from the stdlib `enum` module instead of the `pipelex.types` re-export, which upstream deleted along with its own 3.10 support.
+- **Tooling:** Point mypy at local paths (`files`) rather than module names (`packages`), so an editable `pipelex` checkout on the import path no longer drags that repo's test suite into our type check.
+
+### Removed
+- **Python:** Dropped support for Python 3.10 (breaking). The minimum supported version is now Python 3.11, matching the version the type-checkers and linter already target.
+
 ## [v0.8.0] - 2026-07-06
 
 ### Added
