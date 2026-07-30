@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Changed
+- **Swept onto `pipelex` 0.41.0** (`pipelex[...]==0.39.0` → `==0.41.0`, crossing two release cycles). Despite 0.41.0 being the largest breaking core release of the year, the blast radius here is small — cocode drives pipelex through its public run surface rather than its internals, so only two addresses moved: `pipelex.hub` was deleted with no shim (split into `pipelex.runtime_hub` / `pipelex.interpreter_hub` by owning layer, and `get_required_concept` is interpreter-layer), and `PipeRunMode` moved from `pipelex.pipe_run.pipe_run_mode` to `pipelex.system.pipe_run_mode`. Nothing in the parser move, the Pipe-machinery move, the `pipelex.providers` vendor rename, or the `Concept`-becomes-pure-data change reaches this repo.
 - **CI:** Added Python 3.14 to the lint and test matrices, so every version advertised in the package classifiers is now actually tested.
 - **Core:** Import `StrEnum` from the stdlib `enum` module instead of the `pipelex.types` re-export, which upstream deleted along with its own 3.10 support.
 - **Tooling:** Point mypy at local paths (`files`) rather than module names (`packages`), so an editable `pipelex` checkout on the import path no longer drags that repo's test suite into our type check.
