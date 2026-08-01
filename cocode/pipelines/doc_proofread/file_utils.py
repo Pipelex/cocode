@@ -3,7 +3,7 @@ from typing import List
 
 from pipelex.core.memory.working_memory import WorkingMemory
 from pipelex.core.stuffs.list_content import ListContent
-from pipelex.system.registries.func_registry import func_registry, pipe_func
+from pipelex.system.registries.func_registry import pipe_func
 
 from cocode.pipelines.doc_proofread.doc_proofread_models import CodebaseFileContent, DocumentationFile, FilePath
 
@@ -71,6 +71,3 @@ def read_file_content(working_memory: WorkingMemory) -> ListContent[CodebaseFile
             )
 
     return ListContent[CodebaseFileContent](items=codebase_files)
-
-
-func_registry.register_function(read_file_content, name="read_file_content")
