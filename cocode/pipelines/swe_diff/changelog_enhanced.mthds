@@ -60,6 +60,7 @@ Review and polish the following draft changelog that was generated from a git di
 @draft_changelog
 
 Remove redundancy in the changelog. For instance, I don't want to see the same change presented both as a "Changed" and "Removed".
+For breaking changes, our official style is just to write a "(Breaking)" suffix AT THE END OF the title.
 And when you see several changes that were made for the same purpose, groupd them as a single item.
 Don't add fluff, stay sharp and to the point.
 Use nice readable markdown formatting.

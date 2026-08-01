@@ -5,7 +5,7 @@ from pipelex.core.memory.working_memory import WorkingMemory
 from pipelex.core.stuffs.list_content import ListContent
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pipelex.core.stuffs.text_content import TextContent
-from pipelex.system.registries.func_registry import func_registry
+from pipelex.system.registries.func_registry import pipe_func
 from pydantic import Field
 
 
@@ -18,6 +18,7 @@ class TextChunk(StructuredContent):
     end_position: int = Field(..., description="Ending character position in the original text")
 
 
+@pipe_func()
 def split_text_by_identifiers(working_memory: WorkingMemory) -> ListContent[TextChunk]:
     """
     Split `text` into chunks using the *first* full-line occurrence of every
@@ -76,6 +77,3 @@ def split_text_by_identifiers(working_memory: WorkingMemory) -> ListContent[Text
         )
 
     return ListContent(items=chunks)
-
-
-func_registry.register_function(split_text_by_identifiers, name="split_text_by_identifiers")

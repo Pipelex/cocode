@@ -8,10 +8,10 @@ from pipelex.core.memory.working_memory_factory import WorkingMemoryFactory
 from pipelex.core.pipes.pipe_output import PipeOutput
 from pipelex.core.stuffs.list_content import ListContent
 from pipelex.core.stuffs.stuff_factory import StuffFactory
-from pipelex.hub import get_required_concept
-from pipelex.pipe_run.pipe_run_mode import PipeRunMode
+from pipelex.interpreter_hub import get_required_concept
 from pipelex.pipeline.runner import PipelexMTHDSProtocol
 from pipelex.reporting.cost_report_renderer import render_cost_report_for_output
+from pipelex.system.pipe_run_mode import PipeRunMode
 from pipelex.tools.misc.file_utils import ensure_path, failable_load_text_from_path, load_text_from_path, save_text_to_path
 
 from cocode.pipelines.doc_proofread.doc_proofread_models import DocumentationFile, DocumentationInconsistency, RepositoryMap
