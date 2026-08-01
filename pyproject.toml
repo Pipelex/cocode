@@ -6,10 +6,9 @@ authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
 license = "MIT"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
@@ -18,7 +17,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "pipelex[anthropic,google,google-genai,bedrock]==0.37.0",
+  "pipelex[anthropic,google,google-genai,bedrock]==0.41.0",
   "PyGithub==2.4.0",
 ]
 
@@ -32,7 +31,7 @@ docs = [
 dev = [
   "boto3-stubs>=1.35.24",
   "mypy>=1.11.2",
-  "pyright>=1.1.410",
+  "pyright>=1.1.411",
   "pytest>=9.0.1",
   "pytest_asyncio>=0.24.0",
   "pytest-cov>=6.1.1",
@@ -78,10 +77,11 @@ Documentation = "https://docs.pipelex.com/"
 required-version = ">=0.7.2"
 
 [tool.mypy]
-packages = ["cocode", "tests"]
+# Paths, not module names: an editable pipelex install puts its whole source tree on the
+# import path, and a module lookup would pull that repo's own tests in as ours.
+files = ["cocode", "tests"]
 check_untyped_defs = true
-# exclude = "^.*\\.venv/.*$"
-exclude = "^.*\\.venv/.*$|^.*/pipelex/tests/.*$"
+exclude = "^.*\\.venv/.*$"
 mypy_path = "."
 plugins = ["pydantic.mypy"]
 python_version = "3.11"

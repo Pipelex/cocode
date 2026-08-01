@@ -1,7 +1,7 @@
 import asyncio
 
 import pytest
-from pipelex.hub import get_required_concept
+from pipelex.interpreter_hub import get_required_concept
 from pipelex.pipeline.bundle_validator import BundleValidator
 
 

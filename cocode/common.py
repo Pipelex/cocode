@@ -2,13 +2,13 @@
 Common utilities and types shared across CLI modules.
 """
 
+from enum import StrEnum
 from pathlib import Path
 from typing import Optional
 
 import typer
 from pipelex import log
 from pipelex.tools.misc.file_utils import path_exists
-from pipelex.types import StrEnum
 
 from cocode.github.github_repo_manager import GitHubRepoManager
 from cocode.repox.repox_processor import RESULTS_DIR
