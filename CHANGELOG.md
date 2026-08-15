@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- **Dependencies:** Bumped `pipelex` to `0.45.0` (from `0.42.0`).
+
+### Fixed
+- **Pipelines:** The `write_changelog_enhanced` sequence in `swe_diff/changelog_enhanced.mthds` referenced `format_changelog_as_markdown` without its domain, but that pipe is declared in the `changelog` domain. `pipelex` 0.45.0 resolves an unqualified pipe reference strictly inside the referencing pipe's own domain, so this became a hard startup failure for every `cocode` command. The reference is now written out as `changelog.format_changelog_as_markdown`.
+
 ## [v0.9.0] - 2026-08-01
 
 ### Changed

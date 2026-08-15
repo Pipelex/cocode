@@ -14,7 +14,7 @@ output = "changelog.MarkdownChangelog"
 steps = [
   { pipe = "draft_changelog_from_git_diff", result = "draft_changelog" },
   { pipe = "polish_changelog", result = "structured_changelog" },
-  { pipe = "format_changelog_as_markdown", result = "markdown_changelog" },
+  { pipe = "changelog.format_changelog_as_markdown", result = "markdown_changelog" },
 ]
 
 [pipe.draft_changelog_from_git_diff]
