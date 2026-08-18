@@ -23,7 +23,6 @@
 [defaults]
 model_type = "llm"
 sdk = "openai"
-prompting_target = "anthropic"
 
 ################################################################################
 # LANGUAGE MODELS
