@@ -533,7 +533,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
     { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], specifier = "==0.46.2" },
+    { name = "pipelex", extras = ["anthropic", "google", "google-genai", "bedrock"], specifier = "==0.46.4" },
     { name = "pygithub", specifier = "==2.4.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.411" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },
@@ -1789,7 +1789,7 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.46.2"
+version = "0.46.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -1832,9 +1832,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ed/d0/c858cd5dcf3c5c67245f6ebb67e2031e8ef746be86f8cfc97d16d520fb73/pipelex-0.46.2.tar.gz", hash = "sha256:3ccbdc5087b8774a9e032724f50d2e77c72ef53429ace49bb05ac7159e824a48", size = 1414212, upload-time = "2026-08-18T13:39:35.065Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b2/5f/3747963f8e1c5a2c2f0c4b452962df1ef5da3e2e4feee32bf3f7e6916637/pipelex-0.46.4.tar.gz", hash = "sha256:6ed3e41c41335757ecd55980473ba83c5c807405b29ee5e43fe8d3ebadf5611e", size = 1415544, upload-time = "2026-08-18T18:35:54.415Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a1/7f/78dd29018ebf6f2f869cb1460f834e5ba8687d85876b4e684806109026e6/pipelex-0.46.2-py3-none-any.whl", hash = "sha256:191307ae2ca3eb82f7797008c0d8a86d7cc087edc0c6f767fb0bfe89e37778a6", size = 1949565, upload-time = "2026-08-18T13:39:33.394Z" },
+    { url = "https://files.pythonhosted.org/packages/29/21/48790f2874a8155e9b4e3fc60d8f7daa05c088f4d21872f8a6e4368c781a/pipelex-0.46.4-py3-none-any.whl", hash = "sha256:b5d9914938cff19d8d0a5bb958537bc7f103cf965afc5897adc13b93b41fab3f", size = 1950918, upload-time = "2026-08-18T18:35:52.717Z" },
 ]
 
 [package.optional-dependencies]
