@@ -8,7 +8,6 @@
             "source.fixAll": "explicit"
         }
     },
-    "ruff.configuration": "--config=pyproject.toml",
     "mypy.enabled": true,
     "mypy.runUsingActiveInterpreter": true,
     "search.exclude": {

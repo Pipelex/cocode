@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Changed
+- **Tooling:** Pinned `ruff` to an exact `0.16.4`, up from `0.14.13`. This matches what the Ruff VS Code extension now bundles, which matters because Ruff 0.16 lints `pyproject.toml` itself: the extension syncs the config file to the language server, and a pre-0.16 binary parses it as Python source and paints phantom `invalid-syntax` diagnostics on lines like `requires-python`. Keeping the pin exact stops the editor and the CLI from drifting apart again. Nothing shipped changes — this is a dev dependency, and the upgrade produced no new lint findings and no reformatting.
+
 ## [v0.10.0] - 2026-08-18
 
 ### Changed
