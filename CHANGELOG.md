@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- **CI:** Bumped the Sigstore signing action in the publish workflow from `v3.0.0` to `v3.5.0`, SHA-pinned as `790bc6befb9d733738f18d8f895854b453640ec9`. The sigstore-python bundled with `v3.0.0` predates the Sigstore TUF trust-root rotation, so the "Sign the dists with Sigstore" step had started failing deterministically with `tuf.api.exceptions.UnsignedMetadataError: root was signed by 0/3 keys`. That step sits in the GitHub-release job, so the failure mode was a version published to PyPI with no matching GitHub release or tag.
+
 ### Changed
 - **Tooling:** Pinned `ruff` to an exact `0.16.4`, up from `0.14.13`. This matches what the Ruff VS Code extension now bundles, which matters because Ruff 0.16 lints `pyproject.toml` itself: the extension syncs the config file to the language server, and a pre-0.16 binary parses it as Python source and paints phantom `invalid-syntax` diagnostics on lines like `requires-python`. Keeping the pin exact stops the editor and the CLI from drifting apart again. Nothing shipped changes — this is a dev dependency, and the upgrade produced no new lint findings and no reformatting.
 
