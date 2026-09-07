@@ -1,177 +1,75 @@
 ---
 name: release
 description: >
-  Automates the cocode release workflow: bumps the version in pyproject.toml,
-  finalizes the CHANGELOG.md entry, runs quality checks, creates a
-  release/vX.Y.Z branch, commits, pushes, and opens a PR to main. Use when user
-  says "release", "cut a release", "bump version", "prepare a release", "make a
-  release", "ship it", "create release branch", or any variation of shipping a
-  new version of cocode. The user can optionally provide changelog content
-  inline when invoking the skill (e.g. "/release Added new repo summary mode"),
-  which will be used as the changelog entry for this version.
+  Cut a release of cocode, the AI-powered codebase-analysis CLI published to
+  PyPI: the release/vX.Y.Z worktree, the pyproject.toml bump and the uv.lock
+  that follows, the changelog entry, the quality gates, one commit, and a pull
+  request to main. Use when the user says "release", "cut a release", "bump
+  version", "prepare a release", "make a release", "ship it", "create release
+  branch", "promote dev to main", "tag a version", or any variation of shipping
+  a new version of cocode. Changelog content passed inline ("/release Added a
+  repo summary mode") becomes the entry. The merge is landed by /ledger-land,
+  never by this skill.
 ---
 
-# Cocode Release Workflow
+# Releasing cocode
 
-This skill handles the full release cycle for the `cocode` Python package.
+The procedure is the workspace release play, [`docs/releasing.md`](../../../../docs/releasing.md) at the workspace root — read it first, then run it with what follows. The repo key is `cocode`, the base is `dev`, and the pull request targets `main`: `guard-branches.yml`'s `gate-main` job refuses any head branch into `main` that does not match `^release\/v[0-9]+\.[0-9]+\.[0-9]+$`, so there is no other way in. The release worktree is `_cocode--release`, made with `wt add cocode release --branch release/vX.Y.Z`. The repo declares neither `.worktree.toml` nor `.worktreeinclude`, so `wt` resolves the base from `origin/dev`, copies `.env` when the main checkout has one, and provisions with the Makefile's `install` target (`uv sync --all-extras --no-cache`), which is what creates the `.venv` every gate below runs out of — and `--all-extras` is why `mkdocs` is there for the docs gate.
 
-Merging the release PR to `main` is what ships: `publish-pypi.yml` builds and
-publishes to PyPI on every push to `main`, and `guard-branches.yml` only lets
-`release/vX.Y.Z` branches merge into `main`. So the branch name, version, and
-changelog have to line up exactly or the PR is blocked.
+## What ships
 
-## Files touched
+The merge to `main` is a push to `main`, and both publishing workflows fire on it:
 
-- **`pyproject.toml`** — the `version` field (line 3)
-- **`CHANGELOG.md`** — add `[vX.Y.Z] - YYYY-MM-DD` entry (remove `[Unreleased]` if present)
-- **`uv.lock`** — regenerated via `make li` (lock + install)
+- **The `cocode` package on PyPI**, by `publish-pypi.yml` — `python3 -m build`, then trusted publishing into the `pypi` environment at <https://pypi.org/p/cocode>. The upload sets no `skip-existing`, so a push to `main` that did not bump the version fails there: `version-check.yml` runs on pull requests only, and nothing else stands between an unbumped push and the upload.
+- **The GitHub Release and the `vX.Y.Z` tag**, by the same workflow's `github-release` job. It reads the number with `grep -m 1 'version = ' pyproject.toml`, slices the notes out of `CHANGELOG.md` between the `## [vX.Y.Z] - ` heading and the next `## [v…] - ` one, signs the dists with Sigstore, creates the Release with `gh release create`, and uploads the signature bundles. The signing step comes **before** the Release is created and is not `continue-on-error`, so a Sigstore failure leaves the version on PyPI with no Release and no tag; the recovery is re-running that run's **failed jobs**, which replays `github-release` alone, since the upload already succeeded and a full re-run would meet the dists already on PyPI. When the changelog slice comes up empty the step warns, sets the notes empty and exits 0, so the Release ships carrying the bare line `Release vX.Y.Z` instead of failing.
+- **The documentation site**, by `deploy-docs.yml` — `make install`, then `uv pip install -e ".[docs]"`, then `make docs-deploy` (`mkdocs gh-deploy --force --clean`) onto `gh-pages`, served at <https://pipelex.github.io/cocode/>. `gh-deploy` is not strict, so a broken build publishes rather than failing, which is what the docs gate below is for.
 
-## Workflow
+The landing verifies the publish — the run, the registry's answer, the tag:
 
-### 1. Pre-flight checks
-
-- Read the current version from `pyproject.toml`.
-- Read `CHANGELOG.md` to understand the current state.
-- Run `git status` and `git log origin/main..HEAD` to assess the working tree:
-  - If there are **uncommitted changes** (staged or unstaged), warn the user and
-    ask whether to commit them as part of the release, stash them, or abort.
-  - If there are **unpushed commits** on the current branch, list them so the
-    user is aware — these will be included in the release branch.
-
-### 2. Determine the bump type
-
-Ask the user which kind of version bump they want — **patch**, **minor**, or
-**major** — unless they already specified it. Show the current version and what
-the new version would be for each option so the choice is concrete.
-
-### 3. Run quality checks
-
-Run `make check`. This runs ruff format, ruff lint, pyright, and mypy — the same
-gate enforced by `lint-check.yml` in CI. It is the gate: if it fails, stop and
-report the errors so they can be fixed before retrying. Do not proceed past this
-step on failure.
-
-Note that `make check` auto-formats with ruff, so it may modify files — include
-any resulting changes in the release commit.
-
-### 4. Ensure we're on the right branch
-
-The release branch must be named `release/vX.Y.Z` where X.Y.Z is the **new**
-version. `guard-branches.yml` rejects any other source branch merging to `main`,
-so this name is not optional. All file modifications (changelog, version bump,
-lock) must happen on this branch.
-
-- If already on `release/vX.Y.Z` matching the new version, stay on it.
-- If on `dev`, `main`, or any other branch, create and switch to
-  `release/vX.Y.Z` from the current HEAD.
-- If on a `release/` branch for a **different** version, warn the user and ask
-  how to proceed.
-
-### 5. Finalize the changelog
-
-Add a new version entry at the top of the changelog for the release.
-
-1. If there is an `## [Unreleased]` section, **remove it** (including any blank
-   lines that follow it) and replace it with the new version heading. Any
-   content that was under `[Unreleased]` becomes the content of the new version.
-2. If there is no `[Unreleased]` section, insert the new version heading
-   directly after the `# Changelog` title.
-3. **Never add an `[Unreleased]` heading.** The changelog should only contain
-   concrete version entries.
-4. If the user provided changelog content when invoking the skill (e.g.
-   `/release Added new repo summary mode`), **merge** that content with any
-   existing `[Unreleased]` content (do not discard either source). Format the
-   combined content properly under the appropriate headings (e.g. `### Added`,
-   `### Changed`, `### Fixed`), inferring headings from the content when
-   possible. Plain bullet lists with no heading are also fine and match recent
-   cocode entries — match the style of the surrounding changelog.
-5. If the release has no changelog content yet (neither from an `[Unreleased]`
-   section nor from inline user input), ask the user what to include before
-   proceeding.
-6. The result should look like:
-
-```markdown
-# Changelog
-
-## [vX.Y.Z] - YYYY-MM-DD
-
-### Changed
-- ...
-
-## [vPREVIOUS] - PREVIOUS-DATE
-...
+```bash
+gh run list --workflow=publish-pypi.yml --branch main --limit 3 --json conclusion,headSha,url  # the run whose headSha is the merge SHA: success
+curl -s https://pypi.org/pypi/cocode/json | jq -r .info.version                                # the registry's answer: X.Y.Z
+git fetch --tags --prune origin && git tag --list vX.Y.Z                                       # the tag
 ```
 
-The CI check (`changelog-check.yml`) greps for the exact line
-`## [vX.Y.Z] -`, so the heading must use that bracketed `v`-prefixed format.
+`gh release view vX.Y.Z` confirms the Release and its notes, and `pip index versions cocode` answers for the registry wherever a `pip` is on the PATH — the worktree's uv-made venv has none.
 
-### 6. Bump the version in pyproject.toml
+## Version files and the lock
 
-Edit `pyproject.toml` line 3 to the new version string. Only change the version
-field — don't touch anything else.
+- `pyproject.toml` — the `version` field under `[project]`, the only place the number is written by hand. Keep it the file's **first** `version = ` line and the only line starting with `version` at column zero: `publish-pypi.yml` reads it with `grep -m 1 'version = '`, which `[tool.uv]`'s `required-version` would satisfy if it ever came first, and `version-check.yml` reads it with `grep '^version'`.
+- `uv.lock` — regenerated by `make li` (`uv lock`, then `uv sync --all-extras --no-cache`), run after the bump so the lockfile's own `cocode` entry records the new number. If it fails, stop and report it rather than committing a stale lock.
+- **Also stamped:** nothing. There is no `__version__` in the package, no README badge and no version literal in the docs; the number lives in `pyproject.toml` and, derived from it, in `uv.lock`.
 
-### 7. Lock dependencies
+## Gates
 
-Run `make li` to regenerate `uv.lock` and reinstall. This keeps the lockfile in
-sync with the new version in `pyproject.toml`. If this step fails, stop and
-report the error.
+Run in the worktree, in this order, before the commit:
 
-### 8. Commit and push
+1. `make agent-check` — unused imports, ruff format, ruff lint, pyright, mypy; the target this repo's `CLAUDE.md` prescribes after any code change. **It rewrites files** (`ruff check --select=F401 --fix`, `ruff format .`, `ruff check . --fix`), so whatever it touched joins the release commit. `lint-check.yml` runs the read-only twins — `merge-check-ruff-format`, `merge-check-ruff-lint`, `merge-check-pyright` and `merge-check-mypy` — on every supported Python, so a red one here is a red pull request there. Red blocks the release: fix the code, never loosen the target. When the linters or pytest collection get confused after files moved, `make cleanderived` clears the caches; `make check` is the same set with that clean in front and unused imports checked rather than fixed.
+2. `make agent-test` — the suite under the Makefile's `USUAL_PYTEST_MARKERS` selection, quiet unless it fails. That expression is `(dry_runnable or not (inference or llm or imgg or extract)) and not (needs_output or pipelex_api)`, so it drops the inference, LLM, image-generation and extract tests **only when they are not also marked `dry_runnable`**, which re-admits them, and drops the output-writing and hosted-API tests outright. `tests-check.yml` runs `make gha-tests` instead on every supported Python — `pytest --disable-inference -m "not inference and not gha_disabled"` — so the two selections are not the same: a `dry_runnable` inference test runs here and not there, and a test marked `gha_disabled` never gates the pull request.
+3. **When `docs/` or `mkdocs.yml` changed since the last release**, `make docs-check` (`mkdocs build --strict`). `git log $(git describe --tags --abbrev=0)..HEAD --oneline -- docs/ mkdocs.yml` says whether they did — pass `--tags`, since this repo's tags are lightweight — and if nothing changed, skip it and say so. `doc-check.yml` runs the same strict build on the pull request under exactly those path filters, so this is what keeps the pull request from opening red.
 
-Stage all release-related changes. This includes at minimum `pyproject.toml`,
-`CHANGELOG.md`, and `uv.lock`, plus any formatting changes from `make check` and
-any other files the user chose to include in step 1 (e.g. previously
-uncommitted work that belongs in this release).
+## The release commit
 
-Commit with the message:
+`pyproject.toml`, `uv.lock`, `CHANGELOG.md`, and each file `make agent-check` rewrote — staged by name.
 
-```
-Release vX.Y.Z
-```
+## CI on the release pull request
 
-Push the branch to origin with `-u` to set up tracking.
+- `guard-branches.yml` — on `pull_request_target`: `gate-main` refuses any head into `main` but `release/vX.Y.Z` exactly, and `protect-workflows` refuses a change under `.github/workflows/` from an author whose association is `CONTRIBUTOR`.
+- `version-check.yml` — it fires on pull requests into `main` and into a `release/vX.Y.Z` branch, and guards each situation with its own conditional step. Two of those steps apply to a release pull request: the `pyproject.toml` version must be strictly greater than the one on `main` (`dpkg --compare-versions`), and, the head being a release branch, it must also equal the version in the branch name. The remaining step guards a pull request whose *target* is a release branch, which is a different shape and never fires here.
+- `changelog-check.yml` — runs only when the head starts with `release/v`, then demands `^release/v([0-9]+\.[0-9]+\.[0-9]+)$` and greps `CHANGELOG.md` for `## [vX.Y.Z] -`. It asserts nothing about `[Unreleased]`; leaving none behind is the play's rule, not CI's.
+- `lint-check.yml` — the merge-check targets on every supported Python; the aggregator job `Lint (all versions)` is the single required status.
+- `tests-check.yml` — `make gha-tests` on every supported Python.
+- `doc-check.yml` — `mkdocs build --strict`, only when `docs/**` or `mkdocs.yml` changed, from pinned pip installs rather than the repo's venv.
+- `cla.yml` — the CLA assistant, allowlisted for maintainers.
 
-### 9. Open a PR
+Nothing in CI checks that `uv.lock` agrees with `pyproject.toml`: no workflow runs `uv lock --locked` or `--frozen`, and the workflows that install the project at all — `lint-check.yml`, `tests-check.yml` and `deploy-docs.yml` — do it with `make install` (`uv sync --all-extras --no-cache`), which re-locks silently rather than failing. The others never touch uv: `doc-check.yml` and `publish-pypi.yml` install what they need with `pip`, and the rest install nothing. The lock step in the play is the only thing keeping the two in step.
 
-Create a pull request targeting `main` with:
+## Particulars
 
-- **Title:** `Release/vX.Y.Z` (matches cocode's existing merged-PR convention)
-- **Body:** Include:
-  - The changelog entries for this version (copied from CHANGELOG.md)
-  - A note about the version bump from old to new
-
-Use this format for the PR body:
-
-```markdown
-## Release vX.Y.Z
-
-Bumps version from `A.B.C` to `X.Y.Z`.
-
-### Changelog
-
-<paste the changelog entries for this version here>
-```
-
-Report the PR URL back to the user.
-
-## Important details
-
-- The version follows semver: `MAJOR.MINOR.PATCH`.
-- Always confirm the bump type with the user before making changes.
-- If `make check` fails, the release is blocked — help the user fix the issues
-  rather than skipping the checks.
-- Merging the PR to `main` triggers `publish-pypi.yml`, which publishes the
-  package to PyPI. There is no separate tag/publish step — the merge is the
-  release.
-- The CI will validate, before the PR can merge:
-  - `version-check.yml` — the `pyproject.toml` version matches the branch name
-    and is greater than the version on `main`.
-  - `changelog-check.yml` — `CHANGELOG.md` has a `## [vX.Y.Z] -` entry.
-  - `guard-branches.yml` — only `release/vX.Y.Z` may merge into `main`.
-  - `lint-check.yml` — ruff format, ruff lint, pyright, and mypy (the `make
-    check` gate).
-  - `tests-check.yml` — runs `make gha-tests`.
-- All checks must pass for the PR to be mergeable, so getting the changelog,
-  version, branch name, and lint clean is critical.
-- Today's date for the changelog entry: use the current date in `YYYY-MM-DD`
-  format (run `date +%F` if unsure).
+- **No pre-release form.** Both gates refuse one rather than skipping it: `guard-branches.yml` matches the head against `^release\/v[0-9]+\.[0-9]+\.[0-9]+$`, and `changelog-check.yml` fires on any head starting with `release/v` and then fails anything that is not `^release/v([0-9]+\.[0-9]+\.[0-9]+)$`. Ship a plain `X.Y.Z`.
+- **The pull request is titled `Release/vX.Y.Z`**, with the slash. That is what the release commits on `main` read (`Release/v0.10.0 (#82)`), and it is where this repo departs from the play's default `Release vX.Y.Z`. Nothing in CI asserts it.
+- **The changelog heading carries the `v`** — `## [vX.Y.Z] - YYYY-MM-DD` — and it is load-bearing twice: `changelog-check.yml` greps for it, and `publish-pypi.yml` slices the GitHub Release notes between it and the next such heading. That slice drops blank lines and strips the leading whitespace from every body line, so nested bullets arrive flattened in the Release while the changelog itself is untouched.
+- **The tags are lightweight**, created as a side effect of `gh release create` rather than by `git tag -a`. Always pass `--tags` when reading them: bare `git describe` finds no annotated tag here and dies.
+- **The docs site republishes the changelog.** `docs/changelog.md` is a `pymdownx.snippets` include of the root file (`--8<-- "CHANGELOG.md"`, with `check_paths: true`), so the new entry reaches <https://pipelex.github.io/cocode/> when `deploy-docs.yml` runs on the push to `main`.
+- **The back-merge is a merge commit.** `dev` carries a `Merge branch 'main' into dev` after each release rather than a fast-forward; `/ledger-land` makes it, and the changelog is the one conflict it expects.
+- **A release arms nothing downstream.** `ledger/ledger.toml` declares no `release_followups` for `cocode`, and the dependency arrow runs the other way: `pyproject.toml` pins `pipelex` with its extras to an exact version, so what a release ships against is whatever that pin says. Moving the pin is an ordinary change on `dev`, never part of the release commit.
