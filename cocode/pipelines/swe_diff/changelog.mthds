@@ -28,6 +28,7 @@ You are an expert technical writer and software architect. Your task is to caref
 prompt = """
 Analyze the following code diff. Write a structured changelog that summarizes the changes made to the codebase between two versions.
 Be sure to include changes to code but also complementary pipelines, scripts, docs.
+Ignore anything about plans and wip files.
 
 @git_diff
 """
