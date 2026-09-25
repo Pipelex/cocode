@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Fixed
+- **Docs:** `CLI_README.md`'s example of extracting Python files from the cookbook now reads its `recipes` directory. The cookbook's redesign removed the `examples` directory it pointed at, so the example extracted nothing.
 - **CI:** Bumped the Sigstore signing action in the publish workflow from `v3.0.0` to `v3.5.0`, SHA-pinned as `790bc6befb9d733738f18d8f895854b453640ec9`. The sigstore-python bundled with `v3.0.0` predates the Sigstore TUF trust-root rotation, so the "Sign the dists with Sigstore" step had started failing deterministically with `tuf.api.exceptions.UnsignedMetadataError: root was signed by 0/3 keys`. That step sits in the GitHub-release job, so the failure mode was a version published to PyPI with no matching GitHub release or tag.
 
 ### Changed
