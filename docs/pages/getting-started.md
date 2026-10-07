@@ -17,7 +17,7 @@ pip install cocode
 
 ## Setup
 
-Cocode runs its AI workflows on your own provider keys, through the Pipelex configuration of the directory it runs in. The current version only works when run from the cocode repository, whose `.pipelex/` directory enables the OpenAI backend alone, and every model its workflows use by default is an OpenAI model. The `pip` package does not include that directory: to run cocode elsewhere, first run `pipelex init`, which writes a configuration to `~/.pipelex/` and asks which backends to enable. Then create a `.env` file with your OpenAI key:
+Cocode runs its AI workflows on your own provider keys, through the Pipelex configuration of the directory it runs in. The current version only works when run from the cocode repository, whose `.pipelex/` directory enables the OpenAI backend alone, and every model its workflows use by default is an OpenAI model. The `pip` package does not include that directory: to run cocode elsewhere, first run `pipelex init`, which writes a configuration to `~/.pipelex/`, asks which backends to enable and saves their keys to `~/.pipelex/.env`; the paths below are then under `~/.pipelex/` rather than the repository's `.pipelex/`. In the cocode repository, create a `.env` file with your OpenAI key:
 
 ```bash
 OPENAI_API_KEY=sk-your-key-here
