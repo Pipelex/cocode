@@ -38,7 +38,7 @@ The shipped configuration enables the OpenAI backend alone, and every model coco
 Pipelex reads `.env` over your environment, so leave a variable out of `.env` rather than setting it to an empty value, which would hide the one you exported.
 
 ### Other providers
-To run on Azure OpenAI, Anthropic, Amazon Bedrock, Google, Mistral or another provider instead, enable its backend in `.pipelex/inference/backends.toml`, set the key variables `.env.example` lists for it, and, for a provider that does not serve OpenAI models, repoint the default models at models it serves in `.pipelex/inference/deck/x_custom_llm_deck.toml`. See [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) in the Pipelex documentation.
+To run on Azure OpenAI, Anthropic, Amazon Bedrock, Google, Mistral or another provider, enable its backend in `.pipelex/inference/backends.toml` and set the key variables `.env.example` lists for it. The active routing profile, `all_enabled_backends`, sends each model to the first enabled backend that serves it, OpenAI first, so routing needs no change. Every enabled backend needs its key, so to run on Azure OpenAI instead of OpenAI, disable the `openai` backend too. A provider that does not serve OpenAI models also needs the default models repointed at models it serves, in `.pipelex/inference/deck/x_custom_llm_deck.toml`. See [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) in the Pipelex documentation.
 
 ### Local AI
 You can also use local models with Ollama, vLLM, or any OpenAI-compatible endpoint. See the same [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) guide for details.

@@ -17,7 +17,7 @@ pip install cocode
 
 ## Setup
 
-Cocode runs its AI workflows on your own provider keys. The Pipelex configuration it ships in `.pipelex/` enables the OpenAI backend alone, and every model its workflows use by default is an OpenAI model, so create a `.env` file with your OpenAI key:
+Cocode runs its AI workflows on your own provider keys, through the Pipelex configuration of the directory it runs in. The current version only works when run from the cocode repository, whose `.pipelex/` directory enables the OpenAI backend alone, and every model its workflows use by default is an OpenAI model. The `pip` package does not include that directory: to run cocode elsewhere, first run `pipelex init`, which writes a configuration to `~/.pipelex/` and asks which backends to enable. Then create a `.env` file with your OpenAI key:
 
 ```bash
 OPENAI_API_KEY=sk-your-key-here
@@ -25,7 +25,7 @@ OPENAI_API_KEY=sk-your-key-here
 
 Pipelex reads `.env` over your environment, so leave a variable out of `.env` rather than setting it to an empty value, which would hide the one you exported.
 
-To use another provider, such as Azure OpenAI, Anthropic, Amazon Bedrock, Google or Mistral, enable its backend in `.pipelex/inference/backends.toml` and set the variables `.env.example` lists for it. A provider that does not serve OpenAI models also needs the default models repointed at models it serves, in `.pipelex/inference/deck/x_custom_llm_deck.toml`. See [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) in the Pipelex documentation.
+To use another provider, such as Azure OpenAI, Anthropic, Amazon Bedrock, Google or Mistral, enable its backend in `.pipelex/inference/backends.toml` and set the variables `.env.example` lists for it. The active routing profile, `all_enabled_backends`, sends each model to the first enabled backend that serves it, OpenAI first, so routing needs no change. Every enabled backend needs its key, so to run on Azure OpenAI instead of OpenAI, disable the `openai` backend too. A provider that does not serve OpenAI models also needs the default models repointed at models it serves, in `.pipelex/inference/deck/x_custom_llm_deck.toml`. See [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) in the Pipelex documentation.
 
 ## Basic usage
 

@@ -12,7 +12,9 @@
 # which routing profile you select. See the documentation for details.
 
 # Which profile to use (change this to switch routing)
-active = "all_openai"
+# cocode keeps the default profile, so a backend enabled in backends.toml is routed to with no
+# change here: OpenAI first, then the other enabled backends in `fallback_order`.
+active = "all_enabled_backends"
 
 # The default profile needs no Pipelex account: it routes each model to the first enabled backend
 # that serves it, in the order its `fallback_order` lists. `pipelex init` narrows this to the
