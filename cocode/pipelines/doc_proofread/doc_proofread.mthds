@@ -45,7 +45,7 @@ Only include files with actual code evidence, not just similar names or concepts
 [pipe.proofread_single_doc]
 type = "PipeLLM"
 description = "Find major inconsistencies between docs and code"
-inputs = { doc_file = "DocumentationFile", related_files = "CodebaseFileContent" }
+inputs = { doc_file = "DocumentationFile", related_files = "CodebaseFileContent[]" }
 output = "DocumentationInconsistency[]"
 model = "$engineering-structured"
 system_prompt = """
@@ -73,7 +73,7 @@ Skip anything that's not a showstopper. If it would just be confusing but still 
 [pipe.create_cursor_report]
 type = "PipeLLM"
 description = "Create a markdown report with inconsistencies formatted as a Cursor prompt"
-inputs = { all_inconsistencies = "DocumentationInconsistency" }
+inputs = { all_inconsistencies = "DocumentationInconsistency[]" }
 output = "MarkdownReport"
 model = "$engineering-structured"
 system_prompt = """

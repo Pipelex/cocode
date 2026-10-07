@@ -27,32 +27,21 @@ Important: the current version of Cocode only works when run from the cocode dir
 
 ## 🔑 Get Your API Keys
 
-Cocode's built-in AI workflows require access to AI models. To use the main features (changelog generation, documentation updates, proofreading), you need API keys for:
+Cocode's built-in AI workflows (changelog generation, documentation updates, proofreading) run on your own AI provider keys, through the Pipelex configuration committed in `.pipelex/`.
 
-- **Claude models** (Anthropic) - Required for changelog generation and documentation analysis
-- **Gemini models** (Google) - Required for documentation proofreading
+### OpenAI (the default)
+The shipped configuration enables the OpenAI backend alone, and every model cocode's workflows use by default is an OpenAI model, so one key is enough:
 
-You have several options:
+- Get an `OPENAI_API_KEY` from [OpenAI](https://platform.openai.com/api-keys)
+- Copy `.env.example` to `.env` and set `OPENAI_API_KEY` there, or export it in your environment
 
-### Option 1: Free Pipelex API Key (Free)
-Get free access to all models with a single API key:
-- Join our [Discord community](https://go.pipelex.com/discord) 
-- Request your **free API key** (no credit card required) in the [🔑・free-api-key](https://discord.com/channels/1369447918955921449/1418228010431025233) channel
-- Add it to your `.env` file: `PIPELEX_API_KEY=your-key-here`
+Pipelex reads `.env` over your environment, so leave a variable out of `.env` rather than setting it to an empty value, which would hide the one you exported.
 
-### Option 2: Bring Your Own API Keys
-Use your own API keys from AI providers:
+### Other providers
+To run on Azure OpenAI, Anthropic, Amazon Bedrock, Google, Mistral or another provider instead, enable its backend in `.pipelex/inference/backends.toml`, set the key variables `.env.example` lists for it, and, for a provider that does not serve OpenAI models, repoint the default models at models it serves in `.pipelex/inference/deck/x_custom_llm_deck.toml`. See [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) in the Pipelex documentation.
 
-**Required for core features:**
-- Claude models - Use either:
-  - `ANTHROPIC_API_KEY` - Direct Anthropic API ([Get key](https://console.anthropic.com/))
-  - Amazon Bedrock - AWS credentials for Claude via Bedrock ([Setup guide](https://docs.pipelex.com/pages/configuration/config-technical/inference-backend-config/))
-- Google Cloud credentials - For Gemini models ([Setup guide](https://docs.pipelex.com/pages/build-reliable-ai-workflows-with-pipelex/ai-plugins-for-multi-llm-workflows/#4-google-vertex-ai-configuration))
-
-Add these to your environment variables or in your `.env` file in your project root.
-
-### Option 3: Local AI
-You can also use local models with Ollama, vLLM, or any OpenAI-compatible endpoint. See the [Pipelex configuration guide](https://docs.pipelex.com/pages/setup/configure-ai-providers/) for details.
+### Local AI
+You can also use local models with Ollama, vLLM, or any OpenAI-compatible endpoint. See the same [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) guide for details.
 
 ## ✅ Validation
 

@@ -12,7 +12,7 @@ from pipelex.pipeline.execution_seams import load_libraries_and_activate
 from pipelex.system.configuration.config_check import check_is_initialized
 from pipelex.system.configuration.configs import PipelexConfig
 from pipelex.system.runtime import IntegrationMode
-from pipelex.test_extras.shared_pytest_plugins import is_inference_disabled_in_pipelex
+from pipelex.test_extras.shared_pytest_plugins import needs_inference_in_pipelex
 from pytest import FixtureRequest
 from rich import print
 from rich.console import Console
@@ -39,10 +39,10 @@ def reset_pipelex_config_fixture(request: FixtureRequest):
     # Code to run before each test
     print("\n[magenta]pipelex setup[/magenta]")
     try:
-        disable_inference = is_inference_disabled_in_pipelex(request)
-        if disable_inference:
+        if not needs_inference_in_pipelex(request):
             # When inference is disabled, use Pipelex.make() directly with needs_inference=False:
-            # this skips the gateway terms check and uses a mock content generator.
+            # this boots without provider keys, loading every enabled backend without resolving its
+            # credentials, and forces every run to dry mode.
             Pipelex.make(
                 integration_mode=IntegrationMode.CI,
                 needs_inference=False,

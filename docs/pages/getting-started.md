@@ -17,16 +17,15 @@ pip install cocode
 
 ## Setup
 
-Create a `.env` file with your API key:
+Cocode runs its AI workflows on your own provider keys. The Pipelex configuration it ships in `.pipelex/` enables the OpenAI backend alone, and every model its workflows use by default is an OpenAI model, so create a `.env` file with your OpenAI key:
 
 ```bash
 OPENAI_API_KEY=sk-your-key-here
-
-# Optional
-ANTHROPIC_API_KEY=sk-ant-your-key-here
-AWS_ACCESS_KEY_ID=your-aws-key
-AWS_SECRET_ACCESS_KEY=your-aws-secret
 ```
+
+Pipelex reads `.env` over your environment, so leave a variable out of `.env` rather than setting it to an empty value, which would hide the one you exported.
+
+To use another provider, such as Azure OpenAI, Anthropic, Amazon Bedrock, Google or Mistral, enable its backend in `.pipelex/inference/backends.toml` and set the variables `.env.example` lists for it. A provider that does not serve OpenAI models also needs the default models repointed at models it serves, in `.pipelex/inference/deck/x_custom_llm_deck.toml`. See [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) in the Pipelex documentation.
 
 ## Basic usage
 

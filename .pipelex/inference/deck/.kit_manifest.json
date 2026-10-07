@@ -1,9 +1,11 @@
 {
   "files": {
-    "1_llm_deck.toml": "ebf0cda4cc883c40d36d6ce56aa3452ac7df916f926a3171445b2bdad0bcf8f1",
-    "2_img_gen_deck.toml": "63b1397f0427aada890096c7d430313f287fd613248aa1f3ab4b9e09a7f19402",
-    "3_extract_deck.toml": "560a40bd3254b1be011cfb35340fef6c40d70136e5ddce33a961899f92fd70ba",
-    "4_search_deck.toml": "08e3bd1bee0f9f8ed0ffc735a932705392d0ecfbdeefce64c9815d4b2d8d7e22"
+    "1_llm_deck.toml": "1316c59eb52db62820d313ff92569b736a3f5427ab8c10f495a02b463f37c97a",
+    "2_img_gen_deck.toml": "00d570907cee9261882922afebc53556013e46d29419fce4cf189135e2849fd6",
+    "3_extract_deck.toml": "ca1063419239ed1e48fb861d6852cd2fedc9936c9cd51db27391da23f539e8e7",
+    "4_search_deck.toml": "08e3bd1bee0f9f8ed0ffc735a932705392d0ecfbdeefce64c9815d4b2d8d7e22",
+    "5_doc_gen_deck.toml": "3f48b443eb9245a87c6d8051223982bf6134155868bb44a3b167c8e05077c372",
+    "6_judgment_deck.toml": "630bc70c596c241c462ef6aa04248932a7a37cc8a674f9b1c21b27e2029a48f3"
   },
-  "kit_version": "0.31.0"
+  "kit_version": "0.76.0"
 }

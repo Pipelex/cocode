@@ -10,11 +10,6 @@
 #
 ####################################################################################################
 
-[pipelex_gateway]
-display_name = "⭐ Pipelex Gateway"
-enabled = true                         # Enable after accepting terms via `pipelex init config`
-api_key = "${PIPELEX_GATEWAY_API_KEY}"
-
 [anthropic]
 enabled = false
 api_key = "${ANTHROPIC_API_KEY}"
@@ -58,6 +53,17 @@ display_name = "Hugging Face"
 enabled = false
 api_key = "${HF_TOKEN}"
 
+[linkup]
+display_name = "Linkup"
+enabled = false
+api_key = "${LINKUP_API_KEY}"
+
+[minimax]
+display_name = "MiniMax"
+enabled = false
+endpoint = "https://api.minimax.io/anthropic"
+api_key = "${MINIMAX_API_KEY}"
+
 [mistral]
 display_name = "Mistral AI"
 enabled = false
@@ -69,8 +75,14 @@ endpoint = "http://localhost:11434/v1"
 
 [openai]
 display_name = "OpenAI"
-enabled = false
+enabled = true
 api_key = "${OPENAI_API_KEY}"
+
+[openrouter]
+display_name = "OpenRouter"
+enabled = false
+endpoint = "https://openrouter.ai/api/v1"
+api_key = "${OPENROUTER_API_KEY}"
 
 [portkey]
 display_name = "Portkey"
@@ -83,6 +95,11 @@ display_name = "Scaleway"
 enabled = false
 endpoint = "${SCALEWAY_ENDPOINT}"
 api_key = "${SCALEWAY_API_KEY}"
+
+[typesafe]
+display_name = "TypeSafe"
+enabled = false
+api_key = "${TYPESAFE_API_KEY}"
 
 [vertexai]
 display_name = "Google Vertex AI"
@@ -99,10 +116,3 @@ api_key = "${XAI_API_KEY}"
 
 [internal] # software-only backend, runs internally, without AI
 enabled = true
-
-# Deprecated
-[pipelex_inference]
-display_name = "🛑 Legacy Pipelex Inference"
-enabled = false
-endpoint = "https://inference.pipelex.com/v1"
-api_key = "${PIPELEX_INFERENCE_API_KEY}"

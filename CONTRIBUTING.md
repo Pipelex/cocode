@@ -69,7 +69,7 @@ We are open to contributions in all areas of our core cocode library:
 ## Environment Setup
 
 - Copy `.env.example` to `.env`
-- Fill in required credentials (OPENAI_API_KEY, AWS_ACCESS_KEY_ID, etc.)
+- Fill in `OPENAI_API_KEY`, the one credential the shipped configuration needs, and the variables of any other provider whose backend you enable in `.pipelex/inference/backends.toml`
 - Never commit `.env`
 
 ## License
