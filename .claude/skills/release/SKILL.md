@@ -60,7 +60,7 @@ Run in the worktree, in this order, before the commit:
 - `lint-check.yml` — the merge-check targets on every supported Python; the aggregator job `Lint (all versions)` is the single required status.
 - `tests-check.yml` — `make gha-tests` on every supported Python.
 - `doc-check.yml` — `mkdocs build --strict`, only when `docs/**` or `mkdocs.yml` changed, from pinned pip installs rather than the repo's venv.
-- `cla.yml` — the CLA assistant, allowlisted for maintainers.
+- The CLA Assistant — the CLA Assistant is not a workflow of this repository: the organization ruleset `cla` (github-manager's `config/organization.yaml`) runs Pipelex/.github's `cla.yml` on every pull request into `dev`, and on none into `main`.
 
 Nothing in CI checks that `uv.lock` agrees with `pyproject.toml`: no workflow runs `uv lock --locked` or `--frozen`, and the workflows that install the project at all — `lint-check.yml`, `tests-check.yml` and `deploy-docs.yml` — do it with `make install` (`uv sync --all-extras --no-cache`), which re-locks silently rather than failing. The others never touch uv: `doc-check.yml` and `publish-pypi.yml` install what they need with `pip`, and the rest install nothing. The lock step in the play is the only thing keeping the two in step.
 
