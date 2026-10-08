@@ -1,6 +1,6 @@
 [project]
 name = "cocode"
-version = "0.10.0"
+version = "0.10.1"
 description = "Cocode is the friend of your code"
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -37,7 +37,7 @@ dev = [
   "pytest-cov>=6.1.1",
   "pytest-mock>=3.14.0",
   "pytest-sugar>=1.0.0",
-  "ruff==0.14.13",
+  "ruff==0.16.4",
   "types-aioboto3[bedrock,bedrock-runtime]>=13.4.0",
   "types-aiofiles>=24.1.0.20240626",
   "types-markdown>=3.6.0.20240316",

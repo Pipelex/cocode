@@ -13,9 +13,9 @@ cocode repox convert --output-filename cocode_test.txt
 # Analyze external project
 cocode repox convert ../pipelex-cookbook/ --output-filename pipelex-cookbook.txt
 
-# Extract examples with specific Python rule
-cocode repox convert ../pipelex-cookbook/ --output-filename "pipelex-cookbook-examples.txt" \
-    --path-pattern "examples" --python-rule integral --include-pattern "*.py"
+# Extract the cookbook's Python recipes with a specific Python rule
+cocode repox convert ../pipelex-cookbook/ --output-filename "pipelex-cookbook-recipes.txt" \
+    --path-pattern "recipes" --python-rule integral --include-pattern "*.py"
 
 # Extract Python imports from tools directory
 cocode repox convert ../pipelex/ --output-filename "pipelex-tools-imports.txt" \

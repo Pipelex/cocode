@@ -29,6 +29,7 @@ You are an expert technical writer and software architect.
 prompt = """
 Analyze the following code diff and write a draft changelog that summarizes the changes made to the codebase between two versions.
 Focus on identifying the key changes, improvements, bug fixes, and new features.
+Ignore anything about plans and wip files.
 Write in a clear, concise style that would be useful for developers and users.
 Be sure to include changes to code but also complementary pipelines, scripts, docs.
 

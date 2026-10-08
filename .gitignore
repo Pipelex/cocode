@@ -51,8 +51,5 @@ settings.local.json
 # Pipelex config sync backups
 *.bak.*
 
-# Work-in-progress notes
-wip/
-
 # Pipelex local config
 .pipelex/
