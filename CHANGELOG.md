@@ -1,13 +1,14 @@
 # Changelog
 
-## [Unreleased]
+## [v0.10.1] - 2026-10-08
+
+### Changed
+- **Pipelines:** The changelog pipelines behind `cocode changelog update` (`write_changelog` and `write_changelog_enhanced`) now tell the model to ignore plans and work-in-progress files in the diff, so generated changelogs no longer list them as changes.
+- **Tooling:** Pinned `ruff` to an exact `0.16.4`, up from `0.14.13`, matching what the Ruff VS Code extension now bundles. Ruff 0.16 lints `pyproject.toml` itself, and a pre-0.16 binary in the editor painted phantom `invalid-syntax` diagnostics on it. This is a dev dependency only: the upgrade produced no new lint findings and no reformatting.
 
 ### Fixed
 - **Docs:** `CLI_README.md`'s example of extracting Python files from the cookbook now reads its `recipes` directory. The cookbook's redesign removed the `examples` directory it pointed at, so the example extracted nothing.
-- **CI:** Bumped the Sigstore signing action in the publish workflow from `v3.0.0` to `v3.5.0`, SHA-pinned as `790bc6befb9d733738f18d8f895854b453640ec9`. The sigstore-python bundled with `v3.0.0` predates the Sigstore TUF trust-root rotation, so the "Sign the dists with Sigstore" step had started failing deterministically with `tuf.api.exceptions.UnsignedMetadataError: root was signed by 0/3 keys`. That step sits in the GitHub-release job, so the failure mode was a version published to PyPI with no matching GitHub release or tag.
-
-### Changed
-- **Tooling:** Pinned `ruff` to an exact `0.16.4`, up from `0.14.13`. This matches what the Ruff VS Code extension now bundles, which matters because Ruff 0.16 lints `pyproject.toml` itself: the extension syncs the config file to the language server, and a pre-0.16 binary parses it as Python source and paints phantom `invalid-syntax` diagnostics on lines like `requires-python`. Keeping the pin exact stops the editor and the CLI from drifting apart again. Nothing shipped changes — this is a dev dependency, and the upgrade produced no new lint findings and no reformatting.
+- **CI:** Bumped the Sigstore signing action in the publish workflow from `v3.0.0` to `v3.5.0`, SHA-pinned as `790bc6befb9d733738f18d8f895854b453640ec9`. The sigstore-python bundled with `v3.0.0` predates the Sigstore TUF trust-root rotation, so signing failed with `tuf.api.exceptions.UnsignedMetadataError: root was signed by 0/3 keys`. Since that step sits in the GitHub-release job, a version could reach PyPI with no matching GitHub release or tag.
 
 ## [v0.10.0] - 2026-08-18
 
