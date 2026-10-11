@@ -21,9 +21,8 @@ jobs:
     env:
       VIRTUAL_ENV: ${{ github.workspace }}/.venv
       ENV: dev
-      # Our CI never sends usage statistics: the off switch every Pipelex tool honours. Safe on the pinned pipelex, which
-      # refuses DO_NOT_TRACK only when it boots with inference and the Pipelex Gateway enabled, because `make gha-tests`
-      # always passes --disable-inference.
+      # Our CI never sends usage statistics: the off switch every Pipelex tool honours. The pinned pipelex sends none and
+      # reads DO_NOT_TRACK only to turn its own telemetry off, which it honours at any boot.
       DO_NOT_TRACK: "1"
     steps:
       - uses: actions/checkout@v4

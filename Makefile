@@ -69,7 +69,7 @@ make v                        - Shorthand -> validate
 make codex-tests              - Run tests for Codex (exit on first failure) (no inference, no codex_disabled)
 make gha-tests		          - Run tests for github actions (exit on first failure) (no inference, no gha_disabled)
 make test                     - Run unit tests (no inference)
-make agent-test               - Run unit tests, silent on success, output on failure (for AI agents)
+make agent-test               - Run unit tests without inference, silent on success, output on failure (for AI agents)
 make test-with-prints         - Run tests with prints (no inference)
 make t                        - Shorthand -> test-with-prints
 make tp                       - Shorthand -> test-with-prints
@@ -253,7 +253,7 @@ test: env
 agent-test: env
 	@echo "• Running unit tests..."
 	@tmpfile=$$(mktemp); \
-	$(VENV_PYTEST) -m $(USUAL_PYTEST_MARKERS) -o log_level=WARNING --tb=short -q > "$$tmpfile" 2>&1; \
+	$(VENV_PYTEST) --disable-inference -m $(USUAL_PYTEST_MARKERS) -o log_level=WARNING --tb=short -q > "$$tmpfile" 2>&1; \
 	exit_code=$$?; \
 	if [ $$exit_code -ne 0 ]; then grep -vE '\[\s*[0-9]+%\]\s*$$' "$$tmpfile"; fi; \
 	rm -f "$$tmpfile"; \
