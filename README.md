@@ -25,34 +25,51 @@ pip install cocode
 
 Important: the current version of Cocode only works when run from the cocode directory.
 
-## 🔑 Get Your API Keys
+## 🔑 Give Cocode Access to AI Models
 
-Cocode's built-in AI workflows require access to AI models. To use the main features (changelog generation, documentation updates, proofreading), you need API keys for:
+Cocode's AI workflows (changelog generation, documentation updates, proofreading and analysis) run on [Pipelex](https://github.com/Pipelex/pipelex), on your machine, with your own provider keys.
 
-- **Claude models** (Anthropic) - Required for changelog generation and documentation analysis
-- **Gemini models** (Google) - Required for documentation proofreading
+### With an OpenAI key
 
-You have several options:
+Cocode ships configured for OpenAI: the OpenAI backend is the one switched on in [`.pipelex/inference/backends.toml`](.pipelex/inference/backends.toml), and Pipelex's model deck resolves every tier Cocode uses to OpenAI's GPT-5.6 models. One key is all you need. Copy `.env.example` to `.env` at the root of the cocode directory and set it there:
 
-### Option 1: Free Pipelex API Key (Free)
-Get free access to all models with a single API key:
-- Join our [Discord community](https://go.pipelex.com/discord) 
-- Request your **free API key** (no credit card required) in the [🔑・free-api-key](https://discord.com/channels/1369447918955921449/1418228010431025233) channel
-- Add it to your `.env` file: `PIPELEX_API_KEY=your-key-here`
+```bash
+cp .env.example .env
+```
 
-### Option 2: Bring Your Own API Keys
-Use your own API keys from AI providers:
+```bash
+OPENAI_API_KEY=sk-your-key-here
+```
 
-**Required for core features:**
-- Claude models - Use either:
-  - `ANTHROPIC_API_KEY` - Direct Anthropic API ([Get key](https://console.anthropic.com/))
-  - Amazon Bedrock - AWS credentials for Claude via Bedrock ([Setup guide](https://docs.pipelex.com/pages/configuration/config-technical/inference-backend-config/))
-- Google Cloud credentials - For Gemini models ([Setup guide](https://docs.pipelex.com/pages/build-reliable-ai-workflows-with-pipelex/ai-plugins-for-multi-llm-workflows/#4-google-vertex-ai-configuration))
+Pipelex also reads `~/.pipelex/.env`, if you would rather keep the key there for every project.
 
-Add these to your environment variables or in your `.env` file in your project root.
+### With another provider
 
-### Option 3: Local AI
-You can also use local models with Ollama, vLLM, or any OpenAI-compatible endpoint. See the [Pipelex configuration guide](https://docs.pipelex.com/pages/setup/configure-ai-providers/) for details.
+A key alone is not enough for any other provider, including a local model through Ollama: its backend has to be switched on, and the deck's aliases pointed at the models it serves. Anthropic, for example:
+
+1. Put `ANTHROPIC_API_KEY` in your `.env` file. `.env.example` lists the variable of every provider.
+2. Switch the backends in `.pipelex/inference/backends_override.toml`, a personal file git ignores, so the tracked configuration stays as it is. Turn OpenAI off unless you keep its key, because a run refuses to start while an enabled backend's key is missing:
+
+    ```toml
+    [openai]
+    enabled = false
+
+    [anthropic]
+    enabled = true
+    ```
+
+3. Point the aliases Cocode's workflows go through at that provider's models, in `.pipelex/inference/deck/x_custom_llm_deck.toml`, which `pipelex update` never overwrites:
+
+    ```toml
+    [llm.aliases]
+    default-general = "claude-5-sonnet"
+    default-premium-structured = "claude-5-opus"
+    default-large-context-code = "claude-5-sonnet"
+    ```
+
+The models each provider serves are listed in `.pipelex/inference/backends/`. Pipelex's [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) page covers every provider, and [Inference Backend Configuration](https://docs.pipelex.com/latest/configuration/config-technical/inference-backend-config/) the override files.
+
+Cocode runs its workflows inside its own process, so the hosted Pipelex API and its Pipelex API key do not apply to it.
 
 ## ✅ Validation
 

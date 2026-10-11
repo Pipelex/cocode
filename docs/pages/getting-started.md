@@ -17,16 +17,39 @@ pip install cocode
 
 ## Setup
 
-Create a `.env` file with your API key:
+Cocode runs its AI workflows on [Pipelex](https://github.com/Pipelex/pipelex), on your machine, with your own provider keys. It ships configured for OpenAI: the OpenAI backend is the one switched on in `.pipelex/inference/backends.toml`, and Pipelex's model deck resolves every tier Cocode uses to OpenAI's GPT-5.6 models. Create a `.env` file at the root of the cocode directory with your key, or put it in `~/.pipelex/.env` to use it in every project:
 
 ```bash
 OPENAI_API_KEY=sk-your-key-here
-
-# Optional
-ANTHROPIC_API_KEY=sk-ant-your-key-here
-AWS_ACCESS_KEY_ID=your-aws-key
-AWS_SECRET_ACCESS_KEY=your-aws-secret
 ```
+
+### Another provider
+
+A key alone is not enough for any other provider, including a local model through Ollama: its backend has to be switched on, and the deck's aliases pointed at the models it serves. Anthropic, for example:
+
+1. Put `ANTHROPIC_API_KEY` in your `.env` file. `.env.example` lists the variable of every provider.
+2. Switch the backends in `.pipelex/inference/backends_override.toml`, a personal file git ignores. Turn OpenAI off unless you keep its key, because a run refuses to start while an enabled backend's key is missing:
+
+    ```toml
+    [openai]
+    enabled = false
+
+    [anthropic]
+    enabled = true
+    ```
+
+3. Point the aliases Cocode's workflows go through at that provider's models, in `.pipelex/inference/deck/x_custom_llm_deck.toml`:
+
+    ```toml
+    [llm.aliases]
+    default-general = "claude-5-sonnet"
+    default-premium-structured = "claude-5-opus"
+    default-large-context-code = "claude-5-sonnet"
+    ```
+
+The models each provider serves are listed in `.pipelex/inference/backends/`. Pipelex's [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) page covers every provider.
+
+Cocode runs its workflows inside its own process, so the hosted Pipelex API and its Pipelex API key do not apply to it.
 
 ## Basic usage
 
