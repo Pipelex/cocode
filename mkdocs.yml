@@ -71,6 +71,7 @@ nav:
   - Getting Started: pages/getting-started.md
   - Commands: pages/commands.md
   - Examples: pages/examples.md
+  - Usage Statistics: pages/usage-statistics.md
   - Contributing: contributing.md
 
 extra_css:
