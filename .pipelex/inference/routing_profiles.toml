@@ -12,21 +12,39 @@
 # which routing profile you select. See the documentation for details.
 
 # Which profile to use (change this to switch routing)
-active = "all_pipelex_gateway"
-
-# We recommend using the "all_pipelex_gateway" profile to get a head start with all models.
-# To use the Pipelex Gateway backend:
-# 1. Get your API key at https://app.pipelex.com (free credits included)
-# 2. Add it to your .env file: PIPELEX_GATEWAY_API_KEY=your-key-here
-# 3. Run `pipelex init` and accept the Gateway terms of service
+active = "all_enabled_backends"
 
 # =========================================================================================
 # Routing Profiles
 # =========================================================================================
 
-[profiles.all_pipelex_gateway]
-description = "Use Pipelex Gateway for all its supported models"
-default = "pipelex_gateway"
+[profiles.all_enabled_backends]
+description = "Route each model to the first enabled backend that serves it, in this order"
+fallback_order = [
+  "openai",
+  "anthropic",
+  "google",
+  "mistral",
+  "bedrock",
+  "azure_openai",
+  "xai",
+  "groq",
+  "fal",
+  "huggingface",
+  "linkup",
+  "openrouter",
+  "portkey",
+  "blackboxai",
+  "minimax",
+  "scaleway",
+  "ollama",
+  "vertexai",
+]
+
+# Judgment models are served by their own backend alone, so they go to it whenever it is enabled.
+# An optional route is inert while its backend is disabled.
+[profiles.all_enabled_backends.optional_routes]
+"jev-*" = "typesafe"
 
 [profiles.all_anthropic]
 description = "Use Anthropic backend for all its supported models"
@@ -109,23 +127,6 @@ default = "internal"
 # - Partial wildcards: "*-sonnet" (matches all sonnet variants)
 
 # =========================================================================================
-# Example of a custom routing profile with mostly pattern matching and one specific model
-# =========================================================================================
-[profiles.example_routing_using_patterns]
-description = "Example routing profile using patterns"
-default = "pipelex_gateway"
-
-[profiles.example_routing_using_patterns.routes]
-# Pattern matching: "model-pattern" = "backend-name"
-"gpt-*" = "azure_openai"
-"claude-*" = "bedrock"
-"gemini-*" = "google"
-"grok-*" = "xai"
-"*-sdxl" = "fal"
-"flux-*" = "fal"
-"gpt-image-1" = "openai"
-
-# =========================================================================================
 # Example of a custom routing profile with specific model matching
 # =========================================================================================
 
@@ -133,17 +134,10 @@ default = "pipelex_gateway"
 description = "Example routing profile using specific models"
 
 [profiles.example_routing_using_specific_models.routes]
-"gpt-5-nano" = "pipelex_gateway"
 "gpt-4o-mini" = "blackboxai"
 "gpt-5-mini" = "openai"
 "gpt-5-chat" = "azure_openai"
-
-"claude-4-sonnet" = "pipelex_gateway"
 "claude-3.7-sonnet" = "blackboxai"
-
-"gemini-2.5-flash-lite" = "pipelex_gateway"
 "gemini-2.5-flash" = "blackboxai"
 "gemini-2.5-pro" = "vertexai"
-
-"grok-3" = "pipelex_gateway"
 "grok-3-mini" = "xai"
