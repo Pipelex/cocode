@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 ### Added
-- **Usage statistics:** cocode now names itself as the `host` of the anonymous usage statistics sent by the Pipelex runtime it embeds, by setting `PIPELEX_USAGE_STATS_HOST=cocode` before it boots Pipelex unless the environment already sets it. cocode sends no statistics of its own, and a Pipelex release that sends none ignores the variable. The new Usage Statistics page in the docs says what this means and how to turn the statistics off.
+- **Usage statistics:** cocode sets `PIPELEX_USAGE_STATS_HOST=cocode` before it boots Pipelex, unless the environment already sets it, so that once cocode runs on the Pipelex release that introduces anonymous usage statistics, the runs it drives report as host `cocode`. cocode sends no statistics of its own, and a Pipelex release without them, like the one this version pins, sends none and ignores the variable. The new Usage Statistics page in the docs explains this and links to Pipelex's page for turning the statistics off.
 
 ### Fixed
 - **Docs:** `CLI_README.md`'s example of extracting Python files from the cookbook now reads its `recipes` directory. The cookbook's redesign removed the `examples` directory it pointed at, so the example extracted nothing.
