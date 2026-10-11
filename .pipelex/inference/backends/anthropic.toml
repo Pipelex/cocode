@@ -25,6 +25,7 @@ model_type = "llm"
 sdk = "anthropic"
 structure_method = "instructor/anthropic_tools"
 thinking_mode = "manual"
+valued_constraints = { min_thinking_budget = 1024 } # Anthropic refuses a smaller budget_tokens
 
 ################################################################################
 # LANGUAGE MODELS
@@ -100,6 +101,15 @@ outputs = ["text", "structured"]
 max_prompt_images = 100
 costs = { input = 5.0, output = 25.0 }
 
+["claude-4.6-sonnet"]
+model_id = "claude-sonnet-4-6"
+max_tokens = 64000
+inputs = ["text", "images", "pdf"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 3.0, output = 15.0 }
+thinking_mode = "adaptive"
+
 ["claude-4.6-opus"]
 model_id = "claude-opus-4-6"
 max_tokens = 64000
@@ -108,3 +118,110 @@ outputs = ["text", "structured"]
 max_prompt_images = 100
 costs = { input = 5.0, output = 25.0 }
 thinking_mode = "adaptive"
+
+# --- Claude 4.7 Series --------------------------------------------------------
+["claude-4.7-opus"]
+model_id = "claude-opus-4-7"
+max_tokens = 128000
+inputs = ["text", "images", "pdf"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 5.0, output = 25.0 }
+thinking_mode = "adaptive"
+listed_constraints = ["temperature_unsupported"]
+
+# --- Claude 4.8 Series --------------------------------------------------------
+["claude-4.8-opus"]
+model_id = "claude-opus-4-8"
+max_tokens = 128000
+inputs = ["text", "images", "pdf"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 5.0, output = 25.0 }
+thinking_mode = "adaptive"
+listed_constraints = ["temperature_unsupported"]
+
+# --- Claude 5 Series ----------------------------------------------------------
+[claude-5-sonnet]
+model_id = "claude-sonnet-5"
+max_tokens = 64000
+inputs = ["text", "images", "pdf"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 2.0, output = 10.0 }
+thinking_mode = "adaptive"
+listed_constraints = ["temperature_unsupported"]
+
+[claude-5-opus]
+model_id = "claude-opus-5"
+max_tokens = 128000
+inputs = ["text", "images", "pdf"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 5.0, output = 25.0 }
+thinking_mode = "adaptive"
+listed_constraints = ["temperature_unsupported"]
+
+[claude-5-fable]
+model_id = "claude-fable-5"
+max_tokens = 128000
+inputs = ["text", "images", "pdf"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 10.0, output = 50.0 }
+thinking_mode = "adaptive"
+listed_constraints = ["temperature_unsupported"]
+
+# --- Claude 5.1 Series --------------------------------------------------------
+["claude-5.1-fable"]
+model_id = "claude-fable-5-1"
+max_tokens = 128000
+inputs = ["text", "images", "pdf"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 10.0, output = 50.0 }
+thinking_mode = "adaptive"
+# Fable 5.1 refuses tool_choice "tool" and "any", which is what the section default
+# instructor/anthropic_tools forces; the reasoning variant leaves tool_choice on auto.
+structure_method = "instructor/anthropic_reasoning_tools"
+listed_constraints = ["temperature_unsupported"]
+
+# --- Claude 5.5 Series --------------------------------------------------------
+["claude-5.5-sonnet"]
+model_id = "claude-sonnet-5-5"
+max_tokens = 128000
+inputs = ["text", "images", "pdf"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 2.0, output = 10.0 }
+thinking_mode = "adaptive"
+# Sonnet 5.5 refuses tool_choice "tool" and "any", which is what the section default
+# instructor/anthropic_tools forces; the reasoning variant leaves tool_choice on auto.
+structure_method = "instructor/anthropic_reasoning_tools"
+listed_constraints = ["temperature_unsupported"]
+
+["claude-5.5-opus"]
+model_id = "claude-opus-5-5"
+max_tokens = 128000
+inputs = ["text", "images", "pdf"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 4.0, output = 20.0 }
+thinking_mode = "adaptive"
+# Opus 5.5 refuses tool_choice "tool" and "any", like Sonnet 5.5 above.
+structure_method = "instructor/anthropic_reasoning_tools"
+listed_constraints = ["temperature_unsupported"]
+
+["claude-5.5-haiku"]
+model_id = "claude-haiku-5-5"
+max_tokens = 128000
+inputs = ["text", "images", "pdf"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+# The price of a prompt up to 100,000 tokens; a longer prompt pays $0.50 / $2.50.
+costs = { input = 0.10, output = 0.50 }
+thinking_mode = "adaptive"
+# Unlike Sonnet 5.5 and Opus 5.5, Haiku 5.5 accepts the forced tool_choice that
+# instructor/anthropic_tools sends; it then answers with the tool call and no thinking.
+structure_method = "instructor/anthropic_tools"
+listed_constraints = ["temperature_unsupported"]

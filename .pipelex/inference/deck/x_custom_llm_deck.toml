@@ -5,10 +5,10 @@
 # This file allows you to override or complete the base model decks.
 #
 # ADVANCED USERS ONLY: This file is for users who bring their own API keys and connect directly
-# to AI providers (OpenAI, Anthropic, Google, etc.) without using the Pipelex Gateway.
+# to AI providers (OpenAI, Anthropic, Google, etc.) and want to tune their own catalog.
 #
-# If you're using the standard Pipelex Gateway setup, you don't need to modify this file.
-# The Gateway handles model routing automatically and supports all available models.
+# If the shipped backend catalogs cover your needs, you don't need to modify this file.
+# The routing profile picks a backend for every model the enabled backends serve.
 #
 # Waterfalls are useful when using multiple backends directly - they define ordered lists
 # of models that are resolved at configuration time based on which backends are available.
@@ -35,23 +35,23 @@ for_object = "disabled"
 
 # Example (uncomment to use):
 # [llm.waterfalls]
-# premium-llm = ["claude-4.5-opus", "gemini-3.1-pro", "gpt-5.2", "grok-4"]
+# premium-llm = ["claude-4.5-opus", "gemini-3.1-pro", "gpt-5.4", "grok-4"]
 # premium-llm-vision = [
 #     "claude-4.5-opus",
 #     "gemini-3.1-pro",
-#     "gpt-5.2",
+#     "gpt-5.4",
 #     "grok-4-fast-reasoning",
 # ]
 # premium-llm-structured = [
 #     "claude-4.5-opus",
 #     "gemini-3.1-pro",
-#     "gpt-5.2",
+#     "gpt-5.4",
 #     "grok-4",
 # ]
 # large-context-llm-code = [
 #     "gemini-3.1-pro",
 #     "claude-4.5-opus",
-#     "gpt-5.2",
+#     "gpt-5.4",
 #     "grok-4-fast-reasoning",
 # ]
 # large-context-llm-text = ["gemini-2.5-flash", "claude-4.5-sonnet"]
