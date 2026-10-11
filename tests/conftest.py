@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 from pathlib import Path
 
 import pytest
@@ -19,6 +20,13 @@ from rich.console import Console
 from rich.traceback import Traceback
 
 from cocode.common import PIPELINE_LIBRARY_DIRS
+
+# Our tests never report usage statistics, whatever pipelex they run against. `PIPELEX_USAGE_STATS=0` turns pipelex's
+# statistics off and touches nothing else, so a pipelex that has no statistics ignores it. `DO_NOT_TRACK` would turn
+# them off too, but the pinned pipelex refuses to boot with inference while it is set and the Pipelex Gateway is enabled.
+# Forced, not defaulted, so no value in the shell turns statistics back on, and set when this conftest loads, before any
+# fixture or plugin hook boots pipelex.
+os.environ["PIPELEX_USAGE_STATS"] = "0"
 
 PIPELINE_LIBRARY_DIRS_FOR_TESTS = [*PIPELINE_LIBRARY_DIRS, Path("tests/pipelines")]
 
