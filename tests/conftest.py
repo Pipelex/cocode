@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 from pathlib import Path
 
 import pytest
@@ -19,6 +20,11 @@ from rich.console import Console
 from rich.traceback import Traceback
 
 from cocode.common import PIPELINE_LIBRARY_DIRS
+
+# Our tests never report usage statistics, whatever pipelex they run against. `DO_NOT_TRACK` is the off switch every
+# Pipelex tool honours and needs no pipelex API; it is forced, not defaulted, so a `DO_NOT_TRACK=0` in the shell cannot
+# turn statistics back on. Set when this conftest loads, before any fixture or plugin hook boots pipelex.
+os.environ["DO_NOT_TRACK"] = "1"
 
 PIPELINE_LIBRARY_DIRS_FOR_TESTS = [*PIPELINE_LIBRARY_DIRS, Path("tests/pipelines")]
 

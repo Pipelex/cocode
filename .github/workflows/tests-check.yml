@@ -21,6 +21,8 @@ jobs:
     env:
       VIRTUAL_ENV: ${{ github.workspace }}/.venv
       ENV: dev
+      # Our CI never sends usage statistics: the off switch every Pipelex tool honours.
+      DO_NOT_TRACK: "1"
     steps:
       - uses: actions/checkout@v4
 
