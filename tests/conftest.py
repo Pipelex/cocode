@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import os
 from pathlib import Path
@@ -6,7 +5,6 @@ from pathlib import Path
 import pytest
 from pipelex.config import get_config
 from pipelex.pipelex import Pipelex
-from pipelex.pipeline.bundle_validator import BundleValidator
 from pipelex.pipeline.execution_seams import load_libraries_and_activate
 from pipelex.system.configuration.config_check import check_is_initialized
 from pipelex.system.configuration.configs import PipelexConfig
@@ -18,6 +16,7 @@ from rich.console import Console
 from rich.traceback import Traceback
 
 from cocode.common import PIPELINE_LIBRARY_DIRS
+from cocode.inference_config import CocodeModelManager
 
 # Our tests never report usage statistics, whatever pipelex they run against. `PIPELEX_USAGE_STATS=0` is pipelex's own
 # statistics switch, the one its test helpers set, and it touches nothing else, so a pipelex that has no statistics, as
@@ -36,19 +35,19 @@ pytest_plugins = [
 def boot_pipelex_for_tests(*, needs_inference: bool) -> None:
     """Boot pipelex as a test run and load cocode's pipelines.
 
+    It boots with the model manager the CLI boots with, so the tests read the inference configuration the CLI reads.
     `IntegrationMode.PYTEST` tells pipelex the process is a test run: a pipelex that sends usage statistics turns them
     off for it without reading the machine's shared statistics state. Without inference, pipelex still loads every
-    enabled backend and its models but resolves no provider key, and every run is a dry run.
+    enabled backend and its models but resolves no provider key, and every run is a dry run. The boot dry-runs no pipe:
+    `test_dry_run_all_pipes` does that once, with or without inference.
     """
     Pipelex.make(
         integration_mode=IntegrationMode.PYTEST,
         needs_inference=needs_inference,
         library_dirs=PIPELINE_LIBRARY_DIRS_FOR_TESTS,
+        models_manager=CocodeModelManager(),
     )
     load_libraries_and_activate(PIPELINE_LIBRARY_DIRS_FOR_TESTS)
-    if needs_inference:
-        # Dry-run every pipe once per module; without inference, `test_dry_run_all_pipes` does it once per session.
-        asyncio.run(BundleValidator().validate_current_library())
 
 
 @pytest.fixture(scope="session", autouse=True)

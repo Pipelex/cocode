@@ -19,6 +19,7 @@ from cocode.cli.features.features_cli import features_app
 from cocode.cli.repo.repo_cli import repo_app
 from cocode.common import PIPELINE_LIBRARY_DIRS
 from cocode.github.github_cli import github_app
+from cocode.inference_config import CocodeModelManager
 from cocode.repox.repox_cli import repox_app
 from cocode.usage_stats import declare_cocode_usage_stats_host
 from cocode.validation_cli import validation_app
@@ -68,7 +69,7 @@ def main(ctx: TyperContext) -> None:
     """Initialize Pipelex system before any command runs."""
     # Before the boot, which reads the declaration along with pipelex's other usage-statistics switches.
     declare_cocode_usage_stats_host()
-    Pipelex.make(library_dirs=PIPELINE_LIBRARY_DIRS)
+    Pipelex.make(library_dirs=PIPELINE_LIBRARY_DIRS, models_manager=CocodeModelManager())
 
     if ctx.invoked_subcommand is None:
         print(ctx.get_help())

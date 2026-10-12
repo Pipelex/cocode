@@ -23,7 +23,7 @@ Streamline your documentation workflow with AI-powered automation:
 pip install cocode
 ```
 
-Important: the current version of Cocode only works when run from the cocode directory.
+Cocode runs from any directory: the package carries its pipelines and the inference configuration they run on.
 
 ## 🔑 Give Cocode Access to AI Models
 
@@ -31,24 +31,26 @@ Cocode's AI workflows (changelog generation, documentation updates, proofreading
 
 ### With an OpenAI key
 
-Cocode ships configured for OpenAI: the OpenAI backend is the one switched on in [`.pipelex/inference/backends.toml`](.pipelex/inference/backends.toml), and Pipelex's model deck resolves every tier Cocode uses to OpenAI's GPT-5.6 models. One key is all you need. Copy `.env.example` to `.env` at the root of the cocode directory and set it there:
-
-```bash
-cp .env.example .env
-```
+Cocode ships configured for OpenAI: its inference configuration, [`.pipelex/inference/`](.pipelex/inference/), switches on the OpenAI backend alone, and Pipelex's model deck resolves every tier Cocode uses to OpenAI's GPT-5.6 models. The package carries that configuration, so one key is all you need, whichever directory you run Cocode from. Set it in a `.env` file in that directory, or in `~/.pipelex/.env` to use it everywhere:
 
 ```bash
 OPENAI_API_KEY=sk-your-key-here
 ```
 
-Pipelex also reads `~/.pipelex/.env`, if you would rather keep the key there for every project.
+In a clone of this repository, copy `.env.example` to `.env` and set the key there:
+
+```bash
+cp .env.example .env
+```
+
+A directory with an inference configuration of its own, a `.pipelex/inference/backends.toml` such as `pipelex init` writes, runs on that configuration instead, as Pipelex always does. A clone of this repository is such a directory, with the same configuration the package carries.
 
 ### With another provider
 
-A key alone is not enough for any other provider, including a local model through Ollama: its backend has to be switched on, and the deck's aliases pointed at the models it serves. Anthropic, for example:
+A key alone is not enough for any other provider, including a local model through Ollama: its backend has to be switched on, and the model deck pointed at the models it serves. Anthropic, for example. In a clone of this repository, three personal files do it, and git ignores all of them, so the tracked configuration stays as it is:
 
 1. Put `ANTHROPIC_API_KEY` in your `.env` file. `.env.example` lists the variable of every provider.
-2. Switch the backends in `.pipelex/inference/backends_override.toml`, a personal file git ignores, so the tracked configuration stays as it is. Turn OpenAI off unless you keep its key, because a run refuses to start while an enabled backend's key is missing:
+2. Switch the backends in `.pipelex/inference/backends_override.toml`. Turn OpenAI off unless you keep its key, because a run refuses to start while an enabled backend's key is missing:
 
     ```toml
     [openai]
@@ -58,16 +60,31 @@ A key alone is not enough for any other provider, including a local model throug
     enabled = true
     ```
 
-3. Point the aliases Cocode's workflows go through at that provider's models, in `.pipelex/inference/deck/x_custom_llm_deck.toml`, which `pipelex update` never overwrites:
+3. Point the model deck at that provider's models in `.pipelex/inference/deck/x_custom_provider_deck.toml`, a deck file of your own that Pipelex reads after the tracked ones. The deck's tiers are its `default-*` aliases, which every preset goes through, except four that name a model directly, so this one file moves the whole deck:
 
     ```toml
     [llm.aliases]
     default-general = "claude-5-sonnet"
+    default-premium = "claude-5-opus"
+    default-premium-vision = "claude-5-opus"
     default-premium-structured = "claude-5-opus"
     default-large-context-code = "claude-5-sonnet"
+    default-large-context-text = "claude-5-sonnet"
+    default-small = "claude-5.5-haiku"
+    default-small-structured = "claude-5.5-haiku"
+    default-small-vision = "claude-5.5-haiku"
+    default-small-creative = "claude-5.5-haiku"
+
+    [llm.presets]
+    retrieval-cheap = { model = "claude-5.5-haiku" }
+    retrieval-premium = { model = "claude-5-sonnet" }
+    engineering-code-cheap = { model = "claude-5-sonnet" }
+    engineering-code-cheaper = { model = "claude-5.5-haiku" }
     ```
 
-The models each provider serves are listed in `.pipelex/inference/backends/`. Pipelex's [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) page covers every provider, and [Inference Backend Configuration](https://docs.pipelex.com/latest/configuration/config-technical/inference-backend-config/) the override files.
+With a `pip install`, the configuration Cocode ships sits inside the package, so give the project you run Cocode in a configuration of its own. At its root, run `pipelex-agent init --config '{"backends": ["anthropic"]}'`: it writes a `.pipelex/` directory with Anthropic as its only backend, which does step 2 for you. Then do steps 1 and 3 in that project. Pipelex recognizes a project's root by a marker such as `.git` or `pyproject.toml`, so in a directory that has none, create an empty `.pipelex` directory before running the command.
+
+The models each provider serves are listed in `.pipelex/inference/backends/`. Pipelex's [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) page covers every provider, and [Inference Backend Configuration](https://docs.pipelex.com/latest/configuration/config-technical/inference-backend-config/) the override and deck files.
 
 Cocode runs its workflows inside its own process, so the hosted Pipelex API and its Pipelex API key do not apply to it.
 

@@ -4,8 +4,11 @@ from pathlib import Path
 from types import ModuleType
 
 import pytest
+from pipelex.pipeline.bundle_validator import BundleValidator
 from pipelex.system.runtime import IntegrationMode
 from pytest_mock import MockerFixture
+
+from cocode.inference_config import CocodeModelManager
 
 ROOT_CONFTEST_PATH = Path(__file__).parents[1] / "conftest.py"
 
@@ -39,8 +42,7 @@ class TestTestsNeverReport:
         root_conftest = load_root_conftest_again()
         pipelex_make = mocker.patch.object(root_conftest.Pipelex, "make")
         load_libraries = mocker.patch.object(root_conftest, "load_libraries_and_activate")
-        bundle_validator = mocker.patch.object(root_conftest, "BundleValidator")
-        bundle_validator.return_value.validate_current_library = mocker.AsyncMock()
+        validate_current_library = mocker.patch.object(BundleValidator, "validate_current_library")
 
         root_conftest.boot_pipelex_for_tests(needs_inference=needs_inference)
 
@@ -48,6 +50,9 @@ class TestTestsNeverReport:
             integration_mode=IntegrationMode.PYTEST,
             needs_inference=needs_inference,
             library_dirs=root_conftest.PIPELINE_LIBRARY_DIRS_FOR_TESTS,
+            models_manager=mocker.ANY,
         )
+        assert isinstance(pipelex_make.call_args.kwargs["models_manager"], CocodeModelManager)
         load_libraries.assert_called_once_with(root_conftest.PIPELINE_LIBRARY_DIRS_FOR_TESTS)
-        assert bundle_validator.return_value.validate_current_library.await_count == (1 if needs_inference else 0)
+        # The boot dry-runs no pipe, with inference or without: `test_dry_run_all_pipes` dry-runs the library once.
+        validate_current_library.assert_not_called()

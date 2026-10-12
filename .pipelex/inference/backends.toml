@@ -7,12 +7,15 @@
 #
 # cocode ships with `openai` switched on, because the model deck's default tiers are OpenAI models:
 # an OPENAI_API_KEY in your .env file is all a run needs. A run refuses to start while an enabled
-# backend's key is missing, so switch a backend on only when you hold its key.
+# backend's key is missing, so switch a backend on only when you hold its key. The cocode package
+# carries this directory and runs on it from any directory without an inference configuration of
+# its own.
 #
 # To run on another provider without editing this tracked file, write the change in a git-ignored
 # backends_override.toml beside it (for instance `[openai] enabled = false` and
-# `[anthropic] enabled = true`), then point the deck's aliases at that provider's models in
-# deck/x_custom_llm_deck.toml.
+# `[anthropic] enabled = true`), then point the deck's aliases and the presets that name a model at
+# that provider's models in a deck file of your own, such as deck/x_custom_provider_deck.toml. The
+# README gives both files in full.
 #
 # Documentation: https://docs.pipelex.com/latest/get-started/configure-ai-providers/
 # Support: https://go.pipelex.com/discord
