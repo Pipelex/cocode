@@ -68,9 +68,9 @@ make merge-check-pyright	  - Run pyright merge check without updating files
 make v                        - Shorthand -> validate
 make codex-tests              - Run tests for Codex (exit on first failure) (no inference, no codex_disabled)
 make gha-tests		          - Run tests for github actions (exit on first failure) (no inference, no gha_disabled)
-make test                     - Run unit tests (no inference)
-make agent-test               - Run unit tests, silent on success, output on failure (for AI agents)
-make test-with-prints         - Run tests with prints (no inference)
+make test                     - Run unit tests, booting Pipelex with inference (needs OPENAI_API_KEY, calls no model)
+make agent-test               - Run unit tests without inference, silent on success, output on failure (for AI agents)
+make test-with-prints         - Run tests with prints, booting Pipelex with inference like make test
 make t                        - Shorthand -> test-with-prints
 make tp                       - Shorthand -> test-with-prints
 make tb                       - Shorthand -> `make test-with-prints TEST=test_boot`
@@ -219,7 +219,7 @@ cleanall: cleanderived cleanenv cleanlibraries cleanresults
 codex-tests: env
 	$(call PRINT_TITLE,"Unit testing for Codex")
 	@echo "• Running unit tests for Codex (excluding inference and codex_disabled)"
-	$(VENV_PYTEST) --exitfirst --quiet -m "not inference and not codex_disabled" || [ $$? = 5 ]
+	$(VENV_PYTEST) --disable-inference --exitfirst --quiet -m "not inference and not codex_disabled" || [ $$? = 5 ]
 
 gha-tests: env
 	$(call PRINT_TITLE,"Unit testing for github actions")
@@ -253,7 +253,7 @@ test: env
 agent-test: env
 	@echo "• Running unit tests..."
 	@tmpfile=$$(mktemp); \
-	$(VENV_PYTEST) -m $(USUAL_PYTEST_MARKERS) -o log_level=WARNING --tb=short -q > "$$tmpfile" 2>&1; \
+	$(VENV_PYTEST) --disable-inference -m $(USUAL_PYTEST_MARKERS) -o log_level=WARNING --tb=short -q > "$$tmpfile" 2>&1; \
 	exit_code=$$?; \
 	if [ $$exit_code -ne 0 ]; then grep -vE '\[\s*[0-9]+%\]\s*$$' "$$tmpfile"; fi; \
 	rm -f "$$tmpfile"; \

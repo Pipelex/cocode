@@ -7,6 +7,7 @@ FilePath                   = "A path to a file in the codebase"
 RepositoryMap              = "A repository map containing the codebase structure and file contents"
 CodebaseFileContent        = "Content of a codebase file"
 DocumentationInconsistency = "An inconsistency found between documentation and actual code"
+DocumentationFileInconsistencies = "The inconsistencies found in one documentation file"
 MarkdownReport             = "A markdown report containing documentation inconsistencies formatted as a Cursor prompt"
 
 [pipe]
@@ -15,11 +16,11 @@ MarkdownReport             = "A markdown report containing documentation inconsi
 type = "PipeSequence"
 description = "Process a single documentation file to find inconsistencies"
 inputs = { doc_file = "DocumentationFile", repo_map = "RepositoryMap" }
-output = "DocumentationInconsistency[]"
+output = "DocumentationFileInconsistencies"
 steps = [
   { pipe = "find_related_code_files", result = "related_file_paths" },
   { pipe = "read_doc_file", result = "related_files" },
-  { pipe = "proofread_single_doc", result = "inconsistencies" },
+  { pipe = "proofread_single_doc", result = "doc_file_inconsistencies" },
 ]
 
 [pipe.find_related_code_files]
@@ -45,8 +46,8 @@ Only include files with actual code evidence, not just similar names or concepts
 [pipe.proofread_single_doc]
 type = "PipeLLM"
 description = "Find major inconsistencies between docs and code"
-inputs = { doc_file = "DocumentationFile", related_files = "CodebaseFileContent" }
-output = "DocumentationInconsistency[]"
+inputs = { doc_file = "DocumentationFile", related_files = "CodebaseFileContent[]" }
+output = "DocumentationFileInconsistencies"
 model = "$engineering-structured"
 system_prompt = """
 Find MAJOR inconsistencies between documentation and code that would cause user code to fail.
@@ -73,7 +74,7 @@ Skip anything that's not a showstopper. If it would just be confusing but still 
 [pipe.create_cursor_report]
 type = "PipeLLM"
 description = "Create a markdown report with inconsistencies formatted as a Cursor prompt"
-inputs = { all_inconsistencies = "DocumentationInconsistency" }
+inputs = { all_inconsistencies = "DocumentationInconsistency[]" }
 output = "MarkdownReport"
 model = "$engineering-structured"
 system_prompt = """
@@ -107,8 +108,11 @@ type = "PipeSequence"
 description = "Complete documentation proofreading pipeline for CLI usage"
 inputs = { repo_map = "RepositoryMap", doc_files = "DocumentationFile[]" }
 output = "MarkdownReport"
+# The batch stores one DocumentationFileInconsistencies per documentation file. Binding their `inconsistencies` field
+# flattens the lists into one, so `all_inconsistencies` holds every inconsistency found, not a list per file.
 steps = [
-  { pipe = "proofread_doc_sequence", batch_over = "doc_files", batch_as = "doc_file", result = "all_inconsistencies" },
+  { pipe = "proofread_doc_sequence", batch_over = "doc_files", batch_as = "doc_file", result = "inconsistencies_by_doc_file" },
+  { from = "inconsistencies_by_doc_file.inconsistencies", result = "all_inconsistencies" },
   { pipe = "create_cursor_report", result = "cursor_report" },
 ]
 

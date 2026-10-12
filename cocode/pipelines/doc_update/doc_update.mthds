@@ -60,7 +60,7 @@ For each citation, identify what the CURRENT code does (+ lines) vs what the OLD
 [pipe.identify_doc_changes]
 type = "PipeLLM"
 description = "Identify changes that affect documentation with specific patterns"
-inputs = { git_diff = "git.GitDiff", git_citations = "GitDiffCitation" }
+inputs = { git_diff = "git.GitDiff", git_citations = "GitDiffCitation[]" }
 output = "DocumentationItem[]"
 system_prompt = """
 You are a documentation analyst. Identify changes that affect documentation in the docs/ directory.
@@ -127,7 +127,7 @@ Be very specific about the exact text patterns that need to be updated in the do
 [pipe.create_structured_changes]
 type = "PipeLLM"
 description = "Create structured documentation changes with exact old/new patterns"
-inputs = { doc_analyses = "DocumentationAnalysis" }
+inputs = { doc_analyses = "DocumentationAnalysis[]" }
 output = "DocumentationChangeItem[]"
 system_prompt = """
 You are a documentation coordinator. Convert documentation analyses into structured, actionable changes with exact patterns.
@@ -165,7 +165,7 @@ Make each change as specific and actionable as possible, ensuring documentation 
 [pipe.format_final_output]
 type = "PipeLLM"
 description = "Format the final documentation update output with clean structure"
-inputs = { structured_changes = "DocumentationChangeItem" }
+inputs = { structured_changes = "DocumentationChangeItem[]" }
 output = "Text"
 system_prompt = """
 You are a documentation formatter. Create a clean, well-structured output for documentation updates.

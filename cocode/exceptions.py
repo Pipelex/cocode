@@ -14,3 +14,7 @@ class RepoxException(CocodeError):
 
 class NoDifferencesFound(CocodeError):
     pass
+
+
+class InferenceConfigNotFoundError(CocodeError):
+    pass

@@ -17,7 +17,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "pipelex[anthropic,google,google-genai,bedrock]==0.46.4",
+  "pipelex[anthropic,bedrock,cli,google,google-genai]==0.83.0",
   "PyGithub==2.4.0",
 ]
 
@@ -59,14 +59,18 @@ allow-direct-references = true
 [tool.hatch.build.targets.wheel]
 packages = ["cocode"]
 
+# The package carries cocode's inference configuration, which `cocode.inference_config` reads wherever cocode runs from.
+# The whole directory is copied, so build a release from a clean checkout: a personal file under it would ship too.
 [tool.hatch.build.targets.wheel.force-include]
 "pipelex.toml" = "pipelex.toml"
+".pipelex/inference" = "cocode/pipelex_inference"
 
 [tool.hatch.build.targets.sdist]
 packages = ["cocode"]
 
 [tool.hatch.build.targets.sdist.force-include]
 "pipelex.toml" = "pipelex.toml"
+".pipelex/inference" = ".pipelex/inference"
 
 [project.urls]
 Homepage = "https://pipelex.com"

@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from pipelex.core.stuffs.structured_content import StructuredContent
+from pipelex.tools.typing.pydantic_utils import empty_list_factory_of
 from pydantic import Field
 
 
@@ -39,3 +40,12 @@ class DocumentationInconsistency(StructuredContent):
     issue_description: str = Field(description="Description of the inconsistency")
     doc_content: str = Field(description="The problematic content in the documentation")
     actual_code: Optional[str] = Field(None, description="The actual code that contradicts the documentation")
+
+
+class DocumentationFileInconsistencies(StructuredContent):
+    """The inconsistencies found in one documentation file."""
+
+    inconsistencies: List[DocumentationInconsistency] = Field(
+        default_factory=empty_list_factory_of(DocumentationInconsistency),
+        description="The inconsistencies found in the documentation file, none when it matches the code",
+    )

@@ -20,7 +20,7 @@ We are open to contributions in all areas of our core cocode library:
 - Fork the cocode repository
 - Clone the repository locally
 - Install dependencies: `make install` (creates .venv and installs dependencies)
-- Copy `.env.example` to `.env` and fill in required API keys (at least OpenAI)
+- Copy `.env.example` to `.env` and set `OPENAI_API_KEY`: the shipped configuration runs on OpenAI, and `make test` boots Pipelex with inference, which needs the key even though its dry runs call no model (`make agent-test` and the CI tests boot without inference and need no key)
 - Run checks to make sure all is good: `make check` & `make test`
 - Create a branch with the format user_name/category/short_slug where category is one of: `feature`, `fix`, `refactor`, `docs`, `cicd` or `chore`
 - Make and commit changes
@@ -40,7 +40,7 @@ We are open to contributions in all areas of our core cocode library:
 
 - Fork & clone the repository
 - Run `make install` to set up virtualenv and dependencies
-- Copy `.env.example` to `.env` and configure API keys
+- Copy `.env.example` to `.env` and set `OPENAI_API_KEY` (the README says how to run on another provider)
 - Use uv for dependency management:
   - Runtime deps: `uv pip install <package>`
   - Dev deps: `uv pip install --extra dev <package>`
@@ -51,7 +51,7 @@ We are open to contributions in all areas of our core cocode library:
 - Fork the cocode repository
 - Clone the repository locally
 - Install dependencies: `make install` (creates .venv and installs dependencies)
-- Copy `.env.example` to `.env` and fill in required API keys (at least OpenAI)
+- Copy `.env.example` to `.env` and set `OPENAI_API_KEY`: the shipped configuration runs on OpenAI, and `make test` boots Pipelex with inference, which needs the key even though its dry runs call no model (`make agent-test` and the CI tests boot without inference and need no key)
 - Run checks to make sure all is good: `make check` & `make test`
 - Create a branch for your feature/bug-fix with the format user_name/feature/some_feature or user_name/fix/some_bugfix
 - Make and commit changes
@@ -69,7 +69,7 @@ We are open to contributions in all areas of our core cocode library:
 ## Environment Setup
 
 - Copy `.env.example` to `.env`
-- Fill in required credentials (OPENAI_API_KEY, AWS_ACCESS_KEY_ID, etc.)
+- Set `OPENAI_API_KEY`, the one key the shipped configuration needs. Another provider's key matters only once its backend is switched on, as the README describes
 - Never commit `.env`
 
 ## License

@@ -19,10 +19,13 @@ Repository analysis and AI-powered code understanding.
 pip install cocode
 ```
 
-Set your OpenAI API key:
+Cocode runs its AI workflows on your machine, with your own provider keys, and ships configured for OpenAI. Set your OpenAI API key in a `.env` file in the directory you run Cocode from:
+
 ```bash
 echo "OPENAI_API_KEY=sk-..." > .env
 ```
+
+To run on another provider, see [Getting Started](pages/getting-started.md#setup).
 
 ## Quick example
 

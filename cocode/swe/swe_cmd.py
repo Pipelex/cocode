@@ -1,7 +1,7 @@
 import json
 import os
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, cast
+from typing import Any, Callable, Dict, List, Optional
 
 from pipelex import log, pretty_print
 from pipelex.core.memory.working_memory_factory import WorkingMemoryFactory
@@ -384,13 +384,9 @@ async def swe_doc_proofread(
         inputs=working_memory,
     )
 
-    main_stuff = pipe_output.working_memory.get_stuff("all_inconsistencies")
-    main_stuff_content = cast(ListContent[ListContent[DocumentationInconsistency]], main_stuff.content)
-
-    all_inconsistencies: List[DocumentationInconsistency] = []
-    for inner_list in main_stuff_content.items:
-        for inconsistency in inner_list.items:
-            all_inconsistencies.append(inconsistency)
+    # One flat list: the method binds every documentation file's inconsistencies into it, and this read refuses any item
+    # that is not an inconsistency, a list of them included.
+    all_inconsistencies = pipe_output.working_memory.get_stuff_as_list("all_inconsistencies", item_type=DocumentationInconsistency).items
 
     pretty_print(all_inconsistencies, title="All inconsistencies")
 

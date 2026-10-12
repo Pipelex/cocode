@@ -22,7 +22,7 @@
 
 [defaults]
 model_type = "llm"
-sdk = "bedrock_aioboto3"
+sdk = "bedrock_aioboto"
 thinking_mode = "none"
 
 ################################################################################
@@ -55,17 +55,15 @@ outputs = ["text"]
 # TODO: find out the actual cost per million tokens for nova on bedrock
 costs = { input = 3.0, output = 15.0 }
 
-# --- Claude LLMs --------------------------------------------------------------
-["claude-3.7-sonnet"]
-sdk = "bedrock_anthropic"
-model_id = "us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+# --- DeepSeek Models ----------------------------------------------------------
+["deepseek-v3.1"]
+model_id = "deepseek.v3-v1:0"
+inputs = ["text"]
+outputs = ["text"]
+costs = { input = 0, output = 0 }
 max_tokens = 8192
-inputs = ["text", "images", "pdf"]
-outputs = ["text", "structured"]
-max_prompt_images = 100
-costs = { input = 3.0, output = 15.0 }
-thinking_mode = "manual"
 
+# --- Claude LLMs --------------------------------------------------------------
 [claude-4-sonnet]
 sdk = "bedrock_anthropic"
 model_id = "us.anthropic.claude-sonnet-4-20250514-v1:0"
@@ -74,6 +72,7 @@ inputs = ["text", "images", "pdf"]
 outputs = ["text", "structured"]
 max_prompt_images = 100
 costs = { input = 3.0, output = 15.0 }
+valued_constraints = { min_thinking_budget = 1024 }     # Anthropic refuses a smaller budget_tokens
 thinking_mode = "manual"
 
 [claude-4-opus]
@@ -84,6 +83,7 @@ inputs = ["text", "images", "pdf"]
 outputs = ["text", "structured"]
 max_prompt_images = 100
 costs = { input = 3.0, output = 15.0 }
+valued_constraints = { min_thinking_budget = 1024 }   # Anthropic refuses a smaller budget_tokens
 thinking_mode = "manual"
 
 ["claude-4.1-opus"]
@@ -94,6 +94,7 @@ inputs = ["text", "images", "pdf"]
 outputs = ["text", "structured"]
 max_prompt_images = 100
 costs = { input = 3.0, output = 15.0 }
+valued_constraints = { min_thinking_budget = 1024 }     # Anthropic refuses a smaller budget_tokens
 thinking_mode = "manual"
 
 ["claude-4.5-sonnet"]
@@ -104,6 +105,7 @@ inputs = ["text", "images", "pdf"]
 outputs = ["text", "structured"]
 max_prompt_images = 100
 costs = { input = 3.0, output = 15.0 }
+valued_constraints = { min_thinking_budget = 1024 }       # Anthropic refuses a smaller budget_tokens
 thinking_mode = "manual"
 
 ["claude-4.5-haiku"]
@@ -114,6 +116,7 @@ inputs = ["text", "images", "pdf"]
 outputs = ["text", "structured"]
 max_prompt_images = 100
 costs = { input = 1.0, output = 5.0 }
+valued_constraints = { min_thinking_budget = 1024 }      # Anthropic refuses a smaller budget_tokens
 thinking_mode = "manual"
 
 ["claude-4.5-opus"]
@@ -124,7 +127,19 @@ inputs = ["text", "images", "pdf"]
 outputs = ["text", "structured"]
 max_prompt_images = 100
 costs = { input = 5.0, output = 25.0 }
+valued_constraints = { min_thinking_budget = 1024 }         # Anthropic refuses a smaller budget_tokens
 thinking_mode = "manual"
+
+["claude-4.6-sonnet"]
+sdk = "bedrock_anthropic"
+model_id = "global.anthropic.claude-sonnet-4-6"
+max_tokens = 64000
+inputs = ["text", "images", "pdf"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 3.0, output = 15.0 }
+valued_constraints = { min_thinking_budget = 1024 } # Anthropic refuses a smaller budget_tokens
+thinking_mode = "adaptive"
 
 ["claude-4.6-opus"]
 sdk = "bedrock_anthropic"
@@ -134,4 +149,31 @@ inputs = ["text", "images", "pdf"]
 outputs = ["text", "structured"]
 max_prompt_images = 100
 costs = { input = 5.0, output = 25.0 }
+valued_constraints = { min_thinking_budget = 1024 } # Anthropic refuses a smaller budget_tokens
 thinking_mode = "adaptive"
+
+# --- Claude 4.7 Series --------------------------------------------------------
+["claude-4.7-opus"]
+sdk = "bedrock_anthropic"
+model_id = "global.anthropic.claude-opus-4-7"
+max_tokens = 128000
+inputs = ["text", "images", "pdf"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 5.0, output = 25.0 }
+valued_constraints = { min_thinking_budget = 1024 } # Anthropic refuses a smaller budget_tokens
+thinking_mode = "adaptive"
+listed_constraints = ["temperature_unsupported"]
+
+# --- Claude 4.8 Series --------------------------------------------------------
+["claude-4.8-opus"]
+sdk = "bedrock_anthropic"
+model_id = "global.anthropic.claude-opus-4-8"
+max_tokens = 128000
+inputs = ["text", "images", "pdf"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 5.0, output = 25.0 }
+valued_constraints = { min_thinking_budget = 1024 } # Anthropic refuses a smaller budget_tokens
+thinking_mode = "adaptive"
+listed_constraints = ["temperature_unsupported"]
