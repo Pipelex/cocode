@@ -13,6 +13,9 @@ on:
 jobs:
   doc-check:
     runs-on: ubuntu-latest
+    env:
+      # The docs check runs Python 3.11 on purpose, not the version .python-version pins: this keeps any uv command on it too.
+      UV_PYTHON: "3.11"
     steps:
       - uses: actions/checkout@v4
 
